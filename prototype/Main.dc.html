@@ -44,6 +44,9 @@ input,select{font-family:inherit}
 </div>
 <button aria-label="Settings" onClick="{{goSettings}}" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: var(--card); color: var(--ink); display: flex; align-items: center; justify-content: center; flex: none; align-self: flex-start"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg></button>
 </div>
+<sc-if value="{{saveFail}}" hint-placeholder-val="{{ false }}">
+<div role="alert" style="background: var(--warnBg); color: var(--warnInk); border-radius: 16px; padding: 12px 14px; font-size: 13px; font-weight: 700; line-height: 1.45">Your progress could not be saved on this device. Private browsing or a full storage can cause this. Download a backup in Settings.</div>
+</sc-if>
 <sc-if value="{{showComeback}}" hint-placeholder-val="{{ false }}">
 <div style="background: var(--inv); color: var(--invInk); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
 <div style="font-size: 18px; font-weight: 800">Welcome back</div>
@@ -708,19 +711,47 @@ input,select{font-family:inherit}
 </button>
 </div>
 
-<div style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px">Data</div>
+<div style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px">Your data</div>
 <div style="background: var(--card); border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
-<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4">Puts the sample hero, habits, logs, goals and Fish Book back. Settings are kept.</div>
-<button onClick="{{resetData}}" style="{{resetStyle}}">{{resetLabel}}</button>
-<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4; margin-top: 4px">Start fresh wipes everything and runs the first-time setup, like a new user.</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4">Everything is saved on this device only, in this browser. Clearing browser data deletes it, so download a backup now and then.</div>
+<div style="font-size: 13px; font-weight: 700">{{backupWhen}}</div>
+<button onClick="{{exportBackup}}" style="height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 800; background: var(--accent); color: #FFFFFF">Download backup</button>
+<label for="restoreFile" style="height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; background: var(--soft); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer">Restore from a backup file</label>
+<input id="restoreFile" type="file" accept=".json,application/json" onChange="{{pickBackup}}" style="position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none">
+<sc-if value="{{hasImport}}" hint-placeholder-val="{{ false }}">
+<div style="background: var(--warnBg); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 13.5px; font-weight: 700; color: var(--warnInk); line-height: 1.4">{{importText}}. Restoring replaces everything on this device.</div>
+<div style="display: flex; gap: 8px">
+<button onClick="{{applyBackup}}" style="flex: 1; height: 46px; border-radius: 12px; border: none; background: #B42318; color: #FFFFFF; font-size: 14px; font-weight: 800">Replace my data</button>
+<button onClick="{{cancelImport}}" style="height: 46px; padding: 0 16px; border-radius: 12px; border: none; background: var(--card); color: var(--ink); font-size: 14px; font-weight: 700">Cancel</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{hasBackupMsg}}" hint-placeholder-val="{{ false }}">
+<div role="status" style="font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--good)">{{backupMsg}}</div>
+</sc-if>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4; margin-top: 4px">Start over wipes everything on this device and runs the first-time setup.</div>
 <button onClick="{{startFresh}}" style="{{freshStyle}}">{{freshLabel}}</button>
 </div>
-<div style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px">Demo tools</div>
-<div style="background: var(--card); border-radius: 20px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px">
-<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4">Pretend you were away for the last 4 days, to see the comeback flow on Today.</div>
+<div style="font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 6px">Testing</div>
+<div style="background: var(--card); border-radius: 20px; padding: 4px 16px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 12px 0">
+<div style="flex: 1">
+<div style="font-size: 15px; font-weight: 700">Demo tools</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px; line-height: 1.4">Shortcuts for testing: trips that finish in seconds, free coins and levels, sample data. Leave off for real use.</div>
+</div>
+<button aria-label="Demo tools" aria-pressed="{{settings.demoTools}}" onClick="{{tDemo}}" style="{{swDemo}}"><span style="width: 26px; height: 26px; border-radius: 99px; background: #FFFFFF; display: block"></span></button>
+</div>
+<sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 12px 0 14px; border-top: 1px solid var(--line)">
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4">Replaces everything on this device with the sample hero, habits, logs, goals and Fish Book. Settings are kept.</div>
+<button onClick="{{resetData}}" style="{{resetStyle}}">{{resetLabel}}</button>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.4; margin-top: 4px">Pretend you were away for the last 4 days, to see the comeback flow on Today. This changes your real logs.</div>
 <button onClick="{{simulateBreak}}" style="height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; background: var(--soft); color: var(--ink)">Simulate a 4-day break</button>
 </div>
-<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Prototype v0.9.2</div>
+</sc-if>
+</div>
+<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.10.0 · saved on this device</div>
 </div>
 </sc-if>
 
@@ -988,8 +1019,9 @@ input,select{font-family:inherit}
 <div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="{{slotAdv.style}}">{{slotAdv.label}}</span><span style="{{slotFish.style}}">{{slotFish.label}}</span></div>
 <div style="font-size: 12px; color: var(--muted); font-weight: 500; line-height: 1.45">{{tripNote}}</div>
 </div>
+<sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}">
 <div style="background: var(--card); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 0 0 1.5px var(--line)">
-<div><div style="font-size: 15px; font-weight: 800">Demo tools</div><div style="font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px">Prototype only, to test the economy without waiting weeks.</div></div>
+<div><div style="font-size: 15px; font-weight: 800">Demo tools</div><div style="font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px">For testing. Turn them off in Settings → Demo tools.</div></div>
 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
 <button onClick="{{demoCoins}}" style="{{demoBtn}}">+500 coins</button>
 <button onClick="{{demoLevel}}" style="{{demoBtn}}">+1 level</button>
@@ -998,6 +1030,7 @@ input,select{font-family:inherit}
 <button onClick="{{demoStreaks}}" style="{{demoBtnWide}}">{{demoStreakLabel}}</button>
 </div>
 </div>
+</sc-if>
 </div>
 </sc-if>
 
@@ -1082,7 +1115,7 @@ input,select{font-family:inherit}
 <div style="background: var(--inv); color: var(--invInk); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 14px; background: var(--stage); display: flex; align-items: center; justify-content: center; flex: none"><span style="{{awayIcon.box}}"><span style="{{awayIcon.dot}}"></span></span></span><div style="flex: 1; min-width: 0"><div style="font-size: 15.5px; font-weight: 800">{{charName}} is exploring {{awayName}}</div><div style="font-size: 12.5px; color: var(--invMuted); font-weight: 600; margin-top: 2px">{{awayMeta}}</div></div></div>
 <div style="height: 8px; border-radius: 99px; background: var(--invTrack); overflow: hidden"><div style="{{awayBar2}}"></div></div>
-<button onClick="{{finishAdv}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Finish now (demo)</button>
+<sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}"><button onClick="{{finishAdv}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Finish now (demo)</button></sc-if>
 </div>
 </sc-if>
 <sc-for list="{{zones}}" as="z" hint-placeholder-count="6">
@@ -1132,7 +1165,7 @@ input,select{font-family:inherit}
 <div style="font-size: 15.5px; font-weight: 800">{{charName}} is fishing</div>
 <div style="font-size: 12.5px; color: var(--invMuted); font-weight: 600; margin-top: -4px">{{fishMeta}}</div>
 <div style="height: 8px; border-radius: 99px; background: var(--invTrack); overflow: hidden"><div style="{{fishBar}}"></div></div>
-<button onClick="{{reelIn}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Reel in now (demo)</button>
+<sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}"><button onClick="{{reelIn}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Reel in now (demo)</button></sc-if>
 </div>
 </sc-if>
 <sc-if value="{{fishIdle}}" hint-placeholder-val="{{ true }}">
@@ -1236,7 +1269,7 @@ input,select{font-family:inherit}
 <sc-if value="{{r.downLine}}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 11px; font-weight: 800; color: var(--danger); text-transform: uppercase; letter-spacing: 0.06em"><span style="flex: 1; height: 1.5px; background: currentColor; opacity: 0.35"></span>{{downText}}<span style="flex: 1; height: 1.5px; background: currentColor; opacity: 0.35"></span></div></sc-if>
 </sc-for>
 </div>
-<button onClick="{{endWeek}}" style="height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; background: var(--soft); color: var(--ink)">End the week now (demo)</button>
+<sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}"><button onClick="{{endWeek}}" style="height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; background: var(--soft); color: var(--ink)">End the week now (demo)</button></sc-if>
 <div style="font-size: 12.5px; color: var(--muted); font-weight: 500; text-align: center; line-height: 1.45">{{lbSimNote}}</div>
 </sc-if>
 
@@ -1462,13 +1495,247 @@ input,select{font-family:inherit}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#2F5BEA","options":["#2F5BEA","#0F766E","#7C3AED","#16181D"]},"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
+  // Days are numbered from a fixed real date (this.epoch, always a Sunday, so j % 7 is the weekday).
+  // T is today's number. It grows by one every day, so history is never cut off.
   constructor(props) {
     super(props);
+    this._sref = { current: null };
+    this.setToday();
+    const saved = this.loadSaved();
+    if (saved) {
+      this.epoch = saved.epoch;
+      this.T = Math.max(0, this.dayIndex(this.epoch));
+      this.state = this.restoreState(saved.state);
+      Object.assign(this.state, this.rolloverPatch(this.state, this.state.lastDay));
+    } else {
+      this.epoch = this.defaultEpoch();
+      this.T = this.dayIndex(this.epoch);
+      this.state = this.freshState();
+    }
+  }
+
+  // ---------- Dates ----------
+  setToday() {
     const now = new Date();
     this.today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    this.T = 28 + this.today0.getDay();
-    this.state = this.demoState();
-    this._sref = { current: null };
+    this._todayIso = this.isoDate(this.today0);
+  }
+
+  // Day number of today counted from an epoch 'YYYY-MM-DD'. UTC maths, so daylight-saving changes never shift it.
+  dayIndex(epoch) {
+    const p = String(epoch).split('-');
+    const e = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+    const t = Date.UTC(this.today0.getFullYear(), this.today0.getMonth(), this.today0.getDate());
+    return Math.round((t - e) / 86400000);
+  }
+
+  // Sunday four weeks before this week: gives every new user 4 weeks of empty history, like the design assumes.
+  defaultEpoch() {
+    const d = new Date(this.today0);
+    d.setDate(d.getDate() - 28 - this.today0.getDay());
+    return this.isoDate(d);
+  }
+
+  resetEpoch() {
+    this.epoch = this.defaultEpoch();
+    this.T = this.dayIndex(this.epoch);
+    this._ld = null;
+  }
+
+  // Called by the tick: when the date changes while the app is open, move to the new day in place.
+  checkNewDay() {
+    const now = new Date();
+    const iso = this.isoDate(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+    if (iso === this._todayIso) return;
+    const oldT = this.T;
+    this.setToday();
+    this.T = Math.max(0, this.dayIndex(this.epoch));
+    this._ld = null;
+    this.setState(st => Object.assign(this.rolloverPatch(st, st.lastDay != null ? st.lastDay : oldT), st.day === oldT ? { day: this.T } : {}));
+  }
+
+  // Coins, XP and weekly XP count today's check-ins live and keep earlier days as a fixed total.
+  // When a new day starts, the last live day is added to those totals, and a finished week closes the league.
+  rolloverPatch(st, oldT) {
+    const T = this.T;
+    if (oldT == null || !(T > oldT)) return { lastDay: oldT == null ? T : Math.max(oldT, T) };
+    const live = this.habitXp(st.habits, oldT, oldT);
+    const res = { lastDay: T, xpBase: (st.xpBase || 0) + live, coinsBase: (st.coinsBase || 0) + this.earnOn(st.habits, oldT), weekTodayBase: 0 };
+    const weekGain = Math.max(0, live - (st.weekTodayBase || 0));
+    const wOld = Math.floor(oldT / 7), wNew = Math.floor(T / 7);
+    if (wNew === wOld) res.weekBase = (st.weekBase || 0) + weekGain;
+    else {
+      const final = (st.weekBase || 0) + weekGain + (st.weekTrip || 0);
+      const L = this.levelInfo(this.xpOf(Object.assign({}, st, res))).L;
+      Object.assign(res, this.closeLeague(st, final, wOld * 7 + 7, wNew * 7, L));
+      res.weekBase = 0; res.weekTrip = 0;
+    }
+    return res;
+  }
+
+  // Ends the current league week: rank against the simulated players, promotion, trophy, results pop-up.
+  // end - league start = days played (7 for a full week), start = first day of the next league week.
+  closeLeague(st, mine, end, start, L2) {
+    const TIERS = ['Bronze', 'Silver', 'Gold', 'Diamond'];
+    const ord = n => n + (n % 100 >= 11 && n % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'));
+    const lg = Object.assign({ week: 0, tier: 1, trophies: 0, hidden: false }, st.league || {});
+    const lgStart = lg.start != null ? lg.start : Math.floor((end - 1) / 7) * 7;
+    const days = Math.max(0.6, Math.min(7, end - lgStart + 0.6));
+    const rank = 1 + this.leagueData(st, L2, days).league.filter(p => p.xp > mine).length;
+    const top3 = rank <= 3, up = rank <= 5 && lg.tier < 3, down = rank >= 16 && lg.tier > 0;
+    const tier = up ? lg.tier + 1 : (down ? lg.tier - 1 : lg.tier), trophies = lg.trophies + (top3 ? 1 : 0);
+    const res = { league: Object.assign({}, lg, { week: lg.week + 1, tier, trophies, baseL: L2, start }), pcard: null };
+    const firstLaurel = top3 && st.owned.indexOf('h_laurel') < 0;
+    if (firstLaurel) res.owned = st.owned.concat(['h_laurel']);
+    const where = 'You finished ' + ord(rank) + ' of 20 in ' + TIERS[lg.tier] + ' League. ';
+    let title, body;
+    if (top3) { title = 'Trophy won!'; body = where + (firstLaurel ? 'The Champion Laurel is in your Wardrobe. ' : 'That makes ' + trophies + ' trophies. ') + (up ? 'You move up to ' + TIERS[tier] + ' League.' : 'You stay in Diamond, the top league.'); }
+    else if (up) { title = 'Promoted!'; body = where + 'Top 5 move up: welcome to ' + TIERS[tier] + ' League.'; }
+    else if (down) { title = 'Moved down'; body = where + 'You move to ' + TIERS[tier] + ' League. A fresh week starts now.'; }
+    else { title = 'Week complete'; body = where + 'You stay in ' + TIERS[tier] + ' League. A fresh week starts now.'; }
+    res.celebrate = (st.celebrate || []).concat([{ kind: 'badge', badge: ord(rank), quiet: !top3 && !up, kicker: 'League results', title, body }]);
+    return res;
+  }
+
+  // ---------- Saving on this device ----------
+  // Screen state (open sheets, forms, pop-up confirmations) is not saved; everything else is.
+  storageKey() { return 'streakling:v1'; }
+
+  transientKeys() {
+    return ['screen', 'from', 'formFrom', 'sel', 'day', 'reorder', 'sheet', 'sheetVal', 'sheetH', 'sheetM', 'sheetDirty', 'sheetErr',
+      'confirmDel', 'confirmGoal', 'confirmReset', 'confirmFresh', 'form', 'gform', 'tryOn', 'ccEdit', 'flash', 'pcard', 'fishSel',
+      'soldNote', 'now', 'saveFail', 'importInfo', 'backupMsg'];
+  }
+
+  defaultSettings() { return { theme: 'light', remindersOn: true, celebrate: true, freezes: true, editWindow: 7, demoTools: false }; }
+
+  loadSaved() {
+    let raw = null;
+    try { raw = window.localStorage.getItem(this.storageKey()); } catch (err) { return null; }
+    if (!raw) return null;
+    try {
+      const env = JSON.parse(raw);
+      if (!env || env.app !== 'streakling' || !env.state || !Array.isArray(env.state.habits) || !/^\d{4}-\d{2}-\d{2}$/.test(env.epoch || '')) throw new Error('bad save');
+      return env;
+    } catch (err) {
+      // Keep the unreadable copy instead of throwing it away, then start fresh.
+      try { window.localStorage.setItem(this.storageKey() + ':unreadable:' + Date.now(), raw); } catch (e2) { /* storage full */ }
+      return null;
+    }
+  }
+
+  // Saved data on top of a complete fresh state, so fields added in later versions get their defaults.
+  restoreState(saved) {
+    const base = this.freshState();
+    const st = Object.assign(base, saved);
+    st.settings = Object.assign(this.defaultSettings(), saved.settings || {});
+    st.day = this.T;
+    // Unfinished first-time setup resumes where it stopped.
+    if (st.onboard || !st.char) {
+      st.screen = 'onboard';
+      if (!st.onboard) st.onboard = { step: 0, focus: [], picks: [] };
+    } else st.screen = 'today';
+    return st;
+  }
+
+  persistable(st) {
+    const out = {};
+    const skip = {};
+    this.transientKeys().forEach(k => { skip[k] = true; });
+    Object.keys(st).forEach(k => { if (!skip[k]) out[k] = st[k]; });
+    return out;
+  }
+
+  envelope(st) { return { app: 'streakling', v: 1, epoch: this.epoch, state: this.persistable(st) }; }
+
+  saveNow() {
+    clearTimeout(this._saveT); this._saveT = null;
+    if (!this.state || this._noSave) return;
+    let json;
+    try { json = JSON.stringify(this.envelope(this.state)); } catch (err) { return; }
+    if (json === this._lastJson) return;
+    try {
+      window.localStorage.setItem(this.storageKey(), json);
+      this._lastJson = json;
+      if (this.state.saveFail) this.setState({ saveFail: false });
+      if (!this._askedPersist && navigator.storage && navigator.storage.persist) { this._askedPersist = true; navigator.storage.persist().catch(() => {}); }
+    } catch (err) {
+      if (!this.state.saveFail) this.setState({ saveFail: true });
+    }
+  }
+
+  scheduleSave() {
+    if (this._saveT) return;
+    this._saveT = setTimeout(() => this.saveNow(), 400);
+  }
+
+  backupName() { return 'streakling-backup-' + this.isoDate(this.today0) + '.json'; }
+
+  // Share sheet on phones (works from a home-screen app), plain download elsewhere.
+  exportBackup() {
+    this.saveNow();
+    const env = Object.assign(this.envelope(this.state), { exportedAt: new Date().toISOString() });
+    const text = JSON.stringify(env);
+    const done = () => this.setState({ lastBackup: this.isoDate(this.today0), backupMsg: 'Backup saved. Keep the file somewhere safe (Files, Drive, email).' });
+    let file = null;
+    try { file = new File([text], this.backupName(), { type: 'application/json' }); } catch (err) { file = null; }
+    const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (touch && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: 'Streakling backup' }).then(done).catch(err => { if (!err || err.name !== 'AbortError') this.downloadText(text, done); });
+      return;
+    }
+    this.downloadText(text, done);
+  }
+
+  downloadText(text, done) {
+    try {
+      const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+      const a = document.createElement('a');
+      a.href = url; a.download = this.backupName();
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      done();
+    } catch (err) {
+      this.setState({ backupMsg: 'Could not create the backup file on this browser.' });
+    }
+  }
+
+  // Step 1: read and check the file, then ask before replacing anything.
+  pickBackup(e) {
+    const input = e.target, file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      input.value = '';
+      let env = null;
+      try { env = JSON.parse(String(reader.result)); } catch (err) { env = null; }
+      if (!env || env.app !== 'streakling' || !env.state || !Array.isArray(env.state.habits) || !/^\d{4}-\d{2}-\d{2}$/.test(env.epoch || '')) {
+        this.setState({ importInfo: null, backupMsg: 'That file is not a Streakling backup.' });
+        return;
+      }
+      const ch = env.state.char;
+      const when = env.exportedAt ? new Date(env.exportedAt) : null;
+      const n = env.state.habits.filter(h => !h.archived).length;
+      this._pending = env;
+      this.setState({ backupMsg: '', importInfo: { text: (when && !isNaN(when) ? 'Backup from ' + when.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][when.getMonth()] + ' ' + when.getFullYear() : 'Backup') + ' · ' + n + (n === 1 ? ' habit' : ' habits') + (ch ? ' · ' + ch.name : '') } });
+    };
+    reader.onerror = () => { input.value = ''; this.setState({ backupMsg: 'Could not read that file.' }); };
+    reader.readAsText(file);
+  }
+
+  // Step 2: replace the data on this device and reload.
+  applyBackup() {
+    const env = this._pending;
+    if (!env) return;
+    try {
+      window.localStorage.setItem(this.storageKey(), JSON.stringify({ app: 'streakling', v: 1, epoch: env.epoch, state: env.state }));
+    } catch (err) {
+      this.setState({ backupMsg: 'Could not save the backup on this device.' });
+      return;
+    }
+    this._lastJson = null;
+    this._noSave = true;
+    window.location.reload();
   }
 
   // Full sample state. Reset demo data rebuilds it, keeping the settings.
@@ -1479,19 +1746,43 @@ class Component extends DCLogic {
       timer: null, sheet: null, sheetVal: '', sheetH: '', sheetM: '', sheetDirty: false,
       confirmDel: null, confirmGoal: null, confirmReset: false, form: null, celebrate: [],
       gform: { open: false, hid: 'read', title: '', target: '', deadline: 'month', date: '', error: '' },
-      settings: settings || { theme: 'light', remindersOn: true, celebrate: true, freezes: true, editWindow: 7 },
+      settings: settings || this.defaultSettings(),
       char: { name: 'Kai', sex: 'boy', skin: 'medium', hc: 'brown', hair: 'hr_short', clothes: 'c_hoodie', shoes: 's_sneakers', hat: null, acc: [], weapon: ['a_wsword'], rod: 'r_bamboo' },
       owned: ['c_vest', 'c_dress', 'hr_short', 'hr_long', 's_boots', 'r_bamboo', 'c_hoodie', 's_sneakers', 'a_wsword'], coinsBase: 150, spent: 0, bonus: 0, tryOn: null, ccEdit: false,
       cc: { sex: 'boy', skin: 'medium', hc: 'brown', name: '' },
       ctab: 'hero', cat: 'clothes', etab: 'adventure', bait: 'worm', advXp: 0, demoXp: 0, adv: null, advLog: [], demoBadges: false, lvlSeen: 0,
       trips: { day: T, adv: false, fish: false }, fishing: null, fishLog: [], soldNote: '', fishSel: null, unlockSeen: -1, allSeen: -1, goalSeen: {},
       book: { minnow: { caught: 4, kept: 3, best: 7.4 }, bluegill: { caught: 2, kept: 2, best: 19.5 }, perch: { caught: 1, kept: 1, best: 22.1 }, sardine: { caught: 3, kept: 2, best: 18.2 }, carp: { caught: 1, kept: 1, best: 54 }, salmon: { caught: 1, kept: 1, best: 78.5 } },
-      league: { week: 0, tier: 1, trophies: 0, hidden: false, baseL: 1 }, ltab: 'league', cheered: {}, pcard: null, weekTrip: (T % 7) * 25, weekTodayBase: 0, invited: false,
-      onboard: null, comeback: null, comebackDismissed: false, coachSkip: {}, flash: null, confirmFresh: false
+      league: { week: 0, tier: 1, trophies: 0, hidden: false, baseL: 1, start: Math.floor(T / 7) * 7 }, ltab: 'league', cheered: {}, pcard: null, weekTrip: (T % 7) * 25, weekTodayBase: 0, invited: false,
+      onboard: null, comeback: null, comebackDismissed: false, coachSkip: {}, flash: null, confirmFresh: false,
+      lastDay: T, lastBackup: null, saveFail: false, importInfo: null, backupMsg: ''
     });
     st.lvlSeen = this.levelInfo(this.xpOf(st)).L;
     st.league.baseL = st.lvlSeen;
     return st;
+  }
+
+  // Everything a brand-new user starts with: no hero, no habits, first-time setup on screen.
+  freshPatch() {
+    const T = this.T;
+    return { confirmFresh: false, confirmReset: false, habits: [], goals: [], nextId: 1, celebrate: [], char: null, owned: [], coinsBase: 0, spent: 0, bonus: 0, tryOn: null, ccEdit: false,
+      cc: { sex: 'boy', skin: 'medium', hc: 'brown', name: '' },
+      ctab: 'hero', cat: 'clothes', etab: 'adventure', bait: 'worm', advXp: 0, demoXp: 0, adv: null, advLog: [], demoBadges: false, lvlSeen: 1,
+      trips: { day: T, adv: false, fish: false }, fishing: null, fishLog: [], soldNote: '', book: {}, fishSel: null, unlockSeen: -1, allSeen: -1, goalSeen: {},
+      league: { week: 0, tier: 0, trophies: 0, hidden: false, baseL: 1, start: Math.floor(T / 7) * 7 }, ltab: 'league', cheered: {}, pcard: null, weekBase: 0, weekTrip: 0, weekTodayBase: 0, invited: false,
+      comeback: null, comebackDismissed: false, coachSkip: {}, timer: null, sheet: null, form: null, day: T, xpBase: 0, lastDay: T, sel: null,
+      gform: { open: false, hid: '', title: '', target: '', deadline: 'month', date: '', error: '' },
+      screen: 'onboard', onboard: { step: 0, focus: [], picks: [] } };
+  }
+
+  freshState(settings) { return Object.assign(this.demoState(settings), this.freshPatch()); }
+
+  // Coins from habits on day j: full +10, minimum +5, all done +20, capped at 60.
+  earnOn(habits, j) {
+    let r = 0;
+    habits.forEach(h => { if (h.archived || h.start > j) return; const x = this.build(h)[j]; if (x === 'd') r += 10; else if (x === 'p') r += 5; });
+    if (this.allDone(habits, j)) r += 20;
+    return Math.min(60, r);
   }
 
   reasons() { return ['Tired', 'Busy', 'Forgot', 'Travel', 'Other']; }
@@ -1561,17 +1852,28 @@ class Component extends DCLogic {
 
   // Checks 5 times a second but re-renders only when a number on screen changes (stopwatch second, trip countdown),
   // so the stopwatch turns over on the second it was started.
+  // Long trips refresh once a minute; the last two minutes count down by the second.
   componentDidMount() {
+    const leftKey = (t, now) => { const secs = Math.ceil((t.end - now) / 1000); return secs > 120 ? 'm' + Math.ceil(secs / 60) : String(secs); };
     this.tick = setInterval(() => {
+      this.checkNewDay();
       const now = Date.now(), s = this.state;
       if (s.adv && now >= s.adv.end) { this.resolveAdventure(); return; }
       if (s.fishing && now >= s.fishing.end) { this.resolveFishing(); return; }
       const run = s.timer && s.timer.running;
-      const key = [run ? s.timer.hid + ':' + this.timerElapsed(s.timer) : '-', s.adv ? Math.ceil((s.adv.end - now) / 1000) : '-', s.fishing ? Math.ceil((s.fishing.end - now) / 1000) : '-'].join('|');
+      const key = [run ? s.timer.hid + ':' + this.timerElapsed(s.timer) : '-', s.adv ? leftKey(s.adv, now) : '-', s.fishing ? leftKey(s.fishing, now) : '-'].join('|');
       if (key === this._tickKey) return;
       this._tickKey = key;
       if (run) this.tickTimer(); else if (s.adv || s.fishing) this.setState({ now });
     }, 200);
+    // Save right away when the app is hidden or closed; reload if another tab changed the data.
+    this._onHide = () => { if (document.visibilityState === 'hidden') this.saveNow(); else this.checkNewDay(); };
+    this._onPageHide = () => this.saveNow();
+    this._onStorage = e => { if (e.key === this.storageKey() && e.newValue && e.newValue !== this._lastJson) { this._noSave = true; window.location.reload(); } };
+    document.addEventListener('visibilitychange', this._onHide);
+    window.addEventListener('pagehide', this._onPageHide);
+    window.addEventListener('storage', this._onStorage);
+    this.saveNow();
   }
 
   // Stopwatch. Time comes from timestamps, not from counting ticks, so it stays right when the browser slows timers down.
@@ -1599,9 +1901,16 @@ class Component extends DCLogic {
     });
   }
 
-  componentWillUnmount() { if (this.tick) clearInterval(this.tick); }
+  componentWillUnmount() {
+    if (this.tick) clearInterval(this.tick);
+    this.saveNow();
+    document.removeEventListener('visibilitychange', this._onHide);
+    window.removeEventListener('pagehide', this._onPageHide);
+    window.removeEventListener('storage', this._onStorage);
+  }
 
   componentDidUpdate() {
+    this.scheduleSave();
     const s = this.state;
     const view = s.screen + '|' + (s.screen === 'detail' ? s.sel : '');
     if (this._view !== undefined && this._view !== view) {
@@ -1748,13 +2057,7 @@ class Component extends DCLogic {
     return n;
   }
 
-  earnToday(habits) {
-    const T = this.T;
-    let r = 0;
-    habits.forEach(h => { if (h.archived || h.start > T) return; const x = this.build(h)[T]; if (x === 'd') r += 10; else if (x === 'p') r += 5; });
-    if (this.allDone(habits, T)) r += 20;
-    return Math.min(60, r);
-  }
+  earnToday(habits) { return this.earnOn(habits, this.T); }
 
   flashLater() {
     clearTimeout(this._ft);
@@ -1996,13 +2299,15 @@ class Component extends DCLogic {
     let done = 0, partN = 0, skip = 0, miss = 0, frozen = 0;
     const missBy = [0, 0, 0, 0, 0, 0, 0];
     const rc = {};
+    // The heatmap shows 5 weeks: this week and the 4 before it. Weekday patterns use the same window.
+    const h0 = Math.max(0, Math.floor(T / 7) * 7 - 28);
     for (let i = 0; i <= T; i++) {
       const x = hist[i];
       if (x === 'd') done++;
       else if (x === 'p') partN++;
       else if (x === 's') skip++;
       else if (x === 'm' || x === 'k') {
-        miss++; if (x === 'k') frozen++; missBy[i % 7]++;
+        miss++; if (x === 'k') frozen++; if (i >= h0) missBy[i % 7]++;
         const r = (h.days[i] || {}).reason;
         if (r) rc[r] = (rc[r] || 0) + 1;
       }
@@ -2034,7 +2339,7 @@ class Component extends DCLogic {
       }
       insight = weeks ? 'You reached ' + h.freq.n + '× a week in ' + hits + ' of the last ' + weeks + (weeks === 1 ? ' week.' : ' weeks.') + (hits < weeks ? ' Pick your days at the start of each week.' : ' Every week so far. Nice.') : 'New habit. A pattern shows up after a full week.';
     } else if (missBy[worst] >= 2) {
-      insight = 'You ' + missVerb + ' most on ' + c.DAYS[worst] + 's (' + missBy[worst] + ' times in 5 weeks). Add a reason when you ' + missVerb + ' to get a sharper tip.';
+      insight = 'You ' + missVerb + ' most on ' + c.DAYS[worst] + 's (' + missBy[worst] + ' times in the last 5 weeks). Add a reason when you ' + missVerb + ' to get a sharper tip.';
     } else {
       insight = shown === 0 ? 'New habit. A pattern shows up after a week of logs.' : 'No missed-day pattern yet. Keep the chain going.';
     }
@@ -2042,7 +2347,7 @@ class Component extends DCLogic {
     const reasonBars = rList.map(x => ({ label: x.r, n: x.n, barStyle: 'display: block; height: 100%; width: ' + Math.round((x.n / maxR) * 100) + '%; background: #EE8A4C; border-radius: 99px' }));
     const names = { d: h.type === 'quit' ? 'Clean' : 'Done', p: 'Minimum', s: 'Skipped', m: h.type === 'quit' ? 'Slipped' : 'Missed', k: (h.type === 'quit' ? 'Slipped' : 'Missed') + ', streak saved by a freeze', n: 'Pending', r: 'Off day', o: 'Optional day', z: 'Paused', x: 'Before habit started', f: 'Upcoming' };
     const cells = [];
-    for (let k = 0; k < 35; k++) {
+    for (let k = h0; k < h0 + 35; k++) {
       const x = k <= T ? hist[k] : 'f';
       const can = k <= T && k >= h.start && x !== 'z' && !h.archived && this.editable(k);
       const kk = k;
@@ -2413,12 +2718,12 @@ class Component extends DCLogic {
 
   zones() {
     return [
-      { id: 'woods', name: 'Whispering Woods', lvl: 1, time: '15 min', demo: 6, tests: { p: 1, h: 1 }, rec: 9, coins: [8, 14], xp: 20, drop: 0.03, dropR: ['common'], win: 'Your hero chased a gang of slimes out of the old forest.', lose: 'Your hero got lost among the trees and turned back.' },
-      { id: 'hollow', name: 'Mushroom Hollow', lvl: 3, time: '30 min', demo: 8, tests: { p: 1, h: 2 }, rec: 15, coins: [14, 20], xp: 30, drop: 0.05, dropR: ['common'], win: 'Your hero cleared the hollow of grumpy toadstools.', lose: 'A cloud of sleepy spores sent your hero home early.' },
-      { id: 'coast', name: 'Coral Coast', lvl: 4, time: '45 min', demo: 10, tests: { p: 2, h: 1 }, rec: 15, coins: [18, 26], xp: 40, drop: 0.06, dropR: ['common', 'rare'], win: 'Your hero fought off crab raiders and found sunken coins.', lose: 'The crab raiders pinched hard. Your hero swam back to shore.' },
-      { id: 'peaks', name: 'Frost Peaks', lvl: 5, time: '1 h', demo: 12, tests: { p: 2, h: 1 }, rec: 18, coins: [26, 34], xp: 55, drop: 0.06, dropR: ['rare'], win: 'Your hero out-wrestled a very rude yeti on the summit.', lose: 'The yeti was stronger this time. Your hero slid back to camp.' },
-      { id: 'caverns', name: 'Ember Caverns', lvl: 8, time: '2 h', demo: 15, tests: { p: 1, h: 2 }, rec: 32, coins: [34, 44], xp: 70, drop: 0.07, dropR: ['rare', 'epic'], win: 'Your hero braved the heat, beat the lava golem and grabbed its loot.', lose: 'The heat was too much. Your hero retreated to cooler tunnels.' },
-      { id: 'spire', name: "Dragon's Spire", lvl: 10, time: '4 h', demo: 20, tests: { p: 1, h: 1 }, rec: 37, coins: [44, 56], xp: 90, drop: 0.08, dropR: ['epic'], win: 'Your hero faced the dragon and came home with treasure.', lose: 'The dragon won this round. Your hero lives to try again.' }
+      { id: 'woods', name: 'Whispering Woods', lvl: 1, time: '15 min', mins: 15, demo: 6, tests: { p: 1, h: 1 }, rec: 9, coins: [8, 14], xp: 20, drop: 0.03, dropR: ['common'], win: 'Your hero chased a gang of slimes out of the old forest.', lose: 'Your hero got lost among the trees and turned back.' },
+      { id: 'hollow', name: 'Mushroom Hollow', lvl: 3, time: '30 min', mins: 30, demo: 8, tests: { p: 1, h: 2 }, rec: 15, coins: [14, 20], xp: 30, drop: 0.05, dropR: ['common'], win: 'Your hero cleared the hollow of grumpy toadstools.', lose: 'A cloud of sleepy spores sent your hero home early.' },
+      { id: 'coast', name: 'Coral Coast', lvl: 4, time: '45 min', mins: 45, demo: 10, tests: { p: 2, h: 1 }, rec: 15, coins: [18, 26], xp: 40, drop: 0.06, dropR: ['common', 'rare'], win: 'Your hero fought off crab raiders and found sunken coins.', lose: 'The crab raiders pinched hard. Your hero swam back to shore.' },
+      { id: 'peaks', name: 'Frost Peaks', lvl: 5, time: '1 h', mins: 60, demo: 12, tests: { p: 2, h: 1 }, rec: 18, coins: [26, 34], xp: 55, drop: 0.06, dropR: ['rare'], win: 'Your hero out-wrestled a very rude yeti on the summit.', lose: 'The yeti was stronger this time. Your hero slid back to camp.' },
+      { id: 'caverns', name: 'Ember Caverns', lvl: 8, time: '2 h', mins: 120, demo: 15, tests: { p: 1, h: 2 }, rec: 32, coins: [34, 44], xp: 70, drop: 0.07, dropR: ['rare', 'epic'], win: 'Your hero braved the heat, beat the lava golem and grabbed its loot.', lose: 'The heat was too much. Your hero retreated to cooler tunnels.' },
+      { id: 'spire', name: "Dragon's Spire", lvl: 10, time: '4 h', mins: 240, demo: 20, tests: { p: 1, h: 1 }, rec: 37, coins: [44, 56], xp: 90, drop: 0.08, dropR: ['epic'], win: 'Your hero faced the dragon and came home with treasure.', lose: 'The dragon won this round. Your hero lives to try again.' }
     ];
   }
 
@@ -2457,7 +2762,9 @@ class Component extends DCLogic {
       const ti = this.tripInfo(st);
       if (L < z.lvl || !ti.unlocked || ti.advUsed) return {};
       const S = this.statsOf(st.char, L), t = Date.now();
-      return { adv: { zid, start: t, end: t + z.demo * 1000, chance: this.winChance(S, z), bonus: ti.all }, trips: { day: this.T, adv: true, fish: ti.fishUsed }, tryOn: null };
+      // Real trip length, or a few seconds when Demo tools is on.
+      const demo = !!st.settings.demoTools;
+      return { adv: { zid, start: t, end: t + (demo ? z.demo * 1000 : z.mins * 60000), demo, chance: this.winChance(S, z), bonus: ti.all }, trips: { day: this.T, adv: true, fish: ti.fishUsed }, tryOn: null };
     });
   }
 
@@ -2518,7 +2825,8 @@ class Component extends DCLogic {
       const bait = this.baits().find(x => x.id === (st.bait || 'worm')) || this.baits()[0];
       if (this.coinsOf(st) < bait.cost) return {};
       const L = this.levelInfo(this.xpOf(st)).L, S = this.statsOf(st.char, L), t = Date.now();
-      return { fishing: { start: t, end: t + 12000, n: this.fishCount(L, ti.all), bait: bait.id, sta: S.sta, bonus: ti.all }, spent: st.spent + bait.cost, trips: { day: this.T, adv: ti.advUsed, fish: true }, tryOn: null, soldNote: '' };
+      const demo = !!st.settings.demoTools;
+      return { fishing: { start: t, end: t + (demo ? 12000 : 3 * 3600000), demo, n: this.fishCount(L, ti.all), bait: bait.id, sta: S.sta, bonus: ti.all }, spent: st.spent + bait.cost, trips: { day: this.T, adv: ti.advUsed, fish: true }, tryOn: null, soldNote: '' };
     });
   }
 
@@ -2662,13 +2970,15 @@ class Component extends DCLogic {
   }
 
   // Simulated players. A real app would load these from a server.
-  leagueData(st, L) {
+  // days: how far into the league week the simulated players are (defaults to today).
+  leagueData(st, L, daysOverride) {
     const T = this.T, w0 = Math.floor(T / 7) * 7;
     const lg = st.league || { week: 0, tier: 1 };
     const tier = Math.max(0, Math.min(3, lg.tier || 0));
-    const days = lg.week > 0 ? 0.6 : T - w0 + 0.6;
+    const lgStart = lg.start != null ? lg.start : (lg.week > 0 ? T : w0);
+    const days = daysOverride != null ? daysOverride : Math.max(0, Math.min(7, T - lgStart)) + 0.6;
     const base = lg.baseL || L;
-    const key = [T, lg.week, tier, base].join('|');
+    const key = [T, lg.week, tier, base, days].join('|');
     if (this._ld && this._ld.key === key) return this._ld.val;
     const NAMES = ['Aiko', 'Mateo', 'Lina', 'Omar', 'Sofia', 'Chen', 'Amara', 'Noah', 'Priya', 'Yusuf', 'Elena', 'Kofi', 'Hana', 'Lucas', 'Zara', 'Ivan', 'Mei', 'Diego', 'Nadia', 'Sami', 'Freya', 'Arjun', 'Leila', 'Tomás', 'Yuki', 'Malik', 'Ines', 'Jonas', 'Ayesha', 'Rafael', 'Sven', 'Fatima', 'Kenji', 'Olga', 'Emeka', 'Lea', 'Hamza', 'Camila', 'Arash', 'Maya'];
     const used = {};
@@ -2716,7 +3026,10 @@ class Component extends DCLogic {
   }
 
   coachFor(h, c) {
-    if (!h || h.archived || (this.state.coachSkip || {})[h.id]) return null;
+    // "Not now" or an accepted tip pauses tips for that habit for 7 days.
+    if (!h || h.archived) return null;
+    const sk = (this.state.coachSkip || {})[h.id];
+    if (sk === true || (typeof sk === 'number' && this.T - sk < 7)) return null;
     if (h.type !== 'amount' && h.type !== 'time') return null;
     const win = from => { let d = 0, p = 0, m = 0; for (let j = Math.max(0, from); j <= this.T; j++) { const x = h.hist[j]; if (x === 'd') d++; else if (x === 'p') p++; else if (x === 'm' || x === 'k') m++; } return { d, p, m, n: d + p + m }; };
     const label = v => (h.type === 'time' ? c.fmt(v) : v + ' ' + this.unitN(v, h.unit));
@@ -2724,9 +3037,9 @@ class Component extends DCLogic {
       title, text, btn: (nt > h.target ? 'Raise to ' : 'Lower to ') + label(nt),
       apply: () => this.setState(st => ({
         habits: st.habits.map(x => (x.id === h.id ? Object.assign({}, x, this.versioned(x), { target: nt, min: x.min && x.min >= nt ? 0 : x.min, step: x.type === 'amount' ? (nt <= 10 ? 1 : 5) : x.step }) : x)),
-        coachSkip: Object.assign({}, st.coachSkip, { [h.id]: true })
+        coachSkip: Object.assign({}, st.coachSkip, { [h.id]: this.T })
       })),
-      skip: () => this.setState(st => ({ coachSkip: Object.assign({}, st.coachSkip, { [h.id]: true }) }))
+      skip: () => this.setState(st => ({ coachSkip: Object.assign({}, st.coachSkip, { [h.id]: this.T }) }))
     });
     const a = win(this.T - 20);
     if (a.n >= 10 && a.d / a.n >= 0.9) {
@@ -2826,7 +3139,8 @@ class Component extends DCLogic {
       });
     });
 
-    const w = Math.floor(j / 7);
+    // The week strip goes back 4 weeks from this one.
+    const w = Math.floor(j / 7), wNow = Math.floor(T / 7), wMin = Math.max(0, wNow - 4);
     const letters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const week = [];
     for (let k = 0; k < 7; k++) {
@@ -2996,7 +3310,7 @@ class Component extends DCLogic {
     }
     const settings = s.settings;
     const setS = p => this.setState(st => ({ settings: Object.assign({}, st.settings, p) }));
-    const leave = { confirmDel: null, confirmGoal: null, confirmReset: false, confirmFresh: false, reorder: false, pcard: null, fishSel: null };
+    const leave = { confirmDel: null, confirmGoal: null, confirmReset: false, confirmFresh: false, reorder: false, pcard: null, fishSel: null, backupMsg: '', importInfo: null };
 
     const PXD = this.px();
     const ch = s.char;
@@ -3027,6 +3341,9 @@ class Component extends DCLogic {
     const pctOf = t => (t ? Math.max(0, Math.min(1, (tNow - t.start) / (t.end - t.start))) : 0);
     const leftOf = t => (t ? Math.max(0, Math.ceil((t.end - tNow) / 1000)) : 0);
     const advPct = pctOf(s.adv), advLeft = leftOf(s.adv), fishPct = pctOf(s.fishing), fishLeft = leftOf(s.fishing);
+    // Time left: '42s', '14m', '2h 41m'.
+    const fmtLeft = secs => { if (secs < 60) return secs + 's'; const tm = Math.ceil(secs / 60), hh = Math.floor(tm / 60), mm = tm % 60; return hh ? hh + 'h' + (mm ? ' ' + mm + 'm' : '') : mm + 'm'; };
+    const advDemo = !!(s.adv && s.adv.demo), fishDemo = !!(s.fishing && s.fishing.demo);
     const heroName = ch ? ch.name : 'Your hero';
     const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
     const lockText = TI.none ? 'Add a habit to unlock trips' : 'Finish ' + plural(TI.need, 'more habit');
@@ -3242,8 +3559,8 @@ class Component extends DCLogic {
     if (ch && s.screen === 'today' && j === T) {
       const hd = this.headStyles(ch, 2);
       let title, sub, tone = 'idle', go = 'adventure';
-      if (isAway) { title = heroName + ' is exploring ' + advZ.name; sub = 'Back in ' + advLeft + 's (demo). Tap to watch.'; tone = 'busy'; }
-      else if (fishOn) { title = heroName + ' is fishing'; sub = 'Back in ' + fishLeft + 's (demo). Tap to watch.'; tone = 'busy'; go = 'fishing'; }
+      if (isAway) { title = heroName + ' is exploring ' + advZ.name; sub = advDemo ? 'Back in ' + advLeft + 's (demo). Tap to watch.' : 'Back in ' + fmtLeft(advLeft) + '. Tap to watch.'; tone = 'busy'; }
+      else if (fishOn) { title = heroName + ' is fishing'; sub = fishDemo ? 'Back in ' + fishLeft + 's (demo). Tap to watch.' : 'Back in ' + fmtLeft(fishLeft) + '. Tap to watch.'; tone = 'busy'; go = 'fishing'; }
       else if (TI.none) { title = 'Add a habit to unlock trips'; sub = heroName + ' goes on trips when you keep your habits.'; go = 'add'; }
       else if (TI.advUsed && TI.fishUsed) { title = heroName + ' is resting'; sub = 'Both trips are done. New trips tomorrow.'; tone = 'done'; }
       else if (!TI.unlocked) { title = 'Finish ' + plural(TI.need, 'more habit'); sub = 'to unlock today’s trips for ' + heroName; tone = 'locked'; }
@@ -3382,7 +3699,7 @@ class Component extends DCLogic {
     for (let jj = T - 1; jj >= 0 && lastActive < 0; jj--) if (active.some(h => h.hist[jj] === 'd' || h.hist[jj] === 'p')) lastActive = jj;
     const gap = active.length && lastActive >= 0 ? T - 1 - lastActive : 0;
     const comebackOn = this.inComeback(T);
-    const showComeback = j === T && s.screen === 'today' && gap >= 3 && !comebackOn && !s.comebackDismissed;
+    const showComeback = j === T && s.screen === 'today' && gap >= 3 && !comebackOn && s.comebackDismissed !== true && s.comebackDismissed !== T;
     let coach = null;
     if (j === T) { for (const h of active) { coach = this.coachFor(h, c); if (coach) break; } }
     const selCoach = sel ? this.coachFor(sel, c) : null;
@@ -3471,23 +3788,20 @@ class Component extends DCLogic {
         if (st.settings.celebrate) res.celebrate = st.celebrate.concat([{ kind: 'all', kicker: 'Comeback week', title: 'Welcome back!', body: 'For 7 days, the minimum version of any habit counts as done. Small steps rebuild the chain.' }]);
         return res;
       }),
-      dismissComeback: () => this.setState({ comebackDismissed: true }),
+      // Dismissed for today only: if the break goes on, the offer comes back tomorrow.
+      dismissComeback: () => this.setState({ comebackDismissed: T }),
       coach: coach || {}, hasCoach: !!coach && !showComeback, selCoach: selCoach || {}, hasSelCoach: !!selCoach,
       goRecap: () => this.setState(Object.assign({ screen: 'recap' }, leave)),
       isRecap, recapStats, recapTop, recapTopEmoji, recapHasTop: !!recapTop,
       recapRange: 'Last 30 days · ' + c.shortDate(T - 29) + ' – ' + c.shortDate(T),
       recapHeadline: recapStats.length ? (recapStats[0].n ? 'You showed up ' + recapStats[0].n + (recapStats[0].n === 1 ? ' time.' : ' times.') : 'Your first 30 days start now.') : '',
       recapHasChar: !!ch, recapSprite: rSprite, recapCharLine: ch ? ch.name + ' is proud of you. Keep going.' : '',
-      freshLabel: s.confirmFresh ? 'Tap again to wipe everything' : 'Start fresh as a new user',
+      freshLabel: s.confirmFresh ? 'Tap again to wipe everything' : 'Start over',
       freshStyle: 'height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; ' + (s.confirmFresh ? 'background: #B42318; color: #FFFFFF;' : 'background: var(--soft); color: var(--ink);'),
       startFresh: () => this.setState(st => {
         if (!st.confirmFresh) return { confirmFresh: true, confirmReset: false };
-        return { confirmFresh: false, habits: [], goals: [], nextId: 1, celebrate: [], char: null, owned: [], coinsBase: 0, spent: 0, bonus: 0, tryOn: null, ccEdit: false,
-          cc: { sex: 'boy', skin: 'medium', hc: 'brown', name: '' },
-          ctab: 'hero', cat: 'clothes', etab: 'adventure', bait: 'worm', advXp: 0, demoXp: 0, adv: null, advLog: [], demoBadges: false, lvlSeen: 1,
-          trips: { day: T, adv: false, fish: false }, fishing: null, fishLog: [], soldNote: '', book: {}, fishSel: null, unlockSeen: -1, allSeen: -1, goalSeen: {},
-          league: { week: 0, tier: 0, trophies: 0, hidden: false, baseL: 1 }, ltab: 'league', cheered: {}, pcard: null, weekBase: 0, weekTrip: 0, weekTodayBase: 0, invited: false,
-          comeback: null, comebackDismissed: false, coachSkip: {}, timer: null, sheet: null, form: null, day: T, xpBase: 0, screen: 'onboard', onboard: { step: 0, focus: [], picks: [] } };
+        this.resetEpoch();
+        return Object.assign(this.freshPatch(), { lastBackup: st.lastBackup || null, importInfo: null, backupMsg: '' });
       }),
       simulateBreak: () => this.setState(st => ({
         habits: st.habits.map(h => {
@@ -3529,13 +3843,13 @@ class Component extends DCLogic {
       buyTry: () => { if (s.tryOn) this.buyItem(s.tryOn, coins, lvl, accSlots); },
       isAway, isBusy: busy,
       busyIcon: isAway ? this.iconStyles(advZ.id, 2) : (fishOn ? this.fishStyles('bluegill', 2) : { box: '', dot: '' }),
-      busyTitle: isAway ? 'Exploring ' + advZ.name : (fishOn ? 'Fishing at the lake' : ''), busyLeft: (isAway ? advLeft : fishLeft) + 's',
+      busyTitle: isAway ? 'Exploring ' + advZ.name : (fishOn ? 'Fishing at the lake' : ''), busyLeft: fmtLeft(isAway ? advLeft : fishLeft),
       busyBar: bar(isAway ? advPct : fishPct, 'var(--accent)'),
       awayIcon: advZ ? this.iconStyles(advZ.id, 2) : { box: '', dot: '' },
       celeIcon: cele && cele.icon ? this.iconStyles(cele.icon, 4) : { box: '', dot: '' },
       celeIconStyle: 'width: 96px; height: 96px; border-radius: 99px; background: var(--stage); display: flex; align-items: center; justify-content: center; flex: none; overflow: hidden; box-shadow: 0 0 0 8px var(--accentSoft)', awayName: advZ ? advZ.name : '',
       awayBar2: bar(advPct, 'var(--invInk)'),
-      awayMeta: advZ ? 'Real trip ' + advZ.time + ' · demo ' + advLeft + 's left · ' + Math.round(s.adv.chance * 100) + '% win chance' + (s.adv.bonus ? ' · +25% coins' : '') : '',
+      awayMeta: advZ ? (advDemo ? 'Real trip ' + advZ.time + ' · demo ' + advLeft + 's left · ' : advZ.time + ' trip · ' + fmtLeft(advLeft) + ' left · ') + Math.round(s.adv.chance * 100) + '% win chance' + (s.adv.bonus ? ' · +25% coins' : '') : '',
       finishAdv: () => this.resolveAdventure(),
       sH, sP, sS, ctabs, etabs,
       isHero: ctab === 'hero', isWardrobe: ctab === 'wardrobe', isStore: ctab === 'store', isExplore, isAdvTab, isFishTab, isBookTab, showTripCard: isExplore && etab !== 'book',
@@ -3586,7 +3900,7 @@ class Component extends DCLogic {
       sceneLabel: isAway ? 'The lake is empty: ' + heroName + ' is away exploring.' : (fishOn ? heroName + ' is fishing on the dock.' : heroName + ' stands on the dock with a fishing rod.'),
       sceneAwayText: isAway ? heroName + ' is exploring ' + advZ.name + '. Fishing opens when they are back.' : '',
       fishLeftText: fishLeft + 's left',
-      fishMeta: fishOn ? 'Real trip 3 h · demo ' + fishLeft + 's left · ' + s.fishing.n + ' fish coming' + (s.fishing.bait !== 'worm' ? ' · ' + ((BAITS.find(b => b.id === s.fishing.bait) || {}).name || '') : '') : '',
+      fishMeta: fishOn ? (fishDemo ? 'Real trip 3 h · demo ' + fishLeft + 's left · ' : '3 h trip · ' + fmtLeft(fishLeft) + ' left · ') + s.fishing.n + ' fish coming' + (s.fishing.bait !== 'worm' ? ' · ' + ((BAITS.find(b => b.id === s.fishing.bait) || {}).name || '') : '') : '',
       fishBar: bar(fishPct, 'var(--invInk)'),
       reelIn: () => this.resolveFishing(),
       baitOpts, baitNote: baitSel.note + '.', oddsRows, staVal: String(cur.sta), catchText,
@@ -3601,7 +3915,7 @@ class Component extends DCLogic {
       hasFish: !!fd, fd: fd || {}, closeFish: () => this.setState({ fishSel: null }),
       hasTrip: !!trip, trip: trip || {},
       isRanks, ltabs, isLeague: ltab === 'league', isFriends: ltab === 'friends', isHall: ltab === 'hall',
-      lbWeek: LG.week ? 'Demo week ' + (LG.week + 1) + ' · just started' : 'Week of ' + c.shortDate(Math.floor(T / 7) * 7) + ' · ' + (daysLeft === 1 ? 'resets tomorrow' : 'resets in ' + daysLeft + ' days'),
+      lbWeek: 'Week of ' + c.shortDate(Math.floor(T / 7) * 7) + ' · ' + (daysLeft === 1 ? 'resets tomorrow' : 'resets in ' + daysLeft + ' days'),
       tierName: TIERS[LG.tier] + ' League',
       tierRule: LG.tier === 3 ? 'The top league. Top 3 win a trophy; the bottom 5 move down to Gold.' : (LG.tier === 0 ? 'Top 5 move up to Silver. Top 3 also win a trophy.' : 'Top 5 move up to ' + TIERS[LG.tier + 1] + ', bottom 5 move down to ' + TIERS[LG.tier - 1] + '. Top 3 win a trophy.'),
       tierIconStyle: 'width: 52px; height: 52px; border-radius: 16px; background: var(--invSoft); display: flex; align-items: center; justify-content: center; flex: none; color: ' + TCOL[LG.tier] + ';',
@@ -3613,24 +3927,13 @@ class Component extends DCLogic {
       lbSimNote: 'Players here are simulated for the prototype. In the real app your league is 20 real people near your level, ranked by XP from check-ins and trips.',
       inviteLabel: s.invited ? 'Invite link copied (demo)' : 'Invite friends', invited: !!s.invited,
       inviteFriend: () => this.setState({ invited: true }),
+      // Demo: close this league week now. A new simulated week starts today.
       endWeek: () => this.setState(st => {
         const L2 = this.levelInfo(this.xpOf(st)).L;
-        const lg = Object.assign({ week: 0, tier: 1, trophies: 0, hidden: false }, st.league || {});
-        const mine = this.weekXp(st);
-        const rank = 1 + this.leagueData(st, L2).league.filter(p => p.xp > mine).length;
-        const top3 = rank <= 3, up = rank <= 5 && lg.tier < 3, down = rank >= 16 && lg.tier > 0;
-        const tier = up ? lg.tier + 1 : (down ? lg.tier - 1 : lg.tier), trophies = lg.trophies + (top3 ? 1 : 0);
-        const res = { league: Object.assign({}, lg, { week: lg.week + 1, tier, trophies, baseL: L2 }), weekBase: 0, weekTrip: 0, weekTodayBase: this.habitXp(st.habits, T, T), pcard: null };
-        const firstLaurel = top3 && st.owned.indexOf('h_laurel') < 0;
-        if (firstLaurel) res.owned = st.owned.concat(['h_laurel']);
-        const where = 'You finished ' + ord(rank) + ' of 20 in ' + TIERS[lg.tier] + ' League. ';
-        let title, body;
-        if (top3) { title = 'Trophy won!'; body = where + (firstLaurel ? 'The Champion Laurel is in your Wardrobe. ' : 'That makes ' + trophies + ' trophies. ') + (up ? 'You move up to ' + TIERS[tier] + ' League.' : 'You stay in Diamond, the top league.'); }
-        else if (up) { title = 'Promoted!'; body = where + 'Top 5 move up: welcome to ' + TIERS[tier] + ' League.'; }
-        else if (down) { title = 'Moved down'; body = where + 'You move to ' + TIERS[tier] + ' League. A fresh week starts now.'; }
-        else { title = 'Week complete'; body = where + 'You stay in ' + TIERS[tier] + ' League. A fresh week starts now.'; }
-        res.celebrate = st.celebrate.concat([{ kind: 'badge', badge: ord(rank), quiet: !top3 && !up, kicker: 'League results', title, body }]);
-        return res;
+        const lg = st.league || {};
+        const lgStart = lg.start != null ? lg.start : Math.floor(T / 7) * 7;
+        const res = this.closeLeague(st, this.weekXp(st), T, T, L2);
+        return Object.assign(res, { weekBase: 0, weekTrip: 0, weekTodayBase: this.habitXp(st.habits, T, T) });
       }),
       hasPcard: !!pc, pc: pc || {}, closePcard: () => this.setState({ pcard: null }),
       toggleHide: () => this.setState(st => ({ league: Object.assign({}, st.league, { hidden: !(st.league || {}).hidden }) })),
@@ -3649,9 +3952,9 @@ class Component extends DCLogic {
       dayDone, dayTotal, dayDoneLabel: dayTotal === 0 && list.length ? (j === T ? 'nothing due today' : 'nothing due that day') : (j === T ? 'done today' : 'done that day'),
       goTodayDay: () => this.setState({ day: T }),
       weekLabel: c.shortDate(w * 7) + ' – ' + c.shortDate(w * 7 + 6),
-      noPrev: w === 0, noNext: w === 4, prevStyle: arrow(w === 0), nextStyle: arrow(w === 4),
-      prevWeek: () => { if (w > 0) this.setState({ day: (w - 1) * 7 + (j % 7) }); },
-      nextWeek: () => { if (w < 4) this.setState({ day: Math.min(T, (w + 1) * 7 + (j % 7)) }); },
+      noPrev: w <= wMin, noNext: w >= wNow, prevStyle: arrow(w <= wMin), nextStyle: arrow(w >= wNow),
+      prevWeek: () => { if (w > wMin) this.setState({ day: (w - 1) * 7 + (j % 7) }); },
+      nextWeek: () => { if (w < wNow) this.setState({ day: Math.min(T, (w + 1) * 7 + (j % 7)) }); },
       totalDone, totalPart, totalSkip, totalMiss, overall, overallFull, overallMin: overall - overallFull, totalBadges, maxBadges: active.length * 6,
       overallText: shownAll + totalMiss ? overall + '%' : '–',
       overallNote: shownAll + totalMiss ? 'Full target on ' + overallFull + '% of days, minimum version on ' + (overall - overallFull) + '%.' : 'Log a few days and your numbers show up here.',
@@ -3850,11 +4153,22 @@ class Component extends DCLogic {
       tRem: () => setS({ remindersOn: !settings.remindersOn }),
       tCele: () => setS({ celebrate: !settings.celebrate }),
       tFreeze: () => setS({ freezes: !settings.freezes }),
-      resetLabel: s.confirmReset ? 'Tap again to reset everything' : 'Reset demo data',
+      demoOn: !!settings.demoTools, swDemo: sw(!!settings.demoTools),
+      tDemo: () => setS({ demoTools: !settings.demoTools }),
+      saveFail: !!s.saveFail,
+      backupWhen: s.lastBackup ? 'Last backup: ' + (() => { const p = s.lastBackup.split('-'); const d = new Date(+p[0], +p[1] - 1, +p[2]); return d.getDate() + ' ' + c.MONTHS[d.getMonth()].slice(0, 3) + ' ' + d.getFullYear(); })() : 'No backup yet.',
+      exportBackup: () => this.exportBackup(),
+      pickBackup: e => this.pickBackup(e),
+      applyBackup: () => this.applyBackup(),
+      cancelImport: () => { this._pending = null; this.setState({ importInfo: null }); },
+      hasImport: !!s.importInfo, importText: s.importInfo ? s.importInfo.text : '',
+      hasBackupMsg: !!s.backupMsg, backupMsg: s.backupMsg || '',
+      resetLabel: s.confirmReset ? 'Tap again to replace everything' : 'Load sample data',
       resetStyle: 'height: 50px; border-radius: 14px; border: none; font-size: 14px; font-weight: 700; ' + (s.confirmReset ? 'background: #B42318; color: #FFFFFF;' : 'background: transparent; color: var(--danger); box-shadow: inset 0 0 0 1.5px var(--dangerLine);'),
       resetData: () => this.setState(st => {
         if (!st.confirmReset) return { confirmReset: true, confirmFresh: false };
-        return Object.assign(this.demoState(st.settings), { screen: 'settings' });
+        this.resetEpoch();
+        return Object.assign(this.demoState(st.settings), { screen: 'settings', lastBackup: st.lastBackup || null });
       })
     };
   }

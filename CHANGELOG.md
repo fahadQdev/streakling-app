@@ -70,6 +70,20 @@ How the app went from an idea to the v0.9.2 prototype.
 - The three design boards are published as plain pages.
 - Verified against the original: automated sessions drive the original and the web build through identical random taps and typing, and compare the visible text and screenshots after every step.
 
+## v0.10.0: Saved on the device (2026-10-13)
+The first version meant for real daily use.
+- **Automatic saving** in the browser, on every change and when the app is closed. New users start empty with the first-time setup, not demo data.
+- **Days tied to real dates.** The prototype numbered days from a point about 5 weeks back, which moved every time the app opened. History could never be longer than about 5 weeks, so the 90-day and 365-day badges could not really be earned. Day 0 is now a fixed date and history grows without limit.
+- **Midnight handled, even with the app open.** Coins and XP used to count only today's check-ins live, and earlier days came from a total taken once at startup, so a new day would have wiped yesterday's rewards. The last day is now added to the totals when the date changes.
+- **The weekly league closes itself** at the end of each calendar week, with results and promotion. Before, only the demo "End week" button ended a week.
+- **Heatmap and week strip follow today** (the last 5 weeks) instead of being fixed to the first 5 weeks.
+- **Real trip lengths:** adventures take 15 min to 4 h and fishing takes 3 h, measured by the clock, so they finish while the app is closed.
+- **Demo tools switch** in Settings: sample data, trips in seconds, free coins and levels, and the demo buttons only appear when it is on.
+- **Backup and restore** as a file, with a confirmation before anything is replaced.
+- **Home-screen app:** icon drawn from the hero sprite, works offline.
+- "Dismiss" on the comeback card and "Not now" on coach tips now last a day and a week, instead of forever.
+- A warning banner if the browser refuses to save (private mode, full storage).
+
 ---
 
 ## What's next

@@ -2,17 +2,22 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** interactive prototype, **v0.9.2**. Not a released app yet.
+> **Status:** working prototype, **v0.10.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
 **Live app: https://fahadqdev.github.io/streakling-app/**
 
-- **On a phone:** it opens full-screen. To use it like an app, add it to your home screen (Safari: Share → Add to Home Screen; Chrome: ⋮ → Add to Home screen).
+- **On a phone:** it opens full-screen. Add it to your home screen to use it like an app (Safari: Share → Add to Home Screen; Chrome: ⋮ → Add to Home screen). It also works offline after the first visit.
 - **On a computer:** it opens in a phone-sized frame.
 - **Design boards:** [Pixel character](https://fahadqdev.github.io/streakling-app/design/characters.html) · [Items, stats and economy](https://fahadqdev.github.io/streakling-app/design/items.html) · [Fishing, Fish Book and league](https://fahadqdev.github.io/streakling-app/design/fishing.html)
 
-**Heads-up:** this is a prototype. It starts with demo data, and **nothing is saved**: reloading the page resets everything. To try it as a new user, open Settings → "Start fresh": it wipes the demo data and runs the first-time setup (until the next reload).
+**Your data stays on your device.** Everything is saved automatically in the browser you use, nothing is sent anywhere, and there is no account. That also means:
+- Use **one device and one browser**. A phone and a laptop do not sync.
+- **Clearing browser data deletes it.** Settings → *Download backup* saves a file you can restore later (also onto another device).
+- On iPhone, **open it from the home-screen icon**. As far as we know, Safari may clear data of websites you have not visited for 7 days; home-screen apps are not affected.
+
+**Demo tools** (Settings → Testing): sample data, trips that finish in seconds, free coins and levels. Off by default.
 
 ---
 
@@ -28,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.9.2)
+## Features (as of v0.10.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -61,13 +66,16 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **Weekly league / leaderboard**, friends, and a **Hall of Fame**.
 
 ### App
-- **Settings** with Light, Dark and System themes, plus app preferences.
+- **Saved on the device:** automatic saving, history without limit, days that roll over at midnight even with the app open.
+- **Backup and restore** as a file, from Settings.
+- **Installable and offline:** home-screen icon, works without a connection after the first visit.
+- **Settings** with Light, Dark and System themes, plus app preferences and a Demo tools switch.
 
 ---
 
 ## Development history
 
-See **[CHANGELOG.md](CHANGELOG.md)** for the full lifecycle, from the first idea to v0.9.2.
+See **[CHANGELOG.md](CHANGELOG.md)** for the full lifecycle, from the first idea to today.
 
 ---
 
@@ -78,9 +86,12 @@ docs/                   The standalone web app (served by GitHub Pages)
   index.html            The app — generated, do not edit by hand
   runtime.js            Small renderer for the app's template and logic
   vendor/preact.min.js  Preact 10 (MIT), the UI library underneath
+  sw.js                 Offline support (generated)
+  manifest.webmanifest  Home-screen app settings
+  icons/                App icons, drawn from the hero sprite
   design/               The three design boards as plain pages
 prototype/              Source of truth, in Claude's design-canvas format
-  Main.dc.html          The interactive app: template + logic
+  Main.dc.html          The app: template + logic (this is the main version now)
   Characters.dc.html    Pixel character style sheet
   Items.dc.html         Items, stats and economy design board
   Fishing.dc.html       Fishing, Fish Book and league design board
@@ -107,7 +118,7 @@ cd docs && python3 -m http.server 8000
 node scripts/build.mjs   # needs Node.js 18+
 ```
 
-Never edit `docs/index.html` or `docs/design/*` directly; change `prototype/` and rebuild.
+Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `prototype/` and rebuild.
 
 ---
 
@@ -117,6 +128,7 @@ Never edit `docs/index.html` or `docs/design/*` directly; change `prototype/` an
 - Pixel art (hero, gear, 25 fish, fishing scene) generated with Python/PIL scripts.
 - Game economy balanced with simulations of casual, regular and dedicated player types over a full year (coins, XP, leveling, item prices).
 - QA with automated checks: Node.js logic harnesses with simulated dates and timers, a template checker for undefined/NaN/clipped text, and Playwright browser runs covering every screen in light and dark mode.
+- Saving tested with a simulated clock in a real browser: first-time setup, reloads, midnight with the app open, a full week of use, time away, real-length trips, backup and restore, a year of history, and long random sessions that reload and compare the screen.
 
 ---
 
@@ -124,10 +136,11 @@ Never edit `docs/index.html` or `docs/design/*` directly; change `prototype/` an
 
 **Done**
 - [x] Standalone web build with a live GitHub Pages demo
+- [x] Save data on the device, offline, with backup and restore
+- [x] Real first-run experience; demo data behind a switch
 
 **Next**
-- [ ] Save data on the device (offline-first), so progress survives a reload
-- [ ] Replace demo data with a real first-run experience
+- [ ] A 7-day real-use trial, then fix what it shows
 
 **Later**
 - [ ] Mobile app
@@ -136,11 +149,11 @@ Never edit `docs/index.html` or `docs/design/*` directly; change `prototype/` an
 - [ ] Home-screen widget with one-tap check-in
 - [ ] Full Arabic + RTL support
 
-**Known limitations of the prototype**
-- Nothing is saved yet: reloading resets to the demo data.
+**Known limitations**
+- Data lives on one device; there is no sync between devices.
 - Leaderboard, friends and league data are simulated.
-- Not yet verified on mobile Safari.
-- Reminders and notifications are not real yet.
+- Reminders and notifications do not fire yet.
+- Not yet verified on a real iPhone (tested in Chromium at phone sizes).
 
 ---
 
