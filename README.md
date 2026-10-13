@@ -4,6 +4,16 @@ A gamified habit tracker for a worldwide audience. You build real habits, and a 
 
 > **Status:** interactive prototype, **v0.9.2**. Not a released app yet.
 
+## ▶ Try it
+
+**Live app: https://fahadqdev.github.io/streakling-app/**
+
+- **On a phone:** it opens full-screen. To use it like an app, add it to your home screen (Safari: Share → Add to Home Screen; Chrome: ⋮ → Add to Home screen).
+- **On a computer:** it opens in a phone-sized frame.
+- **Design boards:** [Pixel character](https://fahadqdev.github.io/streakling-app/design/characters.html) · [Items, stats and economy](https://fahadqdev.github.io/streakling-app/design/items.html) · [Fishing, Fish Book and league](https://fahadqdev.github.io/streakling-app/design/fishing.html)
+
+**Heads-up:** this is a prototype. It starts with demo data, and **nothing is saved**: reloading the page resets everything. To try it as a new user, open Settings → "Start fresh": it wipes the demo data and runs the first-time setup (until the next reload).
+
 ---
 
 ## The idea
@@ -64,19 +74,40 @@ See **[CHANGELOG.md](CHANGELOG.md)** for the full lifecycle, from the first idea
 ## Repository layout
 
 ```
-prototype/
-  Main.dc.html        The interactive app (phone screen, 390×844)
-  Characters.dc.html  Pixel character style sheet
-  Items.dc.html       Items, stats and economy design board
-  Fishing.dc.html     Fishing, Fish Book and league design board
-  canvas.json         Board layout for the design canvas
+docs/                   The standalone web app (served by GitHub Pages)
+  index.html            The app — generated, do not edit by hand
+  runtime.js            Small renderer for the app's template and logic
+  vendor/preact.min.js  Preact 10 (MIT), the UI library underneath
+  design/               The three design boards as plain pages
+prototype/              Source of truth, in Claude's design-canvas format
+  Main.dc.html          The interactive app: template + logic
+  Characters.dc.html    Pixel character style sheet
+  Items.dc.html         Items, stats and economy design board
+  Fishing.dc.html       Fishing, Fish Book and league design board
+  canvas.json           Board layout for the design canvas
+scripts/build.mjs       Turns prototype/ into docs/
 ```
 
-### Important: how to run it
+### How it works
 
-These files were built in **Claude's design canvas**. Each one loads `support.js`, which is that canvas's runtime and is **not included** in this repo. **Opening the files directly from GitHub or your disk will not work.**
+The app is designed in `prototype/Main.dc.html`: an HTML template with `{{value}}` placeholders, `<sc-if>` / `<sc-for>` blocks, and a logic class whose `renderVals()` returns everything the template shows. Those files only run inside Claude's design canvas, so `scripts/build.mjs` converts them into `docs/`, where `runtime.js` renders the same template and logic with Preact in any browser.
 
-The repo is the source record of the prototype. A standalone build that runs in any browser (and on GitHub Pages) is planned. See the roadmap.
+### Run it locally
+
+No install needed. Open `docs/index.html` in a browser, or serve the folder:
+
+```bash
+cd docs && python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+### Rebuild after changing the prototype
+
+```bash
+node scripts/build.mjs   # needs Node.js 18+
+```
+
+Never edit `docs/index.html` or `docs/design/*` directly; change `prototype/` and rebuild.
 
 ---
 
@@ -91,9 +122,12 @@ The repo is the source record of the prototype. A standalone build that runs in 
 
 ## Roadmap
 
+**Done**
+- [x] Standalone web build with a live GitHub Pages demo
+
 **Next**
-- [ ] Standalone web build (plain HTML/JS) with a live GitHub Pages demo
-- [ ] Real local data storage (offline-first)
+- [ ] Save data on the device (offline-first), so progress survives a reload
+- [ ] Replace demo data with a real first-run experience
 
 **Later**
 - [ ] Mobile app
@@ -103,6 +137,7 @@ The repo is the source record of the prototype. A standalone build that runs in 
 - [ ] Full Arabic + RTL support
 
 **Known limitations of the prototype**
+- Nothing is saved yet: reloading resets to the demo data.
 - Leaderboard, friends and league data are simulated.
 - Not yet verified on mobile Safari.
 - Reminders and notifications are not real yet.

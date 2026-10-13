@@ -63,6 +63,13 @@ How the app went from an idea to the v0.9.2 prototype.
 - Improved color contrast in both light and dark themes.
 - Verified with thousands of automated checks and a manual screenshot review.
 
+## Standalone web build (2026-10-13)
+- The app now runs outside Claude, in any browser: `docs/` is served by GitHub Pages.
+- `scripts/build.mjs` converts the prototype files into the web build, and `runtime.js` renders the same template and logic with Preact. The app's behaviour is unchanged.
+- Full-screen on phones, and a phone-sized frame on computers.
+- The three design boards are published as plain pages.
+- Verified against the original: automated sessions drive the original and the web build through identical random taps and typing, and compare the visible text and screenshots after every step.
+
 ---
 
 ## What's next
