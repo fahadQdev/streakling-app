@@ -96,6 +96,25 @@ Fixes and requests from the first days of daily use.
 - **Store and Wardrobe:** the owned/total numbers next to each category were removed.
 - **Trips catch up at once** when you come back to the app (switching apps, unlocking the phone), instead of on the next tick.
 
+## v0.12.0: Full test pass (2026-10-16)
+Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in light and dark, plus long simulated use. What it found and fixed:
+- **Fishing painting fits small phones.** It was a fixed 348 px wide, so on iPhone SE and mini models and 360 px Androids it stuck out of the screen and the whole page scrolled sideways. It now shrinks to fit (and refits when the phone rotates).
+- **Fishing countdown in seconds.** The painting showed real trips as raw seconds ("10800s left"). It now shows "2h 59m", like the rest of the app.
+- **Trip countdowns tick every second in the last hour** ("14m 05s"), so you can see progress right away. Before, they changed once a minute and looked stuck.
+- **Pop-ups never taller than the screen.** On landscape phones and small screens, a big catch could push the pop-up's button off screen and leave the app stuck. Pop-ups now scroll.
+- **Sheets on short screens** (landscape): buttons were squashed to a thin strip. Sheets now scroll instead.
+- **Comeback card with a Quit habit.** Unlogged days of a Quit habit count as clean, which also made them look like "you used the app", so the comeback card never appeared for anyone with a Quit habit. Only logged Quit days count as use now.
+- **The day never goes backwards.** Flying west across time zones (or setting the phone's date back) moved the app to the previous day and counted that day's coins and XP twice. The app now stays on the latest day it has seen (for small steps back of up to 2 days).
+- **Older iPhones.** Some colours used CSS `color-mix()`, which iPhones before iOS 16.2 don't support, so those backgrounds were missing. The colours are now computed in the app.
+- **First-time setup can be skipped** with "Skip: I'll add my own habits". Before, you could only go forward by picking one of the suggested habits.
+- **Reminders are honest.** The habit form and Settings now say this version can't send notifications yet (the time is saved for later).
+- **Recap fits your habits:** "pages read" only with a reading habit and "focused time" only with a timed habit; otherwise perfect days and habits tracked.
+- **Singular words:** "1 day left", "1 of 1 habit done", "1 badge", "day in a row", "1 day to go", "1 check-in".
+- **Long names wrap** instead of spilling out of cards (hero names up to 14 letters, long goal words), and small-screen fixes for the habit counters, Fish Book names and fish facts.
+- Bigger tap target on the hero's name, a clearer bite marker, the recap emoji no longer cut.
+- Demo tools: "Simulate a 4-day break" now leaves Quit days unlogged, like a real break.
+- **Tests added** in `tests/`: about 480 checks across 8 suites, a scan of 118 screens at 11 sizes and themes, and random sessions with time jumps and reloads. See `tests/README.md`.
+
 ---
 
 ## What's next

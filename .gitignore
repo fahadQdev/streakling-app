@@ -1,0 +1,4 @@
+tests/shots/
+tests/sheets/
+tests/logs/
+tests/__pycache__/

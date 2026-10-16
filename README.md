@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.11.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.12.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.11.0)
+## Features (as of v0.12.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -100,6 +100,7 @@ prototype/              Source of truth, in Claude's design-canvas format
   Fishing.dc.html       Fishing, Fish Book and league design board
   canvas.json           Board layout for the design canvas
 scripts/build.mjs       Turns prototype/ into docs/
+tests/                  Browser tests (Playwright for Python), see tests/README.md
 ```
 
 ### How it works
@@ -131,6 +132,7 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 - Pixel art (hero, gear, 25 fish, fishing scene) generated with Python/PIL scripts.
 - Game economy balanced with simulations of casual, regular and dedicated player types over a full year (coins, XP, leveling, item prices).
 - QA with automated checks: Node.js logic harnesses with simulated dates and timers, a template checker for undefined/NaN/clipped text, and Playwright browser runs covering every screen in light and dark mode.
+- Browser test suite in [`tests/`](tests/README.md): every habit flow, weeks of use on a simulated clock (midnight, days away, daylight saving, time-zone changes), the hero and trips, settings and backups, a screen scanner run on ~120 screens at sizes from 320 px to desktop, and random sessions.
 - Saving tested with a simulated clock in a real browser: first-time setup, reloads, midnight with the app open, a full week of use, time away, real-length trips, backup and restore, a year of history, and long random sessions that reload and compare the screen.
 
 ---
@@ -155,8 +157,8 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 **Known limitations**
 - Data lives on one device; there is no sync between devices.
 - Leaderboard, friends and league data are simulated.
-- Reminders and notifications do not fire yet.
-- Not yet verified on a real iPhone (tested in Chromium at phone sizes).
+- Reminders and notifications do not fire yet (the app says so where you set them).
+- Not yet verified on a real iPhone or in Safari (tested in Chromium at phone sizes; CSS features that need iOS 16.2+ were removed).
 
 ---
 

@@ -16,6 +16,7 @@ a{color:#2F5BEA}a:hover{color:#1E3FB0}
 button{font-family:inherit;cursor:pointer}
 button:disabled{cursor:default}
 input,select{font-family:inherit}
+.dc-col>*{flex-shrink:0}
 @keyframes dcFall{0%{transform:translateY(-30px) rotate(0deg);opacity:1}100%{transform:translateY(880px) rotate(620deg);opacity:0}}
 @keyframes dcPop{0%{transform:scale(0.86);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes dcPulse{0%{transform:scale(1)}45%{transform:scale(1.2)}100%{transform:scale(1)}}
@@ -98,7 +99,7 @@ input,select{font-family:inherit}
 <button onClick="{{trip.go}}" aria-label="{{trip.aria}}" style="{{trip.style}}">
 <span style="{{trip.tile}}"><span style="{{trip.headWrap}}"><span style="{{trip.hbox}}"><span style="{{trip.hdot}}"></span></span></span></span>
 <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px">
-<span style="font-size: 14.5px; font-weight: 800; line-height: 1.3">{{trip.title}}</span>
+<span style="font-size: 14.5px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere">{{trip.title}}</span>
 <span style="{{trip.subStyle}}">{{trip.sub}}</span>
 <sc-if value="{{trip.showBar}}" hint-placeholder-val="{{ true }}"><span style="{{trip.track}}"><span style="{{trip.fill}}"></span><span style="{{trip.mark}}"></span></span></sc-if>
 </span>
@@ -203,7 +204,7 @@ input,select{font-family:inherit}
 <div style="background: var(--inv); color: var(--invInk); border-radius: 18px; padding: 14px 12px">
 <div style="font-size: 11px; font-weight: 700; color: var(--invMuted); text-transform: uppercase; letter-spacing: 0.06em">Streak</div>
 <div style="font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; margin-top: 6px; line-height: 1">{{sel.streak}}</div>
-<div style="font-size: 12px; color: var(--invMuted); margin-top: 4px">days in a row</div>
+<div style="font-size: 12px; color: var(--invMuted); margin-top: 4px">{{sel.streakWord}}</div>
 </div>
 <div style="background: var(--card); border-radius: 18px; padding: 14px 12px">
 <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em">Best</div>
@@ -218,10 +219,10 @@ input,select{font-family:inherit}
 </div>
 <div style="{{sel.countCols}}">
 <sc-for list="{{sel.countBoxes}}" as="cb" hint-placeholder-count="4">
-<div style="background: var(--card); border-radius: 14px; padding: 10px; display: flex; flex-direction: column; gap: 6px">
+<div style="background: var(--card); border-radius: 14px; padding: 10px 7px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
 <span style="{{cb.sw}}"></span>
 <div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; line-height: 1">{{cb.n}}</div>
-<div style="font-size: 11.5px; color: var(--muted); font-weight: 600">{{cb.label}}</div>
+<div style="font-size: 11.5px; color: var(--muted); font-weight: 600; overflow-wrap: anywhere">{{cb.label}}</div>
 </div>
 </sc-for>
 </div>
@@ -413,7 +414,7 @@ input,select{font-family:inherit}
 <span style="{{h.tileStyle}}">{{h.emoji}}</span>
 <span style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
 <span style="font-size: 15px; font-weight: 700">{{h.name}}</span>
-<span style="font-size: 12.5px; color: var(--muted); font-weight: 600">Best chain {{h.best}} · {{h.badgeCount}} badges</span>
+<span style="font-size: 12.5px; color: var(--muted); font-weight: 600">Best chain {{h.best}} · {{h.badgeCount}} {{h.badgeWord}}</span>
 </span>
 </button>
 <button onClick="{{h.restore}}" style="height: 44px; padding: 0 14px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 13px; font-weight: 700; flex: none">Restore</button>
@@ -436,7 +437,7 @@ input,select{font-family:inherit}
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="{{g.tileStyle}}">{{g.emoji}}</span>
 <div style="flex: 1; min-width: 0">
-<div style="font-size: 15px; font-weight: 700">{{g.title}}</div>
+<div style="font-size: 15px; font-weight: 700; overflow-wrap: anywhere">{{g.title}}</div>
 <div style="font-size: 12.5px; font-weight: 600; color: var(--muted); margin-top: 2px">From {{g.habitName}}</div>
 </div>
 <div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; flex: none">{{g.pct}}%</div>
@@ -616,7 +617,7 @@ input,select{font-family:inherit}
 <button aria-pressed="{{amOn}}" onClick="{{setAM}}" style="{{amStyle}}">AM</button>
 <button aria-pressed="{{pmOn}}" onClick="{{setPM}}" style="{{pmStyle}}">PM</button>
 </div>
-<div style="font-size: 13px; font-weight: 600; color: var(--muted)">{{remPreview}}</div>
+<div style="font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.45">{{remPreview}}</div>
 </div>
 </sc-if>
 </div>
@@ -674,7 +675,7 @@ input,select{font-family:inherit}
 <div style="background: var(--card); border-radius: 20px; padding: 14px 16px; display: flex; align-items: center; gap: 12px">
 <div style="flex: 1">
 <div style="font-size: 15px; font-weight: 700">All reminders</div>
-<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px; line-height: 1.4">Pause every reminder at once without losing their times. Good for travel or exams.</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px; line-height: 1.4">Pause every reminder at once without losing their times. Good for travel or exams. Notifications are not sent yet in this version.</div>
 </div>
 <button aria-label="All reminders" aria-pressed="{{settings.remindersOn}}" onClick="{{tRem}}" style="{{swRem}}"><span style="width: 26px; height: 26px; border-radius: 99px; background: #FFFFFF; display: block"></span></button>
 </div>
@@ -767,7 +768,7 @@ input,select{font-family:inherit}
 </div>
 </sc-if>
 </div>
-<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.11.0 · saved on this device</div>
+<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.12.0 · saved on this device</div>
 </div>
 </sc-if>
 
@@ -844,6 +845,7 @@ input,select{font-family:inherit}
 <sc-for list="{{obFocus}}" as="f" hint-placeholder-count="5"><button aria-pressed="{{f.on}}" onClick="{{f.pick}}" style="{{f.style}}"><span style="font-size: 16px; font-weight: 800">{{f.label}}</span><span style="{{f.hintStyle}}">{{f.hint}}</span></button></sc-for>
 </div>
 <button onClick="{{obNext}}" disabled="{{obNextOff}}" style="{{obNextStyle}}">Continue</button>
+<button onClick="{{obSkip}}" style="{{obSkipStyle}}">Skip: I’ll add my own habits</button>
 </div>
 </sc-if>
 
@@ -859,6 +861,7 @@ input,select{font-family:inherit}
 </div>
 <sc-if value="{{obWarn}}" hint-placeholder-val="{{ false }}"><div style="background: var(--warnBg); color: var(--warnInk); border-radius: 14px; padding: 12px 14px; font-size: 13px; font-weight: 700; line-height: 1.45">More than 5 habits at once is the top reason people quit. Start small, add more after two good weeks.</div></sc-if>
 <button onClick="{{obFinish}}" disabled="{{obFinishOff}}" style="{{obFinishStyle}}">{{obFinishLabel}}</button>
+<button onClick="{{obSkip}}" style="{{obSkipStyle}}">Skip: I’ll add my own habits</button>
 </div>
 </sc-if>
 </div>
@@ -880,13 +883,13 @@ input,select{font-family:inherit}
 </div>
 <sc-if value="{{recapHasTop}}" hint-placeholder-val="{{ true }}">
 <div style="display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14); border-radius: 18px; padding: 12px 14px">
-<span style="font-size: 28px; line-height: 1">{{recapTopEmoji}}</span>
+<span style="font-size: 28px; line-height: 1.2">{{recapTopEmoji}}</span>
 <div><div style="font-size: 12px; font-weight: 700">Most consistent habit</div><div style="font-size: 16px; font-weight: 800">{{recapTop}}</div></div>
 </div>
 </sc-if>
 <sc-if value="{{recapHasChar}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 12px">
-<div style="font-size: 13.5px; font-weight: 700; line-height: 1.4">{{recapCharLine}}</div>
+<div style="font-size: 13.5px; font-weight: 700; line-height: 1.4; min-width: 0; overflow-wrap: anywhere">{{recapCharLine}}</div>
 <span style="{{recapSprite.box}}"><span style="{{recapSprite.dot}}"></span></span>
 </div>
 </sc-if>
@@ -947,7 +950,7 @@ input,select{font-family:inherit}
 <div style="min-width: 0">
 <div style="font-size: 13px; font-weight: 600; color: var(--muted)">Your hero</div>
 <div style="display: flex; align-items: center; gap: 8px; margin-top: 2px; min-width: 0">
-<button onClick="{{goHero}}" aria-label="{{charName}}: open Hero" style="border: none; background: none; padding: 0; margin: 0; color: inherit; min-width: 0; text-align: left"><h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{charName}}</h1></button>
+<button onClick="{{goHero}}" aria-label="{{charName}}: open Hero" style="border: none; background: none; padding: 0; margin: -5px 0; min-height: 44px; display: flex; align-items: center; color: inherit; min-width: 44px; text-align: left"><h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{charName}}</h1></button>
 <span style="height: 26px; padding: 0 10px; border-radius: 99px; background: var(--inv); color: var(--invInk); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; flex: none">{{lvText}}</span>
 </div>
 </div>
@@ -1127,7 +1130,7 @@ input,select{font-family:inherit}
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><div style="font-size: 15px; font-weight: 800">{{tripHead}}</div><span style="{{tripPillStyle}}">{{tripPill}}</span></div>
 <div style="position: relative; height: 8px; border-radius: 99px; background: var(--track)"><div style="{{tripFill}}"></div><span style="{{tripMark}}"></span></div>
 <div style="display: flex; flex-wrap: wrap; gap: 6px"><span style="{{slotAdv.style}}">{{slotAdv.label}}</span><span style="{{slotFish.style}}">{{slotFish.label}}</span></div>
-<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.45">{{tripState}}</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.45; overflow-wrap: anywhere">{{tripState}}</div>
 </div>
 </sc-if>
 
@@ -1135,7 +1138,7 @@ input,select{font-family:inherit}
 <div style="display: flex; flex-direction: column; gap: 12px">
 <sc-if value="{{isAway}}" hint-placeholder-val="{{ false }}">
 <div style="background: var(--inv); color: var(--invInk); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-<div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 14px; background: var(--stage); display: flex; align-items: center; justify-content: center; flex: none"><span style="{{awayIcon.box}}"><span style="{{awayIcon.dot}}"></span></span></span><div style="flex: 1; min-width: 0"><div style="font-size: 15.5px; font-weight: 800">{{charName}} is exploring {{awayName}}</div><div style="font-size: 12.5px; color: var(--invMuted); font-weight: 600; margin-top: 2px">{{awayMeta}}</div></div></div>
+<div style="display: flex; align-items: center; gap: 12px"><span style="width: 48px; height: 48px; border-radius: 14px; background: var(--stage); display: flex; align-items: center; justify-content: center; flex: none"><span style="{{awayIcon.box}}"><span style="{{awayIcon.dot}}"></span></span></span><div style="flex: 1; min-width: 0"><div style="font-size: 15.5px; font-weight: 800; overflow-wrap: anywhere">{{charName}} is exploring {{awayName}}</div><div style="font-size: 12.5px; color: var(--invMuted); font-weight: 600; margin-top: 2px">{{awayMeta}}</div></div></div>
 <div style="height: 8px; border-radius: 99px; background: var(--invTrack); overflow: hidden"><div style="{{awayBar2}}"></div></div>
 <sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}"><button onClick="{{finishAdv}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Finish now (demo)</button></sc-if>
 </div>
@@ -1166,7 +1169,8 @@ input,select{font-family:inherit}
 
 <sc-if value="{{isFishTab}}" hint-placeholder-val="{{ false }}">
 <div style="display: flex; flex-direction: column; gap: 12px">
-<div role="img" aria-label="{{sceneLabel}}" style="position: relative; width: 348px; height: 240px; margin: 0 auto; border-radius: 20px; overflow: hidden; flex: none">
+<div role="img" aria-label="{{sceneLabel}}" style="{{sceneBox}}">
+<div style="{{sceneInner}}">
 <svg width="348" height="240" viewBox="0 0 87 60" shape-rendering="crispEdges" aria-hidden="true" style="display: block"><path d="M0 0h69v1h-69zM78 0h9v1h-9zM0 1h68v1h-68zM79 1h8v1h-8zM0 2h67v1h-67zM80 2h7v1h-7zM0 3h66v1h-66zM81 3h6v1h-6zM4 4h1v1h-1zM9 4h1v1h-1zM14 4h1v1h-1zM19 4h1v1h-1zM24 4h1v1h-1zM29 4h1v1h-1zM34 4h1v1h-1zM39 4h1v1h-1zM44 4h1v1h-1zM49 4h1v1h-1zM54 4h1v1h-1zM59 4h1v1h-1zM64 4h1v1h-1zM84 4h1v1h-1z" fill="#5EA6DE"></path><path d="M69 0h9v1h-9zM68 1h5v1h-5zM74 1h5v1h-5zM67 2h3v1h-3zM77 2h3v1h-3zM66 3h3v1h-3zM78 3h3v1h-3zM79 4h1v1h-1z" fill="#6FB0E2"></path><path d="M73 1h1v1h-1zM70 2h7v1h-7zM69 3h3v1h-3zM75 3h3v1h-3zM69 4h1v1h-1z" fill="#88BDE0"></path><path d="M72 3h3v1h-3zM70 4h2v1h-2zM75 4h2v1h-2zM69 5h1v1h-1zM77 5h1v1h-1zM69 6h1v1h-1zM77 6h1v1h-1zM68 7h1v1h-1zM78 7h1v1h-1zM68 8h1v1h-1zM78 8h1v1h-1zM68 9h1v1h-1zM78 9h1v1h-1zM69 10h1v1h-1zM77 10h1v1h-1zM69 11h1v1h-1zM77 11h1v1h-1zM70 12h2v1h-2zM75 12h2v1h-2zM72 13h3v1h-3z" fill="#FFE596"></path><path d="M0 4h4v1h-4zM5 4h4v1h-4zM10 4h4v1h-4zM15 4h4v1h-4zM20 4h4v1h-4zM25 4h4v1h-4zM30 4h4v1h-4zM35 4h4v1h-4zM40 4h4v1h-4zM45 4h4v1h-4zM50 4h4v1h-4zM55 4h4v1h-4zM60 4h4v1h-4zM82 4h2v1h-2zM85 4h2v1h-2zM0 5h65v1h-65zM82 5h5v1h-5zM0 6h33v1h-33zM34 6h1v1h-1zM36 6h29v1h-29zM82 6h5v1h-5zM0 7h34v1h-34zM35 7h30v1h-30zM82 7h5v1h-5zM3 8h1v1h-1zM8 8h1v1h-1zM13 8h1v1h-1zM18 8h1v1h-1zM23 8h1v1h-1zM28 8h1v1h-1zM33 8h1v1h-1zM38 8h1v1h-1zM43 8h1v1h-1zM48 8h1v1h-1zM53 8h1v1h-1zM58 8h1v1h-1zM63 8h1v1h-1zM83 8h1v1h-1z" fill="#6FB1E3"></path><path d="M65 4h3v1h-3zM80 4h2v1h-2zM65 5h2v1h-2zM80 5h2v1h-2zM65 6h2v1h-2zM80 6h2v1h-2zM65 7h2v1h-2zM80 7h2v1h-2z" fill="#77B5E5"></path><path d="M68 4h1v1h-1zM77 4h2v1h-2zM67 5h2v1h-2zM78 5h2v1h-2zM67 6h2v1h-2zM78 6h2v1h-2zM67 7h1v1h-1zM79 7h1v1h-1z" fill="#8CBFE2"></path><path d="M72 4h3v1h-3zM70 5h1v1h-1zM73 5h4v1h-4zM71 6h6v1h-6zM69 7h9v1h-9zM69 8h9v1h-9zM69 9h9v1h-9zM70 10h7v1h-7zM70 11h7v1h-7zM72 12h3v1h-3z" fill="#FFF2BF"></path><path d="M71 5h2v1h-2zM70 6h1v1h-1z" fill="#FFFBEA"></path><path d="M33 6h1v1h-1zM35 6h1v1h-1zM34 7h1v1h-1zM39 9h1v1h-1zM41 9h1v1h-1zM40 10h1v1h-1z" fill="#3D4E63"></path><path d="M0 8h3v1h-3zM4 8h4v1h-4zM9 8h4v1h-4zM14 8h4v1h-4zM19 8h4v1h-4zM24 8h4v1h-4zM29 8h4v1h-4zM34 8h4v1h-4zM39 8h4v1h-4zM44 8h4v1h-4zM49 8h4v1h-4zM54 8h4v1h-4zM59 8h4v1h-4zM84 8h3v1h-3zM0 9h39v1h-39zM40 9h1v1h-1zM42 9h4v1h-4zM47 9h18v1h-18zM82 9h5v1h-5zM0 10h40v1h-40zM41 10h4v1h-4zM48 10h17v1h-17zM82 10h5v1h-5zM0 11h42v1h-42zM43 11h1v1h-1zM49 11h16v1h-16zM82 11h5v1h-5zM2 12h1v1h-1zM7 12h1v1h-1zM12 12h1v1h-1zM17 12h1v1h-1zM22 12h1v1h-1zM27 12h1v1h-1zM32 12h1v1h-1zM37 12h1v1h-1zM52 12h1v1h-1zM57 12h1v1h-1zM62 12h1v1h-1zM82 12h1v1h-1z" fill="#82BCE8"></path><path d="M64 8h2v1h-2zM81 8h2v1h-2zM65 9h2v1h-2zM80 9h2v1h-2zM65 10h2v1h-2zM80 10h2v1h-2zM65 11h2v1h-2zM80 11h2v1h-2zM67 12h1v1h-1z" fill="#7FBAE7"></path><path d="M66 8h2v1h-2zM79 8h2v1h-2zM67 9h1v1h-1zM79 9h1v1h-1zM67 10h2v1h-2zM78 10h2v1h-2zM67 11h2v1h-2zM78 11h2v1h-2zM77 12h1v1h-1z" fill="#90C1E3"></path><path d="M46 9h1v1h-1zM46 10h2v1h-2zM46 11h3v1h-3zM46 12h3v1h-3zM50 12h2v1h-2zM46 13h3v1h-3zM66 13h1v1h-1zM66 14h2v1h-2zM24 15h1v1h-1zM66 15h4v1h-4zM24 16h2v1h-2zM66 16h4v1h-4zM24 17h4v1h-4zM66 17h3v1h-3zM24 18h4v1h-4zM24 19h3v1h-3z" fill="#F4F7FC"></path><path d="M45 10h1v1h-1zM42 11h1v1h-1zM44 11h2v1h-2zM42 12h1v1h-1zM44 12h2v1h-2zM44 13h2v1h-2zM65 14h1v1h-1zM63 15h3v1h-3zM23 16h1v1h-1zM63 16h3v1h-3zM21 17h3v1h-3zM64 17h2v1h-2zM21 18h3v1h-3zM22 19h2v1h-2z" fill="#D3DEEE"></path><path d="M0 12h2v1h-2zM3 12h4v1h-4zM8 12h4v1h-4zM13 12h4v1h-4zM18 12h4v1h-4zM23 12h4v1h-4zM28 12h4v1h-4zM33 12h4v1h-4zM38 12h4v1h-4zM43 12h1v1h-1zM49 12h1v1h-1zM53 12h4v1h-4zM58 12h4v1h-4zM63 12h2v1h-2zM83 12h4v1h-4zM0 13h41v1h-41zM52 13h14v1h-14zM81 13h6v1h-6zM0 14h39v1h-39zM40 14h1v1h-1zM52 14h13v1h-13zM80 14h7v1h-7zM0 15h24v1h-24zM25 15h14v1h-14zM55 15h8v1h-8zM79 15h8v1h-8zM1 16h1v1h-1zM6 16h1v1h-1zM11 16h1v1h-1zM16 16h1v1h-1zM21 16h1v1h-1zM26 16h1v1h-1zM31 16h1v1h-1zM36 16h1v1h-1zM56 16h1v1h-1zM61 16h1v1h-1zM81 16h1v1h-1zM86 16h1v1h-1z" fill="#97C8EC"></path><path d="M65 12h2v1h-2zM79 12h3v1h-3zM67 13h2v1h-2zM78 13h3v1h-3zM68 14h2v1h-2zM77 14h3v1h-3zM70 15h3v1h-3zM74 15h5v1h-5zM71 16h1v1h-1zM76 16h1v1h-1z" fill="#89C0E9"></path><path d="M68 12h2v1h-2zM78 12h1v1h-1zM69 13h3v1h-3zM75 13h3v1h-3zM70 14h7v1h-7zM73 15h1v1h-1z" fill="#94C4E4"></path><path d="M41 13h3v1h-3zM39 14h1v1h-1zM41 14h4v1h-4zM39 15h6v1h-6zM38 16h7v1h-7zM36 17h1v1h-1zM38 17h7v1h-7zM62 17h2v1h-2zM35 18h10v1h-10zM60 18h1v1h-1zM62 18h3v1h-3zM20 19h2v1h-2zM33 19h1v1h-1zM35 19h9v1h-9zM60 19h5v1h-5zM18 20h1v1h-1zM20 20h3v1h-3zM34 20h10v1h-10zM59 20h6v1h-6zM17 21h6v1h-6zM36 21h8v1h-8zM59 21h3v1h-3zM63 21h2v1h-2zM17 22h1v1h-1zM21 22h2v1h-2zM37 22h7v1h-7zM59 22h2v1h-2zM22 23h1v1h-1zM38 23h5v1h-5zM59 23h2v1h-2zM42 24h1v1h-1zM59 24h1v1h-1z" fill="#7F96BF"></path><path d="M49 13h3v1h-3zM49 14h3v1h-3zM49 15h6v1h-6zM49 16h6v1h-6zM50 17h5v1h-5zM57 17h1v1h-1zM69 17h1v1h-1zM50 18h8v1h-8zM69 18h4v1h-4zM27 19h1v1h-1zM51 19h7v1h-7zM69 19h4v1h-4zM27 20h4v1h-4zM51 20h8v1h-8zM69 20h4v1h-4zM74 20h1v1h-1zM27 21h4v1h-4zM51 21h8v1h-8zM70 21h4v1h-4zM55 22h2v1h-2zM58 22h1v1h-1zM70 22h4v1h-4zM72 23h1v1h-1z" fill="#B3C5E3"></path><path d="M45 14h4v1h-4zM45 15h4v1h-4zM45 16h4v1h-4zM45 17h5v1h-5zM45 18h5v1h-5zM65 18h4v1h-4zM44 19h7v1h-7zM65 19h4v1h-4zM23 20h4v1h-4zM44 20h7v1h-7zM65 20h4v1h-4zM23 21h4v1h-4zM44 21h7v1h-7zM65 21h2v1h-2zM68 21h2v1h-2zM23 22h1v1h-1zM26 22h1v1h-1zM48 22h3v1h-3zM65 22h1v1h-1zM69 22h1v1h-1zM49 23h1v1h-1zM69 23h2v1h-2z" fill="#94AACF"></path><path d="M0 16h1v1h-1zM2 16h4v1h-4zM7 16h4v1h-4zM12 16h4v1h-4zM17 16h4v1h-4zM22 16h1v1h-1zM27 16h4v1h-4zM32 16h4v1h-4zM37 16h1v1h-1zM55 16h1v1h-1zM57 16h4v1h-4zM62 16h1v1h-1zM78 16h3v1h-3zM82 16h4v1h-4zM0 17h21v1h-21zM28 17h8v1h-8zM37 17h1v1h-1zM55 17h2v1h-2zM58 17h4v1h-4zM70 17h3v1h-3zM74 17h13v1h-13zM0 18h21v1h-21zM28 18h7v1h-7zM58 18h2v1h-2zM61 18h1v1h-1zM73 18h14v1h-14zM0 19h8v1h-8zM9 19h11v1h-11zM28 19h5v1h-5zM34 19h1v1h-1zM58 19h2v1h-2zM73 19h7v1h-7zM81 19h6v1h-6zM0 20h1v1h-1zM5 20h1v1h-1zM15 20h1v1h-1zM85 20h1v1h-1z" fill="#ADD3EF"></path><path d="M70 16h1v1h-1zM72 16h4v1h-4zM77 16h1v1h-1zM73 17h1v1h-1z" fill="#93C5EA"></path><path d="M8 19h1v1h-1zM80 19h1v1h-1zM6 20h3v1h-3zM33 20h1v1h-1zM79 20h2v1h-2zM5 21h4v1h-4zM31 21h3v1h-3zM78 21h3v1h-3zM5 22h4v1h-4zM30 22h2v1h-2zM77 22h4v1h-4zM6 23h3v1h-3zM79 23h1v1h-1zM7 24h1v1h-1z" fill="#7690B8"></path><path d="M1 20h4v1h-4zM11 20h4v1h-4zM16 20h2v1h-2zM19 20h1v1h-1zM31 20h2v1h-2zM73 20h1v1h-1zM76 20h3v1h-3zM82 20h3v1h-3zM86 20h1v1h-1zM0 21h5v1h-5zM12 21h3v1h-3zM16 21h1v1h-1zM77 21h1v1h-1zM83 21h4v1h-4zM0 22h2v1h-2zM13 22h1v1h-1zM84 22h2v1h-2z" fill="#C3DEF1"></path><path d="M9 20h2v1h-2zM81 20h1v1h-1zM9 21h3v1h-3zM34 21h2v1h-2zM81 21h2v1h-2zM9 22h3v1h-3zM36 22h1v1h-1zM9 23h2v1h-2zM37 23h1v1h-1zM9 24h2v1h-2zM39 24h1v1h-1z" fill="#8EA6CB"></path><path d="M75 20h1v1h-1zM15 21h1v1h-1zM62 21h1v1h-1zM67 21h1v1h-1zM75 21h1v1h-1zM2 22h2v1h-2zM15 22h1v1h-1zM18 22h2v1h-2zM24 22h1v1h-1zM27 22h2v1h-2zM33 22h2v1h-2zM45 22h2v1h-2zM51 22h2v1h-2zM62 22h1v1h-1zM67 22h1v1h-1zM75 22h1v1h-1zM81 22h2v1h-2zM86 22h1v1h-1zM1 23h3v1h-3zM15 23h1v1h-1zM17 23h3v1h-3zM24 23h1v1h-1zM26 23h3v1h-3zM32 23h3v1h-3zM44 23h3v1h-3zM50 23h3v1h-3zM57 23h1v1h-1zM62 23h1v1h-1zM67 23h1v1h-1zM74 23h2v1h-2zM80 23h3v1h-3zM85 23h2v1h-2zM1 24h3v1h-3zM8 24h1v1h-1zM11 24h1v1h-1zM14 24h2v1h-2zM17 24h3v1h-3zM24 24h1v1h-1zM26 24h3v1h-3zM32 24h3v1h-3zM40 24h1v1h-1zM44 24h3v1h-3zM50 24h3v1h-3zM57 24h1v1h-1zM61 24h2v1h-2zM66 24h2v1h-2zM71 24h1v1h-1zM75 24h1v1h-1zM80 24h3v1h-3zM85 24h2v1h-2zM1 25h6v1h-6zM8 25h1v1h-1zM11 25h1v1h-1zM14 25h2v1h-2zM17 25h5v1h-5zM23 25h2v1h-2zM26 25h5v1h-5zM32 25h6v1h-6zM40 25h1v1h-1zM44 25h5v1h-5zM50 25h6v1h-6zM57 25h1v1h-1zM61 25h2v1h-2zM66 25h2v1h-2zM71 25h1v1h-1zM73 25h1v1h-1zM80 25h4v1h-4zM85 25h2v1h-2zM1 26h6v1h-6zM8 26h1v1h-1zM11 26h1v1h-1zM13 26h3v1h-3zM17 26h5v1h-5zM23 26h2v1h-2zM26 26h5v1h-5zM32 26h6v1h-6zM40 26h1v1h-1zM44 26h5v1h-5zM50 26h5v1h-5zM56 26h2v1h-2zM60 26h3v1h-3zM65 26h3v1h-3zM71 26h1v1h-1zM73 26h1v1h-1zM80 26h4v1h-4zM85 26h2v1h-2zM1 27h5v1h-5zM7 27h2v1h-2zM10 27h2v1h-2zM13 27h3v1h-3zM17 27h4v1h-4zM22 27h3v1h-3zM26 27h5v1h-5zM32 27h5v1h-5zM39 27h2v1h-2zM42 27h7v1h-7zM50 27h5v1h-5zM56 27h2v1h-2zM60 27h3v1h-3zM65 27h3v1h-3zM70 27h2v1h-2zM78 27h9v1h-9z" fill="#3C7A55"></path><path d="M74 21h1v1h-1zM14 22h1v1h-1zM61 22h1v1h-1zM66 22h1v1h-1zM74 22h1v1h-1zM14 23h1v1h-1zM23 23h1v1h-1zM61 23h1v1h-1zM66 23h1v1h-1zM73 23h1v1h-1zM0 24h1v1h-1zM13 24h1v1h-1zM16 24h1v1h-1zM23 24h1v1h-1zM25 24h1v1h-1zM31 24h1v1h-1zM43 24h1v1h-1zM49 24h1v1h-1zM56 24h1v1h-1zM60 24h1v1h-1zM65 24h1v1h-1zM73 24h1v1h-1zM79 24h1v1h-1zM84 24h1v1h-1zM0 25h1v1h-1zM7 25h1v1h-1zM10 25h1v1h-1zM13 25h1v1h-1zM16 25h1v1h-1zM22 25h1v1h-1zM25 25h1v1h-1zM31 25h1v1h-1zM39 25h1v1h-1zM42 25h2v1h-2zM49 25h1v1h-1zM56 25h1v1h-1zM60 25h1v1h-1zM65 25h1v1h-1zM70 25h1v1h-1zM72 25h1v1h-1zM78 25h2v1h-2zM84 25h1v1h-1zM0 26h1v1h-1zM7 26h1v1h-1zM10 26h1v1h-1zM12 26h1v1h-1zM16 26h1v1h-1zM22 26h1v1h-1zM25 26h1v1h-1zM31 26h1v1h-1zM39 26h1v1h-1zM42 26h2v1h-2zM49 26h1v1h-1zM55 26h1v1h-1zM59 26h1v1h-1zM64 26h1v1h-1zM70 26h1v1h-1zM72 26h1v1h-1zM78 26h2v1h-2zM84 26h1v1h-1zM6 27h1v1h-1zM9 27h1v1h-1zM12 27h1v1h-1zM21 27h1v1h-1zM38 27h1v1h-1zM41 27h1v1h-1zM55 27h1v1h-1zM59 27h1v1h-1zM64 27h1v1h-1zM69 27h1v1h-1zM72 27h1v1h-1zM0 28h87v1h-87z" fill="#2D6249"></path><path d="M76 21h1v1h-1zM4 22h1v1h-1zM16 22h1v1h-1zM20 22h1v1h-1zM29 22h1v1h-1zM35 22h1v1h-1zM47 22h1v1h-1zM53 22h1v1h-1zM63 22h1v1h-1zM68 22h1v1h-1zM76 22h1v1h-1zM83 22h1v1h-1zM0 23h1v1h-1zM4 23h2v1h-2zM16 23h1v1h-1zM20 23h2v1h-2zM25 23h1v1h-1zM29 23h2v1h-2zM35 23h2v1h-2zM47 23h2v1h-2zM53 23h2v1h-2zM63 23h1v1h-1zM68 23h1v1h-1zM76 23h2v1h-2zM83 23h2v1h-2zM4 24h3v1h-3zM20 24h3v1h-3zM29 24h2v1h-2zM35 24h3v1h-3zM47 24h2v1h-2zM53 24h3v1h-3zM58 24h1v1h-1zM63 24h2v1h-2zM68 24h2v1h-2zM76 24h2v1h-2zM83 24h1v1h-1zM9 25h1v1h-1zM12 25h1v1h-1zM41 25h1v1h-1zM58 25h1v1h-1zM63 25h2v1h-2zM68 25h2v1h-2zM76 25h2v1h-2zM9 26h1v1h-1zM41 26h1v1h-1zM58 26h1v1h-1zM63 26h1v1h-1zM68 26h2v1h-2zM77 26h1v1h-1zM0 27h1v1h-1zM16 27h1v1h-1zM25 27h1v1h-1zM58 27h1v1h-1zM63 27h1v1h-1zM68 27h1v1h-1z" fill="#5B9B5E"></path><path d="M12 22h1v1h-1zM25 22h1v1h-1zM32 22h1v1h-1zM44 22h1v1h-1zM54 22h1v1h-1zM57 22h1v1h-1zM64 22h1v1h-1zM12 23h1v1h-1zM64 23h1v1h-1zM71 23h1v1h-1zM78 23h1v1h-1zM12 24h1v1h-1zM38 24h1v1h-1zM41 24h1v1h-1zM78 24h1v1h-1zM38 25h1v1h-1zM38 26h1v1h-1zM31 27h1v1h-1zM37 27h1v1h-1z" fill="#356A55"></path><path d="M11 23h1v1h-1zM31 23h1v1h-1zM43 23h1v1h-1zM56 23h1v1h-1zM70 24h1v1h-1zM49 27h1v1h-1z" fill="#2B5848"></path><path d="M13 23h1v1h-1zM55 23h1v1h-1zM58 23h1v1h-1zM65 23h1v1h-1zM72 24h1v1h-1zM59 25h1v1h-1z" fill="#467E60"></path><path d="M74 24h1v1h-1zM74 25h1v1h-1zM74 26h1v1h-1z" fill="#FFFFFF"></path><path d="M75 25h1v1h-1zM75 26h1v1h-1z" fill="#F1F1EC"></path><path d="M76 26h1v1h-1z" fill="#E3E3DC"></path><path d="M73 27h4v1h-4z" fill="#8A5A34"></path><path d="M77 27h1v1h-1z" fill="#6E4529"></path><path d="M0 29h1v1h-1zM3 29h1v1h-1zM6 29h1v1h-1zM9 29h1v1h-1zM12 29h1v1h-1zM15 29h1v1h-1zM18 29h1v1h-1zM21 29h1v1h-1zM24 29h1v1h-1zM27 29h1v1h-1zM30 29h1v1h-1zM33 29h1v1h-1zM36 29h1v1h-1zM39 29h1v1h-1zM42 29h1v1h-1zM45 29h1v1h-1zM48 29h1v1h-1zM51 29h1v1h-1zM54 29h1v1h-1zM57 29h1v1h-1zM60 29h1v1h-1zM63 29h1v1h-1zM66 29h1v1h-1zM69 29h1v1h-1zM72 29h1v1h-1zM75 29h1v1h-1zM78 29h1v1h-1zM81 29h1v1h-1zM84 29h1v1h-1z" fill="#5E9A55"></path><path d="M1 29h2v1h-2zM4 29h2v1h-2zM7 29h2v1h-2zM10 29h2v1h-2zM13 29h2v1h-2zM16 29h2v1h-2zM19 29h2v1h-2zM22 29h2v1h-2zM25 29h2v1h-2zM28 29h2v1h-2zM31 29h2v1h-2zM34 29h2v1h-2zM37 29h2v1h-2zM40 29h2v1h-2zM43 29h2v1h-2zM46 29h2v1h-2zM49 29h2v1h-2zM52 29h2v1h-2zM55 29h2v1h-2zM58 29h2v1h-2zM61 29h2v1h-2zM64 29h2v1h-2zM67 29h2v1h-2zM70 29h2v1h-2zM73 29h2v1h-2zM76 29h2v1h-2zM79 29h2v1h-2zM82 29h2v1h-2zM85 29h2v1h-2z" fill="#6FAA5F"></path><path d="M0 30h87v1h-87z" fill="#C7E4EF"></path><path d="M0 31h9v1h-9zM10 31h1v1h-1zM12 31h9v1h-9zM22 31h1v1h-1zM24 31h9v1h-9zM34 31h1v1h-1zM36 31h9v1h-9zM46 31h1v1h-1zM48 31h9v1h-9zM58 31h1v1h-1zM60 31h9v1h-9zM70 31h1v1h-1zM72 31h9v1h-9zM82 31h1v1h-1zM84 31h3v1h-3z" fill="#5D97A6"></path><path d="M9 31h1v1h-1zM11 31h1v1h-1zM21 31h1v1h-1zM23 31h1v1h-1zM33 31h1v1h-1zM35 31h1v1h-1zM45 31h1v1h-1zM47 31h1v1h-1zM57 31h1v1h-1zM59 31h1v1h-1zM69 31h1v1h-1zM71 31h1v1h-1zM81 31h1v1h-1zM83 31h1v1h-1z" fill="#9ACDE6"></path><path d="M0 32h5v1h-5zM6 32h1v1h-1zM8 32h9v1h-9zM18 32h1v1h-1zM20 32h9v1h-9zM30 32h1v1h-1zM32 32h9v1h-9zM42 32h1v1h-1zM44 32h9v1h-9zM54 32h1v1h-1zM56 32h9v1h-9zM66 32h1v1h-1zM68 32h9v1h-9zM78 32h1v1h-1zM80 32h7v1h-7z" fill="#5C98AB"></path><path d="M5 32h1v1h-1zM7 32h1v1h-1zM17 32h1v1h-1zM19 32h1v1h-1zM29 32h1v1h-1zM31 32h1v1h-1zM41 32h1v1h-1zM43 32h1v1h-1zM53 32h1v1h-1zM55 32h1v1h-1zM65 32h1v1h-1zM67 32h1v1h-1zM77 32h1v1h-1zM79 32h1v1h-1zM1 33h1v1h-1zM3 33h1v1h-1zM13 33h1v1h-1zM15 33h1v1h-1zM25 33h1v1h-1zM27 33h1v1h-1zM37 33h1v1h-1zM39 33h1v1h-1zM49 33h1v1h-1zM51 33h1v1h-1zM61 33h1v1h-1zM63 33h1v1h-1zM73 33h1v1h-1zM75 33h1v1h-1zM85 33h1v1h-1zM7 34h1v1h-1zM9 34h3v1h-3zM21 34h1v1h-1zM23 34h1v1h-1zM33 34h1v1h-1zM35 34h1v1h-1zM39 34h1v1h-1zM42 34h1v1h-1zM45 34h1v1h-1zM47 34h1v1h-1zM57 34h1v1h-1zM59 34h1v1h-1zM69 34h1v1h-1zM71 34h1v1h-1zM81 34h1v1h-1zM83 34h1v1h-1z" fill="#86C0E0"></path><path d="M0 33h1v1h-1zM2 33h1v1h-1zM4 33h9v1h-9zM14 33h1v1h-1zM16 33h9v1h-9zM26 33h1v1h-1zM28 33h9v1h-9zM38 33h1v1h-1zM40 33h9v1h-9zM50 33h1v1h-1zM52 33h9v1h-9zM62 33h1v1h-1zM64 33h9v1h-9zM74 33h1v1h-1zM76 33h9v1h-9zM86 33h1v1h-1z" fill="#629DB2"></path><path d="M0 34h7v1h-7zM8 34h1v1h-1zM12 34h9v1h-9zM22 34h1v1h-1zM24 34h9v1h-9zM34 34h1v1h-1zM36 34h3v1h-3zM40 34h2v1h-2zM43 34h2v1h-2zM46 34h1v1h-1zM48 34h9v1h-9zM58 34h1v1h-1zM60 34h9v1h-9zM70 34h1v1h-1zM72 34h9v1h-9zM82 34h1v1h-1zM84 34h3v1h-3z" fill="#67A3B9"></path><path d="M0 35h5v1h-5zM11 35h6v1h-6zM18 35h1v1h-1zM20 35h2v1h-2zM23 35h6v1h-6zM30 35h1v1h-1zM32 35h5v1h-5zM44 35h5v1h-5zM50 35h3v1h-3zM54 35h1v1h-1zM56 35h3v1h-3zM61 35h4v1h-4zM66 35h1v1h-1zM68 35h1v1h-1zM71 35h1v1h-1zM73 35h4v1h-4zM78 35h1v1h-1zM80 35h7v1h-7z" fill="#619FBB"></path><path d="M5 35h6v1h-6zM17 35h1v1h-1zM19 35h1v1h-1zM22 35h1v1h-1zM29 35h1v1h-1zM31 35h1v1h-1zM37 35h7v1h-7zM49 35h1v1h-1zM53 35h1v1h-1zM55 35h1v1h-1zM59 35h2v1h-2zM65 35h1v1h-1zM67 35h1v1h-1zM69 35h2v1h-2zM72 35h1v1h-1zM77 35h1v1h-1zM79 35h1v1h-1zM0 36h2v1h-2zM3 36h1v1h-1zM5 36h7v1h-7zM13 36h1v1h-1zM15 36h1v1h-1zM17 36h1v1h-1zM21 36h3v1h-3zM25 36h3v1h-3zM30 36h2v1h-2zM37 36h3v1h-3zM41 36h3v1h-3zM48 36h4v1h-4zM55 36h2v1h-2zM58 36h4v1h-4zM63 36h1v1h-1zM65 36h1v1h-1zM69 36h5v1h-5zM75 36h1v1h-1zM77 36h4v1h-4zM84 36h2v1h-2zM0 37h36v1h-36zM46 37h1v1h-1zM53 37h1v1h-1zM60 37h1v1h-1zM67 37h1v1h-1zM74 37h13v1h-13zM0 38h36v1h-36zM37 38h1v1h-1zM39 38h2v1h-2zM42 38h9v1h-9zM59 38h28v1h-28zM0 39h35v1h-35zM43 39h3v1h-3zM50 39h2v1h-2zM54 39h1v1h-1zM58 39h29v1h-29z" fill="#73B2D8"></path><path d="M2 36h1v1h-1zM4 36h1v1h-1zM12 36h1v1h-1zM14 36h1v1h-1zM16 36h1v1h-1zM18 36h3v1h-3zM24 36h1v1h-1zM28 36h2v1h-2zM32 36h4v1h-4zM44 36h4v1h-4zM52 36h3v1h-3zM57 36h1v1h-1zM62 36h1v1h-1zM64 36h1v1h-1zM66 36h3v1h-3zM74 36h1v1h-1zM76 36h1v1h-1zM81 36h3v1h-3zM86 36h1v1h-1z" fill="#65A3C2"></path><path d="M36 36h1v1h-1zM40 36h1v1h-1z" fill="#F7C27E"></path><path d="M36 37h1v1h-1zM41 37h5v1h-5zM47 37h6v1h-6zM54 37h6v1h-6zM61 37h6v1h-6zM68 37h1v1h-1z" fill="#60A0CA"></path><path d="M37 37h1v1h-1zM39 37h1v1h-1z" fill="#F2A65A"></path><path d="M38 37h1v1h-1zM40 37h1v1h-1zM36 38h1v1h-1zM41 38h1v1h-1z" fill="#5E6875"></path><path d="M69 37h3v1h-3zM69 40h3v1h-3zM70 41h2v1h-2zM71 42h1v1h-1zM71 43h1v1h-1zM75 43h1v1h-1zM69 44h3v1h-3zM75 46h2v1h-2zM69 47h3v1h-3zM75 49h1v1h-1z" fill="#F3E3A6"></path><path d="M72 37h2v1h-2zM72 40h1v1h-1zM72 41h1v1h-1zM72 42h2v1h-2zM72 43h3v1h-3zM72 44h2v1h-2zM72 47h1v1h-1zM72 49h3v1h-3z" fill="#FFF7D6"></path><path d="M38 38h1v1h-1z" fill="#E08A3C"></path><path d="M51 38h8v1h-8zM46 39h4v1h-4zM53 40h4v1h-4zM33 41h2v1h-2zM43 41h4v1h-4zM48 43h7v1h-7z" fill="#BFE1F2"></path><path d="M35 39h8v1h-8z" fill="#3B4552"></path><path d="M52 39h2v1h-2zM55 39h3v1h-3z" fill="#5B9BC4"></path><path d="M0 40h35v1h-35zM43 40h4v1h-4zM49 40h4v1h-4zM57 40h12v1h-12zM73 40h10v1h-10zM84 40h3v1h-3zM0 41h33v1h-33zM47 41h7v1h-7zM56 41h14v1h-14zM73 41h10v1h-10zM84 41h3v1h-3zM0 42h34v1h-34zM42 42h2v1h-2zM46 42h25v1h-25zM74 42h9v1h-9zM85 42h2v1h-2zM0 43h36v1h-36zM42 43h6v1h-6zM55 43h16v1h-16zM76 43h7v1h-7zM84 43h3v1h-3zM46 44h1v1h-1zM60 44h1v1h-1zM67 44h1v1h-1zM74 44h1v1h-1zM81 44h1v1h-1zM45 45h11v1h-11zM60 45h23v1h-23zM84 45h3v1h-3z" fill="#62A3CE"></path><path d="M35 40h1v1h-1zM35 41h1v1h-1zM36 42h1v1h-1zM36 43h1v1h-1z" fill="#D6DEE8"></path><path d="M36 40h6v1h-6zM36 41h6v1h-6zM37 42h4v1h-4z" fill="#A9B4C2"></path><path d="M42 40h1v1h-1zM42 41h1v1h-1zM41 42h1v1h-1zM37 43h5v1h-5z" fill="#7E8A9A"></path><path d="M47 40h2v1h-2zM54 41h2v1h-2zM34 42h2v1h-2zM44 42h2v1h-2z" fill="#5091BD"></path><path d="M83 40h1v1h-1zM83 41h1v1h-1z" fill="#7A4B26"></path><path d="M83 42h1v1h-1z" fill="#5C3618"></path><path d="M84 42h1v1h-1zM76 47h1v1h-1zM83 47h1v1h-1zM75 52h1v1h-1zM77 52h1v1h-1zM81 52h1v1h-1zM83 52h1v1h-1z" fill="#7FA64E"></path><path d="M83 43h1v1h-1zM77 47h1v1h-1zM82 47h1v1h-1zM86 47h1v1h-1zM75 51h1v1h-1zM77 51h1v1h-1zM81 51h2v1h-2zM86 51h1v1h-1zM76 55h1v1h-1zM78 55h1v1h-1zM81 55h2v1h-2zM85 55h2v1h-2zM77 59h1v1h-1zM79 59h1v1h-1zM81 59h1v1h-1zM83 59h1v1h-1zM85 59h2v1h-2z" fill="#4F7A31"></path><path d="M0 44h45v1h-45z" fill="#D9AE7C"></path><path d="M45 44h1v1h-1zM47 44h2v1h-2zM54 44h6v1h-6zM61 44h6v1h-6zM68 44h1v1h-1zM75 44h6v1h-6zM82 44h1v1h-1zM84 44h3v1h-3z" fill="#5596C4"></path><path d="M49 44h5v1h-5z" fill="#4888B7"></path><path d="M83 44h1v1h-1zM83 45h1v1h-1zM77 46h1v1h-1zM82 46h1v1h-1zM86 46h1v1h-1zM77 48h1v1h-1zM81 48h2v1h-2zM86 48h1v1h-1zM77 49h1v1h-1zM81 49h2v1h-2zM86 49h1v1h-1zM77 50h1v1h-1zM81 50h2v1h-2zM86 50h1v1h-1zM76 52h1v1h-1zM78 52h1v1h-1zM82 52h1v1h-1zM86 52h1v1h-1zM76 53h1v1h-1zM78 53h1v1h-1zM81 53h2v1h-2zM85 53h2v1h-2zM76 54h1v1h-1zM78 54h1v1h-1zM81 54h2v1h-2zM85 54h2v1h-2zM76 56h1v1h-1zM78 56h1v1h-1zM81 56h2v1h-2zM85 56h2v1h-2zM76 57h1v1h-1zM78 57h1v1h-1zM81 57h2v1h-2zM85 57h2v1h-2zM76 58h1v1h-1zM78 58h1v1h-1zM81 58h2v1h-2zM85 58h2v1h-2z" fill="#5E8C3A"></path><path d="M0 45h1v1h-1zM9 45h1v1h-1zM27 45h1v1h-1zM6 46h1v1h-1zM24 46h1v1h-1zM33 46h1v1h-1zM42 46h1v1h-1zM3 47h1v1h-1zM12 47h1v1h-1zM21 47h1v1h-1zM30 47h1v1h-1zM39 47h1v1h-1z" fill="#6E4B30"></path><path d="M1 45h8v1h-8zM21 45h6v1h-6zM28 45h7v1h-7zM44 45h1v1h-1z" fill="#C49563"></path><path d="M10 45h8v1h-8zM19 45h2v1h-2z" fill="#86623F"></path><path d="M18 45h1v1h-1z" fill="#573923"></path><path d="M35 45h9v1h-9z" fill="#7A5636"></path><path d="M56 45h4v1h-4zM59 47h4v1h-4zM57 48h5v1h-5zM55 50h4v1h-4zM55 51h4v1h-4zM48 56h4v1h-4z" fill="#A6D2EA"></path><path d="M0 46h6v1h-6zM7 46h4v1h-4zM20 46h4v1h-4zM25 46h8v1h-8zM34 46h8v1h-8zM43 46h2v1h-2z" fill="#A97B4D"></path><path d="M11 46h4v1h-4zM16 46h4v1h-4z" fill="#8D653F"></path><path d="M15 46h1v1h-1z" fill="#614129"></path><path d="M45 46h12v1h-12zM59 46h16v1h-16zM78 46h4v1h-4zM83 46h3v1h-3zM45 47h14v1h-14zM63 47h6v1h-6zM73 47h3v1h-3zM78 47h4v1h-4zM84 47h2v1h-2zM46 48h11v1h-11zM62 48h15v1h-15zM78 48h3v1h-3zM83 48h3v1h-3zM46 49h12v1h-12zM61 49h11v1h-11zM76 49h1v1h-1zM78 49h3v1h-3zM83 49h3v1h-3zM46 50h9v1h-9zM59 50h18v1h-18zM78 50h3v1h-3zM83 50h3v1h-3zM46 51h1v1h-1zM53 51h1v1h-1zM60 51h1v1h-1zM63 51h12v1h-12zM76 51h1v1h-1zM78 51h3v1h-3zM83 51h3v1h-3zM0 52h1v1h-1zM5 52h9v1h-9zM18 52h9v1h-9zM31 52h9v1h-9zM44 52h12v1h-12zM61 52h14v1h-14zM79 52h2v1h-2zM84 52h2v1h-2z" fill="#5394C3"></path><path d="M57 46h2v1h-2zM58 49h3v1h-3z" fill="#4687B6"></path><path d="M0 47h3v1h-3zM4 47h8v1h-8zM13 47h8v1h-8zM22 47h8v1h-8zM31 47h8v1h-8zM40 47h5v1h-5z" fill="#8E6440"></path><path d="M0 48h45v1h-45z" fill="#6E4A2E"></path><path d="M45 48h1v1h-1zM0 49h46v1h-46z" fill="#56391F"></path><path d="M0 50h2v1h-2zM4 50h11v1h-11zM17 50h11v1h-11zM30 50h11v1h-11zM43 50h3v1h-3zM0 51h2v1h-2zM4 51h11v1h-11zM17 51h11v1h-11zM30 51h4v1h-4zM39 51h1v1h-1z" fill="#3C6C92"></path><path d="M2 50h1v1h-1zM15 50h1v1h-1zM28 50h1v1h-1zM41 50h1v1h-1zM2 51h1v1h-1zM15 51h1v1h-1zM28 51h1v1h-1zM41 51h1v1h-1z" fill="#413B3B"></path><path d="M3 50h1v1h-1zM16 50h1v1h-1zM29 50h1v1h-1zM42 50h1v1h-1zM3 51h1v1h-1zM16 51h1v1h-1zM29 51h1v1h-1zM42 51h1v1h-1z" fill="#343538"></path><path d="M34 51h5v1h-5zM40 51h1v1h-1zM43 51h3v1h-3z" fill="#38698F"></path><path d="M47 51h6v1h-6zM54 51h1v1h-1zM59 51h1v1h-1zM61 51h2v1h-2zM59 52h1v1h-1z" fill="#4C8DBC"></path><path d="M1 52h4v1h-4zM14 52h4v1h-4zM27 52h4v1h-4zM40 52h4v1h-4z" fill="#A9D3EA"></path><path d="M56 52h1v1h-1zM58 52h1v1h-1zM60 52h1v1h-1zM41 55h1v1h-1zM43 55h2v1h-2zM46 55h2v1h-2zM49 57h1v1h-1zM51 57h3v1h-3zM55 57h3v1h-3z" fill="#4E9A55"></path><path d="M57 52h1v1h-1zM42 55h1v1h-1zM50 57h1v1h-1z" fill="#6DBA6E"></path><path d="M0 53h2v1h-2zM4 53h11v1h-11zM17 53h11v1h-11zM30 53h11v1h-11zM43 53h14v1h-14zM60 53h16v1h-16zM77 53h1v1h-1zM79 53h2v1h-2zM83 53h2v1h-2zM0 54h1v1h-1zM5 54h9v1h-9zM18 54h9v1h-9zM31 54h9v1h-9zM44 54h9v1h-9zM54 54h22v1h-22zM77 54h1v1h-1zM79 54h2v1h-2zM83 54h2v1h-2zM0 55h2v1h-2zM4 55h11v1h-11zM17 55h11v1h-11zM30 55h11v1h-11zM45 55h1v1h-1zM48 55h4v1h-4zM55 55h21v1h-21zM77 55h1v1h-1zM79 55h2v1h-2zM83 55h2v1h-2zM0 56h1v1h-1zM5 56h9v1h-9zM18 56h9v1h-9zM31 56h9v1h-9zM47 56h1v1h-1zM52 56h8v1h-8zM63 56h1v1h-1zM70 56h1v1h-1zM77 56h1v1h-1zM79 56h2v1h-2zM83 56h2v1h-2zM0 57h2v1h-2zM4 57h11v1h-11zM17 57h11v1h-11zM30 57h11v1h-11zM43 57h6v1h-6zM54 57h1v1h-1zM58 57h18v1h-18zM77 57h1v1h-1zM79 57h2v1h-2zM83 57h2v1h-2zM0 58h1v1h-1zM5 58h9v1h-9zM18 58h9v1h-9zM31 58h9v1h-9zM44 58h6v1h-6zM57 58h19v1h-19zM77 58h1v1h-1zM79 58h2v1h-2zM83 58h2v1h-2zM0 59h2v1h-2zM4 59h11v1h-11zM17 59h11v1h-11zM30 59h11v1h-11zM43 59h34v1h-34zM78 59h1v1h-1zM80 59h1v1h-1zM82 59h1v1h-1zM84 59h1v1h-1z" fill="#4685B7"></path><path d="M2 53h1v1h-1zM15 53h1v1h-1zM28 53h1v1h-1zM41 53h1v1h-1zM2 54h1v1h-1zM15 54h1v1h-1zM28 54h1v1h-1zM41 54h1v1h-1zM2 55h1v1h-1zM15 55h1v1h-1zM28 55h1v1h-1zM2 56h1v1h-1zM15 56h1v1h-1zM28 56h1v1h-1zM41 56h1v1h-1zM2 57h1v1h-1zM15 57h1v1h-1zM28 57h1v1h-1zM41 57h1v1h-1zM2 58h1v1h-1zM15 58h1v1h-1zM28 58h1v1h-1zM41 58h1v1h-1zM2 59h1v1h-1zM15 59h1v1h-1zM28 59h1v1h-1zM41 59h1v1h-1z" fill="#5C3B24"></path><path d="M3 53h1v1h-1zM16 53h1v1h-1zM29 53h1v1h-1zM42 53h1v1h-1zM3 54h1v1h-1zM16 54h1v1h-1zM29 54h1v1h-1zM42 54h1v1h-1zM3 55h1v1h-1zM16 55h1v1h-1zM29 55h1v1h-1zM3 56h1v1h-1zM16 56h1v1h-1zM29 56h1v1h-1zM3 57h1v1h-1zM16 57h1v1h-1zM29 57h1v1h-1zM42 57h1v1h-1zM3 58h1v1h-1zM16 58h1v1h-1zM29 58h1v1h-1zM42 58h1v1h-1zM3 59h1v1h-1zM16 59h1v1h-1zM29 59h1v1h-1zM42 59h1v1h-1z" fill="#46301E"></path><path d="M57 53h3v1h-3zM42 56h5v1h-5zM50 58h7v1h-7z" fill="#3F7F47"></path><path d="M1 54h1v1h-1zM4 54h1v1h-1zM14 54h1v1h-1zM17 54h1v1h-1zM27 54h1v1h-1zM30 54h1v1h-1zM40 54h1v1h-1zM43 54h1v1h-1zM1 56h1v1h-1zM4 56h1v1h-1zM14 56h1v1h-1zM17 56h1v1h-1zM27 56h1v1h-1zM30 56h1v1h-1zM40 56h1v1h-1zM1 58h1v1h-1zM4 58h1v1h-1zM14 58h1v1h-1zM17 58h1v1h-1zM27 58h1v1h-1zM30 58h1v1h-1zM40 58h1v1h-1zM43 58h1v1h-1z" fill="#3E6F93"></path><path d="M53 54h1v1h-1z" fill="#FBD0DE"></path><path d="M52 55h1v1h-1zM54 55h1v1h-1z" fill="#F6A6C1"></path><path d="M53 55h1v1h-1z" fill="#F2C14E"></path><path d="M60 56h3v1h-3zM64 56h6v1h-6zM71 56h5v1h-5z" fill="#4383B5"></path></svg>
 <div aria-hidden="true" style="position: absolute; inset: 0; animation: dcDrift 16s ease-in-out infinite alternate"><svg width="348" height="240" viewBox="0 0 87 60" shape-rendering="crispEdges" aria-hidden="true" style="display: block; position: absolute; left: 0; top: 0; pointer-events: none"><path d="M11 4h3v1h-3zM9 5h7v1h-7zM17 5h3v1h-3zM8 6h14v1h-14zM6 7h18v1h-18zM32 10h2v1h-2zM30 11h7v1h-7zM46 18h3v1h-3zM45 19h8v1h-8zM44 20h11v1h-11z" fill="#FFFFFF"></path><path d="M6 8h18v1h-18z" fill="#EAF3FA"></path><path d="M7 9h15v1h-15zM30 12h7v1h-7zM44 21h11v1h-11z" fill="#CFE1EF"></path></svg></div>
 <span aria-hidden="true" style="position: absolute; left: 280px; top: 132px; width: 16px; height: 4px; background: #FFF7D6; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 0.0s infinite"></span><span aria-hidden="true" style="position: absolute; left: 288px; top: 152px; width: 12px; height: 4px; background: #FFF7D6; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 0.9s infinite"></span><span aria-hidden="true" style="position: absolute; left: 276px; top: 176px; width: 12px; height: 4px; background: #FFF7D6; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 1.7s infinite"></span><span aria-hidden="true" style="position: absolute; left: 292px; top: 192px; width: 8px; height: 4px; background: #FFF7D6; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 0.4s infinite"></span><span aria-hidden="true" style="position: absolute; left: 176px; top: 156px; width: 12px; height: 4px; background: #DDF0F9; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 1.2s infinite"></span><span aria-hidden="true" style="position: absolute; left: 80px; top: 220px; width: 12px; height: 4px; background: #CFE8F5; opacity: 0; animation: dcTwinkle 2.6s ease-in-out 2.0s infinite"></span>
@@ -1175,16 +1179,17 @@ input,select{font-family:inherit}
 <svg width="348" height="240" viewBox="0 0 87 60" shape-rendering="crispEdges" aria-hidden="true" style="display: block; position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0.9"><path d="M48 24h3v1h-3zM50 25h3v1h-3zM52 26h2v1h-2zM53 27h2v1h-2zM54 28h2v1h-2zM55 29h2v1h-2zM56 30h1v1h-1zM57 31h1v1h-1zM57 32h2v1h-2zM58 33h1v1h-1zM59 34h1v1h-1zM59 35h2v1h-2zM60 36h1v1h-1zM60 37h2v1h-2zM61 38h1v1h-1zM62 39h1v1h-1zM62 40h1v1h-1zM63 41h1v1h-1z" fill="#E9F1F6"></path></svg>
 <span aria-hidden="true" style="position: absolute; left: 236px; top: 174px; width: 32px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75); animation: dcRipple 2.2s ease-out infinite"></span>
 <svg width="8" height="8" viewBox="0 0 2 2" shape-rendering="crispEdges" aria-hidden="true" style="{{bobStyle}}"><path d="M0 0h2v1h-2z" fill="#E5484D"></path><path d="M0 1h2v1h-2z" fill="#FFFFFF"></path></svg>
-<div style="position: absolute; right: 10px; top: 10px; height: 30px; padding: 0 12px; border-radius: 99px; background: rgba(22,24,29,0.72); color: #FFFFFF; display: flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700">{{fishLeftText}}</div>
-<sc-if value="{{fishBite}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; left: 52px; top: 22px; width: 24px; height: 28px; box-sizing: border-box; background: #FFFFFF; border: 3px solid #20151D; border-radius: 6px; color: #E5484D; font-size: 18px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center; animation: dcPop 0.25s ease-out">!</span></sc-if>
+<sc-if value="{{fishBite}}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position: absolute; left: 52px; top: 22px; width: 24px; height: 28px; box-sizing: border-box; background: #FFFFFF; border: 3px solid #20151D; border-radius: 6px; color: #C9252B; font-size: 19px; font-weight: 800; line-height: 1; display: flex; align-items: center; justify-content: center; animation: dcPop 0.25s ease-out">!</span></sc-if>
 </sc-if>
+</div>
+<sc-if value="{{fishOn}}" hint-placeholder-val="{{ false }}"><div style="position: absolute; right: 10px; top: 10px; height: 30px; padding: 0 12px; border-radius: 99px; background: rgba(22,24,29,0.72); color: #FFFFFF; display: flex; align-items: center; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700">{{fishLeftText}}</div></sc-if>
 <sc-if value="{{sceneAway}}" hint-placeholder-val="{{ false }}">
-<div style="position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 14px; background: rgba(22,24,29,0.78); color: #FFFFFF; padding: 10px 12px; font-size: 13px; font-weight: 700; line-height: 1.4">{{sceneAwayText}}</div>
+<div style="position: absolute; left: 10px; right: 10px; bottom: 10px; border-radius: 14px; background: rgba(22,24,29,0.78); color: #FFFFFF; padding: 10px 12px; font-size: 13px; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere">{{sceneAwayText}}</div>
 </sc-if>
 </div>
 <sc-if value="{{fishOn}}" hint-placeholder-val="{{ false }}">
 <div style="background: var(--inv); color: var(--invInk); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
-<div style="font-size: 15.5px; font-weight: 800">{{charName}} is fishing</div>
+<div style="font-size: 15.5px; font-weight: 800; overflow-wrap: anywhere">{{charName}} is fishing</div>
 <div style="font-size: 12.5px; color: var(--invMuted); font-weight: 600; margin-top: -4px">{{fishMeta}}</div>
 <div style="height: 8px; border-radius: 99px; background: var(--invTrack); overflow: hidden"><div style="{{fishBar}}"></div></div>
 <sc-if value="{{demoOn}}" hint-placeholder-val="{{ false }}"><button onClick="{{reelIn}}" style="height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">Reel in now (demo)</button></sc-if>
@@ -1240,10 +1245,10 @@ input,select{font-family:inherit}
 <div style="background: var(--card); border-radius: 20px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
 <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><span style="{{r.labelStyle}}">{{r.label}}</span><span style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700">{{r.count}}</span></div>
 <div style="{{r.rewardStyle}}">{{r.reward}}</div>
-<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px">
 <sc-for list="{{r.fish}}" as="f" hint-placeholder-count="4"><button onClick="{{f.open}}" aria-label="{{f.aria}}" style="border: none; background: none; padding: 0; color: inherit; display: flex; flex-direction: column; gap: 4px; text-align: center; min-width: 0">
 <span style="{{f.tileStyle}}"><span style="{{f.box}}"><span style="{{f.dot}}"></span></span><sc-if value="{{f.has}}" hint-placeholder-val="{{ true }}"><span style="position: absolute; right: 3px; top: 3px; height: 16px; padding: 0 4px; border-radius: 99px; background: var(--card); color: var(--ink); font-size: 10.5px; font-weight: 800; display: flex; align-items: center">{{f.count}}</span></sc-if></span>
-<span style="font-size: 11.5px; font-weight: 800; line-height: 1.2">{{f.name}}</span>
+<span style="font-size: 11px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere">{{f.name}}</span>
 <sc-if value="{{f.has}}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; font-weight: 700; color: var(--muted); margin-top: -2px">{{f.best}}</span></sc-if>
 </button></sc-for>
 </div>
@@ -1356,7 +1361,7 @@ input,select{font-family:inherit}
 <sc-if value="{{hasSheet}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 10">
 <button aria-label="Close" onClick="{{closeSheet}}" style="position: absolute; inset: 0; border: none; padding: 0; background: var(--scrim)"></button>
-<div style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 90%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+<div class="dc-col" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 90%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
 <div style="width: 40px; height: 5px; border-radius: 99px; background: var(--line); align-self: center"></div>
 <div style="display: flex; align-items: center; gap: 12px">
 <span style="{{sh.tileStyle}}">{{sh.emoji}}</span>
@@ -1435,7 +1440,7 @@ input,select{font-family:inherit}
 <sc-if value="{{hasPcard}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 10">
 <button aria-label="Close" onClick="{{closePcard}}" style="position: absolute; inset: 0; border: none; padding: 0; background: var(--scrim)"></button>
-<div role="dialog" aria-modal="true" aria-label="{{pc.name}}" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div role="dialog" aria-modal="true" aria-label="{{pc.name}}" class="dc-col" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
 <span style="display: block; width: 40px; height: 5px; border-radius: 99px; background: var(--line); margin: 0 auto; flex: none"></span>
 <div style="display: flex; align-items: center; gap: 10px">
 <div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700; color: var(--muted)">{{pc.sub}}</div><div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pc.name}}</div></div>
@@ -1468,7 +1473,7 @@ input,select{font-family:inherit}
 <sc-if value="{{hasFish}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 10">
 <button aria-label="Close" onClick="{{closeFish}}" style="position: absolute; inset: 0; border: none; padding: 0; background: var(--scrim)"></button>
-<div role="dialog" aria-modal="true" aria-label="{{fd.name}}" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 90%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<div role="dialog" aria-modal="true" aria-label="{{fd.name}}" class="dc-col" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 90%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
 <span style="display: block; width: 40px; height: 5px; border-radius: 99px; background: var(--line); margin: 0 auto; flex: none"></span>
 <div style="display: flex; align-items: center; gap: 12px">
 <div style="flex: 1; min-width: 0"><div style="{{fd.rarStyle}}">{{fd.rar}}</div><div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em; margin-top: 2px">{{fd.name}}</div></div>
@@ -1478,7 +1483,7 @@ input,select{font-family:inherit}
 <div style="font-size: 14.5px; font-weight: 600; color: var(--muted); line-height: 1.5">{{fd.blurb}}</div>
 <sc-if value="{{fd.has}}" hint-placeholder-val="{{ true }}">
 <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
-<sc-for list="{{fd.facts}}" as="x" hint-placeholder-count="3"><div style="background: var(--card); border-radius: 16px; padding: 10px 12px; min-width: 0"><div style="font-size: 11.5px; font-weight: 700; color: var(--muted)">{{x.k}}</div><div style="font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; margin-top: 4px; white-space: nowrap">{{x.v}}</div></div></sc-for>
+<sc-for list="{{fd.facts}}" as="x" hint-placeholder-count="3"><div style="background: var(--card); border-radius: 16px; padding: 10px; min-width: 0"><div style="font-size: 11.5px; font-weight: 700; color: var(--muted)">{{x.k}}</div><div style="font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; margin-top: 4px; line-height: 1.25">{{x.v}}</div></div></sc-for>
 </div>
 </sc-if>
 </div>
@@ -1486,20 +1491,20 @@ input,select{font-family:inherit}
 </sc-if>
 
 <sc-if value="{{hasCele}}" hint-placeholder-val="{{ false }}">
-<div style="position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box">
+<div style="position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box">
 <div style="position: absolute; inset: 0; background: var(--scrim)"></div>
 <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none">
 <sc-if value="{{celeConfetti}}" hint-placeholder-val="{{ true }}"><sc-for list="{{confetti}}" as="p" hint-placeholder-count="18"><span style="{{p.style}}"></span></sc-for></sc-if>
 </div>
-<div role="dialog" aria-modal="true" aria-label="{{cele.title}}" style="position: relative; background: var(--card); border-radius: 28px; padding: 30px 22px 22px; width: 100%; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; animation: dcPop 0.35s ease-out">
+<div role="dialog" aria-modal="true" aria-label="{{cele.title}}" class="dc-col" style="position: relative; background: var(--card); border-radius: 28px; padding: 30px 22px 22px; width: 100%; max-height: 100%; overflow-y: auto; box-sizing: border-box; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; animation: dcPop 0.35s ease-out">
 <sc-if value="{{cele.isBadge}}" hint-placeholder-val="{{ true }}"><span style="{{celeBadgeStyle}}">{{cele.badge}}</span></sc-if>
 <sc-if value="{{cele.isAdv}}" hint-placeholder-val="{{ false }}"><span style="{{celeIconStyle}}"><span style="{{celeIcon.box}}"><span style="{{celeIcon.dot}}"></span></span></span></sc-if>
 <sc-if value="{{cele.isHead}}" hint-placeholder-val="{{ false }}"><span style="{{celeIconStyle}}"><span style="{{celeHead.box}}"><span style="{{celeHead.dot}}"></span></span></span></sc-if>
 <sc-if value="{{cele.isFish}}" hint-placeholder-val="{{ false }}"><span style="{{celeIconStyle}}"><span style="{{celeFishTop.box}}"><span style="{{celeFishTop.dot}}"></span></span></span></sc-if>
 <sc-if value="{{cele.isAll}}" hint-placeholder-val="{{ false }}"><span style="{{celeAllStyle}}"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span></sc-if>
 <div style="font-size: 14px; font-weight: 700; color: var(--muted); margin-top: 6px">{{cele.kicker}}</div>
-<div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em">{{cele.title}}</div>
-<div style="font-size: 14.5px; color: var(--muted); font-weight: 600; line-height: 1.5">{{cele.body}}</div>
+<div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em; overflow-wrap: anywhere">{{cele.title}}</div>
+<div style="font-size: 14.5px; color: var(--muted); font-weight: 600; line-height: 1.5; overflow-wrap: anywhere">{{cele.body}}</div>
 <sc-if value="{{cele.isFish}}" hint-placeholder-val="{{ false }}"><div style="width: 100%; max-height: 262px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; margin-top: 4px">
 <sc-for list="{{celeFish}}" as="f" hint-placeholder-count="2"><div style="display: flex; align-items: center; gap: 10px; background: var(--soft); border-radius: 14px; padding: 6px 12px 6px 6px; text-align: left">
 <span style="{{f.tileStyle}}"><span style="{{f.box}}"><span style="{{f.dot}}"></span></span></span>
@@ -1526,7 +1531,7 @@ class Component extends DCLogic {
     const saved = this.loadSaved();
     if (saved) {
       this.epoch = saved.epoch;
-      this.T = Math.max(0, this.dayIndex(this.epoch));
+      this.syncDay(saved.state && saved.state.lastDay);
       this.state = this.restoreState(saved.state);
       Object.assign(this.state, this.rolloverPatch(this.state, this.state.lastDay));
     } else {
@@ -1541,6 +1546,21 @@ class Component extends DCLogic {
     const now = new Date();
     this.today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     this._todayIso = this.isoDate(this.today0);
+  }
+
+  // Today's day number. If the clock went back (flying west across time zones, or the phone's date set back),
+  // the app stays on the latest day it has already seen: that day's coins and XP were already counted,
+  // so going back to it would count them twice. Labels follow the day the app is on.
+  syncDay(minT) {
+    this.setToday();
+    let T = Math.max(0, this.dayIndex(this.epoch));
+    // Only small steps back (time zones differ by a day at most); a big jump means the clock was wrong before.
+    if (minT != null && T < minT && minT - T <= 2) {
+      T = minT;
+      const p = String(this.epoch).split('-');
+      this.today0 = new Date(+p[0], +p[1] - 1, +p[2] + T);
+    }
+    this.T = T;
   }
 
   // Day number of today counted from an epoch 'YYYY-MM-DD'. UTC maths, so daylight-saving changes never shift it.
@@ -1570,8 +1590,8 @@ class Component extends DCLogic {
     const iso = this.isoDate(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
     if (iso === this._todayIso) return;
     const oldT = this.T;
-    this.setToday();
-    this.T = Math.max(0, this.dayIndex(this.epoch));
+    this.syncDay(Math.max(oldT, (this.state && this.state.lastDay) || 0));
+    if (this.T === oldT) return;
     this._ld = null;
     this.setState(st => Object.assign(this.rolloverPatch(st, st.lastDay != null ? st.lastDay : oldT), st.day === oldT ? { day: this.T } : {}));
   }
@@ -1626,7 +1646,7 @@ class Component extends DCLogic {
   transientKeys() {
     return ['screen', 'from', 'formFrom', 'sel', 'day', 'reorder', 'sheet', 'sheetVal', 'sheetH', 'sheetM', 'sheetDirty', 'sheetErr',
       'confirmDel', 'confirmGoal', 'confirmReset', 'confirmFresh', 'form', 'gform', 'tryOn', 'ccEdit', 'flash', 'pcard', 'fishSel',
-      'soldNote', 'now', 'saveFail', 'importInfo', 'backupMsg', 'ccErr', 'inviteMsg'];
+      'soldNote', 'now', 'saveFail', 'importInfo', 'backupMsg', 'ccErr', 'inviteMsg', 'vw'];
   }
 
   defaultSettings() { return { theme: 'light', remindersOn: true, celebrate: true, freezes: true, editWindow: 7, demoTools: false, sounds: true }; }
@@ -1976,9 +1996,9 @@ class Component extends DCLogic {
 
   // Checks 5 times a second but re-renders only when a number on screen changes (stopwatch second, trip countdown),
   // so the stopwatch turns over on the second it was started.
-  // Long trips refresh once a minute; the last two minutes count down by the second.
+  // Trips refresh once a minute while more than an hour is left, then every second.
   componentDidMount() {
-    const leftKey = (t, now) => { const secs = Math.ceil((t.end - now) / 1000); return secs > 120 ? 'm' + Math.ceil(secs / 60) : String(secs); };
+    const leftKey = (t, now) => { const secs = Math.ceil((t.end - now) / 1000); return secs > 3600 ? 'm' + Math.ceil(secs / 60) : String(secs); };
     this.tick = setInterval(() => {
       this.checkNewDay();
       const now = Date.now(), s = this.state;
@@ -1999,6 +2019,9 @@ class Component extends DCLogic {
     window.addEventListener('focus', this._onWake);
     this._onPageHide = () => this.saveNow();
     this._onStorage = e => { if (e.key === this.storageKey() && e.newValue && e.newValue !== this._lastJson) { this._noSave = true; window.location.reload(); } };
+    // Rotating the phone or resizing the window re-renders, so the fishing painting fits again.
+    this._onResize = () => { clearTimeout(this._rzT); this._rzT = setTimeout(() => this.setState({ vw: window.innerWidth }), 120); };
+    window.addEventListener('resize', this._onResize);
     this._onTap = e => this.playSfx(e);
     this._onDown = () => this.sfxDown();
     document.addEventListener('pointerdown', this._onDown, true);
@@ -2046,6 +2069,7 @@ class Component extends DCLogic {
   componentWillUnmount() {
     if (this.tick) clearInterval(this.tick);
     this.saveNow();
+    window.removeEventListener('resize', this._onResize);
     document.removeEventListener('click', this._onTap);
     document.removeEventListener('pointerdown', this._onDown, true);
     window.removeEventListener('pageshow', this._onWake);
@@ -2445,7 +2469,7 @@ class Component extends DCLogic {
     const p = ds.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
     const left = Math.round((d - this.today0) / 86400000);
     const when = d.getDate() + ' ' + c.MONTHS[d.getMonth()].slice(0, 3) + ' ' + d.getFullYear();
-    return when + ' · ' + (left > 0 ? left + ' days left' : (left === 0 ? 'due today' : 'overdue'));
+    return when + ' · ' + (left > 0 ? left + (left === 1 ? ' day left' : ' days left') : (left === 0 ? 'due today' : 'overdue'));
   }
 
   derive(h, c) {
@@ -2538,7 +2562,8 @@ class Component extends DCLogic {
     const gLeft = Math.max(0, 66 - tracked), gOk = consistency >= 85, graduated = gLeft === 0 && gOk;
     return Object.assign({}, h, {
       gradLabel: graduated ? 'Automatic' : tracked + ' / 66 days',
-      gradText: graduated ? 'Graduated. This habit is automatic now: quieter reminders and a gold badge.' : (gOk ? 'At 85%+ consistency for 66 days a habit becomes automatic: quieter reminders, a gold badge. ' + gLeft + ' days to go.' : 'Consistency is ' + consistency + '%. Get it above 85% and hold it to graduate. ' + gLeft + ' days to go.'),
+      gradText: graduated ? 'Graduated. This habit is automatic now: quieter reminders and a gold badge.' : (gOk ? 'At 85%+ consistency for 66 days a habit becomes automatic: quieter reminders, a gold badge. ' + gLeft + (gLeft === 1 ? ' day' : ' days') + ' to go.' : 'Consistency is ' + consistency + '%. Get it above 85% and hold it to graduate. ' + gLeft + (gLeft === 1 ? ' day' : ' days') + ' to go.'),
+      streakWord: streak === 1 ? 'day in a row' : 'days in a row', badgeWord: badgeCount === 1 ? 'badge' : 'badges',
       gradBar: 'height: 100%; width: ' + Math.round(Math.min(1, tracked / 66) * 100) + '%; background: ' + (gOk ? 'var(--accent)' : '#EE8A4C') + '; border-radius: 99px;',
       gradPill: 'font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 99px; ' + (graduated ? 'background: #E6B84C; color: #3A2A00;' : 'background: var(--soft); color: var(--muted);'),
       hist, streak, best, done, partN, skip, miss, frozen, consistency, insight, cells, freqText: fq, achievements, badgeCount,
@@ -3265,9 +3290,17 @@ class Component extends DCLogic {
     }
     // A near-black accent would vanish on the dark theme, so dark mode swaps it for a slate grey.
     let accent = this.props.accent ?? '#2F5BEA';
+    // Colour mixing done here rather than with CSS color-mix(), which older iPhones (before iOS 16.2) don't support.
+    const mix = (c1, c2, w) => {
+      const ok = v => /^#[0-9a-f]{6}$/i.test(v);
+      if (!ok(c1) || !ok(c2)) return 'color-mix(in srgb, ' + c1 + ' ' + Math.round(w * 100) + '%, ' + c2 + ')';
+      const p = v => [1, 3, 5].map(i => parseInt(v.slice(i, i + 2), 16));
+      const x = p(c1), y = p(c2);
+      return '#' + x.map((v, i) => ('0' + Math.round(v * w + y[i] * (1 - w)).toString(16)).slice(-2)).join('');
+    };
     if (dark && /^#[0-9a-f]{6}$/i.test(accent)) { const n = parseInt(accent.slice(1), 16); if (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255) < 40) accent = '#4A5160'; }
-    const LIGHT = { bg: '#F4F3EF', frozen: '#52C2D4', card: '#FFFFFF', ink: '#16181D', muted: '#5B5F68', faint: '#696C74', soft: '#F1F0EC', track: '#EEEDE8', line: '#DEDCD5', field: '#FAFAF8', inv: '#16181D', invInk: '#FFFFFF', invMuted: 'rgba(255,255,255,0.78)', invSoft: 'rgba(255,255,255,0.14)', invTrack: 'rgba(255,255,255,0.18)', accentSoft: 'color-mix(in srgb, ' + accent + ' 12%, #FFFFFF)', accentInk: accent, partial: 'color-mix(in srgb, ' + accent + ' 45%, #FFFFFF)', warnBg: '#FDEBDD', warnInk: '#6B2410', warnIcon: '#9A3412', banBg: '#FFF1CC', banInk: '#5C4300', danger: '#B42318', dangerLine: '#F3C7C2', streak: '#B4410E', skipc: '#B9BEC8', slipBg: '#FCE3D3', slipInk: '#9A3412', nav: '#FFFFFF', navLine: '#E6E4DE', scrim: 'rgba(22,24,29,0.45)', shadow: '0 1px 2px rgba(22,24,29,0.05)', stage: '#DCEBEF', hp: '#CE292F', pw: '#6E56CF', st: '#1E7A4C', good: '#1C7B44', rs: '#696C74', rc: '#5B6472', rr: '#1C62E9', re: '#8B3FD9', rl: '#9C5D00', ts: '#F1F0EC', tc: '#EEF0F3', tr: '#E3ECFF', te: '#F1E8FD', tl: '#FFF0D4' };
-    const DARK = { bg: '#0F1115', frozen: '#24808F', card: '#1A1D23', ink: '#F2F3F5', muted: '#A3A8B3', faint: '#868C98', soft: '#262A33', track: '#2A2E37', line: '#363B47', field: '#14171C', inv: '#F2F3F5', invInk: '#16181D', invMuted: 'rgba(22,24,29,0.7)', invSoft: 'rgba(22,24,29,0.1)', invTrack: 'rgba(22,24,29,0.15)', accentSoft: 'color-mix(in srgb, ' + accent + ' 22%, #1A1D23)', accentInk: 'color-mix(in srgb, ' + accent + ' 50%, #FFFFFF)', partial: 'color-mix(in srgb, ' + accent + ' 50%, #1A1D23)', warnBg: '#36211A', warnInk: '#F5C3A6', warnIcon: '#F59E6B', banBg: '#352C12', banInk: '#F3DE9C', danger: '#F97066', dangerLine: '#5A2622', streak: '#F59E6B', skipc: '#5A606C', slipBg: '#40231A', slipInk: '#F5B08A', nav: '#16191E', navLine: '#262A33', scrim: 'rgba(0,0,0,0.6)', shadow: 'none', stage: '#22303A', hp: '#FF7A7E', pw: '#B1A3FF', st: '#5CD394', good: '#5CD394', rs: '#A3A8B3', rc: '#B7BDC8', rr: '#86AEFF', re: '#C9A3FF', rl: '#FFB547', ts: '#262A33', tc: '#262A33', tr: '#1F2A4D', te: '#2E2342', tl: '#3A2E14' };
+    const LIGHT = { bg: '#F4F3EF', frozen: '#52C2D4', card: '#FFFFFF', ink: '#16181D', muted: '#5B5F68', faint: '#696C74', soft: '#F1F0EC', track: '#EEEDE8', line: '#DEDCD5', field: '#FAFAF8', inv: '#16181D', invInk: '#FFFFFF', invMuted: 'rgba(255,255,255,0.78)', invSoft: 'rgba(255,255,255,0.14)', invTrack: 'rgba(255,255,255,0.18)', accentSoft: mix(accent, '#FFFFFF', 0.12), accentInk: accent, partial: mix(accent, '#FFFFFF', 0.45), warnBg: '#FDEBDD', warnInk: '#6B2410', warnIcon: '#9A3412', banBg: '#FFF1CC', banInk: '#5C4300', danger: '#B42318', dangerLine: '#F3C7C2', streak: '#B4410E', skipc: '#B9BEC8', slipBg: '#FCE3D3', slipInk: '#9A3412', nav: '#FFFFFF', navLine: '#E6E4DE', scrim: 'rgba(22,24,29,0.45)', shadow: '0 1px 2px rgba(22,24,29,0.05)', stage: '#DCEBEF', hp: '#CE292F', pw: '#6E56CF', st: '#1E7A4C', good: '#1C7B44', rs: '#696C74', rc: '#5B6472', rr: '#1C62E9', re: '#8B3FD9', rl: '#9C5D00', ts: '#F1F0EC', tc: '#EEF0F3', tr: '#E3ECFF', te: '#F1E8FD', tl: '#FFF0D4' };
+    const DARK = { bg: '#0F1115', frozen: '#24808F', card: '#1A1D23', ink: '#F2F3F5', muted: '#A3A8B3', faint: '#868C98', soft: '#262A33', track: '#2A2E37', line: '#363B47', field: '#14171C', inv: '#F2F3F5', invInk: '#16181D', invMuted: 'rgba(22,24,29,0.7)', invSoft: 'rgba(22,24,29,0.1)', invTrack: 'rgba(22,24,29,0.15)', accentSoft: mix(accent, '#1A1D23', 0.22), accentInk: mix(accent, '#FFFFFF', 0.5), partial: mix(accent, '#1A1D23', 0.5), warnBg: '#36211A', warnInk: '#F5C3A6', warnIcon: '#F59E6B', banBg: '#352C12', banInk: '#F3DE9C', danger: '#F97066', dangerLine: '#5A2622', streak: '#F59E6B', skipc: '#5A606C', slipBg: '#40231A', slipInk: '#F5B08A', nav: '#16191E', navLine: '#262A33', scrim: 'rgba(0,0,0,0.6)', shadow: 'none', stage: '#22303A', hp: '#FF7A7E', pw: '#B1A3FF', st: '#5CD394', good: '#5CD394', rs: '#A3A8B3', rc: '#B7BDC8', rr: '#86AEFF', re: '#C9A3FF', rl: '#FFB547', ts: '#262A33', tc: '#262A33', tr: '#1F2A4D', te: '#2E2342', tl: '#3A2E14' };
     const TH = dark ? DARK : LIGHT;
     const vars = Object.keys(TH).map(k => '--' + k + ': ' + TH[k]).join('; ');
     const c = this.ctx(accent, dark);
@@ -3504,7 +3537,13 @@ class Component extends DCLogic {
     const leftOf = t => (t ? Math.max(0, Math.ceil((t.end - tNow) / 1000)) : 0);
     const advPct = pctOf(s.adv), advLeft = leftOf(s.adv), fishPct = pctOf(s.fishing), fishLeft = leftOf(s.fishing);
     // Time left: '42s', '14m', '2h 41m'.
-    const fmtLeft = secs => { if (secs < 60) return secs + 's'; const tm = Math.ceil(secs / 60), hh = Math.floor(tm / 60), mm = tm % 60; return hh ? hh + 'h' + (mm ? ' ' + mm + 'm' : '') : mm + 'm'; };
+    // Time left: '42s', '14m 05s' in the last hour (updates every second), '2h 41m' before that.
+    const fmtLeft = secs => {
+      if (secs < 60) return secs + 's';
+      if (secs <= 3600) return Math.floor(secs / 60) + 'm ' + c.pad(secs % 60) + 's';
+      const tm = Math.ceil(secs / 60), hh = Math.floor(tm / 60), mm = tm % 60;
+      return hh + 'h' + (mm ? ' ' + mm + 'm' : '');
+    };
     const advDemo = !!(s.adv && s.adv.demo), fishDemo = !!(s.fishing && s.fishing.demo);
     const heroName = ch ? ch.name : 'Your hero';
     const nameFix = !!(ch && s.ccEdit && this.nameProblem(ch.name));
@@ -3610,7 +3649,7 @@ class Component extends DCLogic {
       return { text: t, label: name + ' · ' + t, style: 'height: 30px; padding: 0 10px; border-radius: 99px; display: inline-flex; align-items: center; font-size: 12.5px; font-weight: 800; background: var(--soft); color: ' + col + ';' };
     };
     const slotAdv = slotOf('Adventure', TI.advUsed, isAway), slotFish = slotOf('Fishing', TI.fishUsed, fishOn);
-    const tripHead = TI.none ? 'No habits yet' : (TI.due === 0 ? 'Nothing due today' : Math.min(TI.got, TI.due) + ' of ' + TI.due + ' habits done');
+    const tripHead = TI.none ? 'No habits yet' : (TI.due === 0 ? 'Nothing due today' : Math.min(TI.got, TI.due) + ' of ' + TI.due + (TI.due === 1 ? ' habit done' : ' habits done'));
     const advOpen = !TI.advUsed, fishOpen = !TI.fishUsed;
     const leftTrips = advOpen && fishOpen ? 'adventure and fishing trip' : (advOpen ? 'adventure' : 'fishing trip');
     const allDue = TI.due === 1 ? 'today’s habit' : 'all ' + TI.due + ' habits';
@@ -3668,6 +3707,9 @@ class Component extends DCLogic {
     const fpct = p => { const v = p * 100; return (v >= 10 ? Math.round(v) : (Math.round(v * 10) / 10 || '<0.1')) + '%'; };
     let fisher = { box: '', dot: '' }, baitOpts = [], oddsRows = [], fishLogRows = [];
     const rodIt = ch && PXD.items[ch.rod] && PXD.items[ch.rod].slot === 'rod' ? PXD.items[ch.rod] : PXD.items.r_bamboo;
+    // The painting is drawn at 348×240 and shrinks to fit narrow phones (screen width minus the 20px side padding).
+    const scrollW = this._sref && this._sref.current ? this._sref.current.clientWidth : 0;
+    const sceneS = Math.min(1, Math.max(0.5, ((scrollW || 390) - 40) / 348));
     if (isFishTab) {
       fisher = this.fisherStyles(ch, ch.rod || 'r_bamboo');
       baitOpts = BAITS.map(b => {
@@ -3736,7 +3778,7 @@ class Component extends DCLogic {
       const inv = tone === 'ready';
       trip = { title, sub, showBar: tone === 'locked', hbox: hd.box, hdot: hd.dot, aria: title + '. ' + sub,
         style: 'width: 100%; border: none; border-radius: 20px; padding: 12px 14px 12px 12px; display: flex; align-items: center; gap: 12px; text-align: left; ' + (inv ? 'background: var(--inv); color: var(--invInk);' : (tone === 'busy' ? 'background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 2px var(--accent);' : 'background: var(--card); color: var(--ink);')),
-        subStyle: 'font-size: 12.5px; font-weight: 600; line-height: 1.4; color: ' + (inv ? 'var(--invMuted)' : 'var(--muted)') + ';',
+        subStyle: 'font-size: 12.5px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; color: ' + (inv ? 'var(--invMuted)' : 'var(--muted)') + ';',
         tile: 'width: 44px; height: 44px; border-radius: 14px; background: var(--stage); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; flex: none',
         headWrap: 'display: block;' + (inv ? ' animation: dcBreathe 1.4s ease-in-out infinite;' : ''),
         track: 'display: block; position: relative; height: 6px; border-radius: 99px; background: var(--track); margin-top: 5px',
@@ -3859,7 +3901,8 @@ class Component extends DCLogic {
     const obSp = this._obSprites || [{ box: '', dot: '' }, { box: '', dot: '' }];
 
     let lastActive = -1;
-    for (let jj = T - 1; jj >= 0 && lastActive < 0; jj--) if (active.some(h => h.hist[jj] === 'd' || h.hist[jj] === 'p')) lastActive = jj;
+    const usedOn = (h, jj) => (h.type === 'quit' ? !!((h.days[jj] || {}).clean || (h.days[jj] || {}).slip) : (h.hist[jj] === 'd' || h.hist[jj] === 'p'));
+    for (let jj = T - 1; jj >= 0 && lastActive < 0; jj--) if (active.some(h => usedOn(h, jj))) lastActive = jj;
     const gap = active.length && lastActive >= 0 ? T - 1 - lastActive : 0;
     const comebackOn = this.inComeback(T);
     const showComeback = j === T && s.screen === 'today' && gap >= 3 && !comebackOn && s.comebackDismissed !== true && s.comebackDismissed !== T;
@@ -3882,7 +3925,17 @@ class Component extends DCLogic {
         const rate = d + m ? d / (d + m) : 0;
         if (d + m && rate > topRate) { topRate = rate; recapTop = h.name + ' · ' + Math.round(rate * 100) + '%'; recapTopEmoji = h.emoji; }
       });
-      recapStats = [{ n: checks, label: 'check-ins' }, { n: best + ' days', label: 'longest streak' }, { n: pages.toLocaleString(), label: 'pages read' }, { n: Math.round(secs / 360) / 10 + 'h', label: 'focused time' }];
+      // Pages read only for reading habits, focused time only for timed habits; otherwise other 30-day numbers.
+      const hasPages = allD.some(h => h.type === 'amount' && /page|صفح/i.test(h.unit));
+      const hasTime = allD.some(h => h.type === 'time');
+      let perfect = 0;
+      for (let k = Math.max(0, T - 29); k <= T; k++) if (this.allDone(s.habits, k)) perfect++;
+      recapStats = [
+        { n: checks, label: checks === 1 ? 'check-in' : 'check-ins' },
+        { n: best + (best === 1 ? ' day' : ' days'), label: 'longest streak' },
+        hasPages ? { n: pages.toLocaleString(), label: pages === 1 ? 'page read' : 'pages read' } : { n: perfect, label: perfect === 1 ? 'perfect day' : 'perfect days' },
+        hasTime ? { n: Math.round(secs / 360) / 10 + 'h', label: 'focused time' } : { n: active.length, label: active.length === 1 ? 'habit tracked' : 'habits tracked' }
+      ];
       if (ch) rSprite = this.sprite(ch, 4);
     }
 
@@ -3933,6 +3986,14 @@ class Component extends DCLogic {
           pick: () => this.setState(st => { const o = st.onboard; const pk = o.picks.indexOf(t.key) >= 0 ? o.picks.filter(x => x !== t.key) : o.picks.concat([t.key]); return { onboard: Object.assign({}, o, { picks: pk }) }; }) };
       }),
       obWarn: ob.picks.length > 5,
+      obSkipStyle: 'height: 48px; border: none; background: transparent; color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px',
+      obSkip: () => this.setState(st => {
+        if (!st.char) return {};
+        const nm = st.char.name;
+        const res = { onboard: null, screen: 'today', day: T };
+        if (st.settings.celebrate) res.celebrate = st.celebrate.concat([{ kind: 'head', kicker: 'Day 1', title: 'You and ' + nm + ' are ready!', body: 'Add your first habit with New habit. Each check-in earns coins and XP, and finishing half of a day’s habits unlocks ' + nm + '’s trips.' }]);
+        return res;
+      }),
       obFinishOff: !ob.picks.length, obFinishStyle: primary(ob.picks.length > 0),
       obFinishLabel: ob.picks.length ? 'Start with ' + ob.picks.length + ' habit' + (ob.picks.length > 1 ? 's' : '') : 'Pick at least one',
       obFinish: () => this.setState(st => {
@@ -3972,7 +4033,8 @@ class Component extends DCLogic {
         habits: st.habits.map(h => {
           if (h.archived) return h;
           const days = Object.assign({}, h.days);
-          for (let k = T - 4; k <= T - 1; k++) if (k >= h.start) days[k] = h.type === 'quit' ? { slip: true } : { v: 0 };
+          // A real break leaves no logs: quit days stay unlogged (they count as clean), other habits are missed.
+          for (let k = T - 4; k <= T - 1; k++) if (k >= h.start) days[k] = h.type === 'quit' ? {} : { v: 0 };
           return Object.assign({}, h, { days });
         }),
         comeback: null, comebackDismissed: false, screen: 'today', day: T
@@ -4078,7 +4140,10 @@ class Component extends DCLogic {
       goRods: () => { this.setState({ ctab: 'wardrobe', cat: 'rod', tryOn: null }); this.toTop(); },
       sceneLabel: isAway ? 'The lake is empty: ' + heroName + ' is away exploring.' : (fishOn ? heroName + ' is fishing on the dock.' : heroName + ' stands on the dock with a fishing rod.'),
       sceneAwayText: isAway ? heroName + ' is exploring ' + advZ.name + '. Fishing opens when they are back.' : '',
-      fishLeftText: fishLeft + 's left',
+      // B2: real trips show hours and minutes, demo trips show seconds.
+      fishLeftText: fishDemo ? fishLeft + 's left' : fmtLeft(fishLeft) + ' left',
+      sceneBox: 'position: relative; width: ' + Math.floor(348 * sceneS) + 'px; height: ' + Math.floor(240 * sceneS) + 'px; margin: 0 auto; border-radius: 20px; overflow: hidden; flex: none',
+      sceneInner: 'position: absolute; left: 0; top: 0; width: 348px; height: 240px; transform-origin: 0 0;' + (sceneS < 1 ? ' transform: scale(' + sceneS.toFixed(4) + ');' : ''),
       fishMeta: fishOn ? (fishDemo ? 'Real trip 3 h · demo ' + fishLeft + 's left · ' : '3 h trip · ' + fmtLeft(fishLeft) + ' left · ') + s.fishing.n + ' fish coming' + (s.fishing.bait !== 'worm' ? ' · ' + ((BAITS.find(b => b.id === s.fishing.bait) || {}).name || '') : '') : '',
       fishBar: bar(fishPct, 'var(--invInk)'),
       reelIn: () => this.resolveFishing(),
@@ -4234,7 +4299,7 @@ class Component extends DCLogic {
       remTrack: sw(f.remOn), goalTrack: sw(f.goalOn),
       remHStr: String(f.remH), remMStr: String(f.remM),
       amStyle: ampm(f.remAP === 'AM'), pmStyle: ampm(f.remAP === 'PM'), amOn: f.remAP === 'AM', pmOn: f.remAP === 'PM',
-      remPreview: 'Reminds you at ' + f.remH + ':' + c.pad(f.remM) + ' ' + f.remAP + ' on habit days',
+      remPreview: 'Reminder at ' + f.remH + ':' + c.pad(f.remM) + ' ' + f.remAP + ' on habit days. This version can’t send notifications yet; the time is saved for when it can.',
       formGoalUnit: formUnit,
       fDeadlines: deadlines.map(d => ({ label: d.label, style: chip(f.goalDeadline === d.k), pick: () => this.setForm({ goalDeadline: d.k }) })),
       closeForm: () => this.setState(st => ({ screen: st.form && st.form.mode === 'edit' ? 'detail' : (st.formFrom && st.formFrom !== 'form' ? st.formFrom : 'today'), form: null, confirmDel: null })),
