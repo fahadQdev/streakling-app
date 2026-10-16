@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.10.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.11.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.10.0)
+## Features (as of v0.11.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -51,9 +51,10 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **Celebration pop-ups** for badges and for finishing every habit of the day.
 
 ### The hero (RPG layer)
-- **Character first:** the user creates their pixel hero (boy or girl) before adding any habit.
+- **Character first:** the user creates their pixel hero (boy or girl) before adding any habit. Name, character and skin are permanent after setup; hair colour and outfits can change. Rude hero names are refused (habit names are private and not checked).
 - **Character tab** in the center of the bottom navigation.
-- **Wardrobe and Store:** hats, weapons, fishing rods and accessories are separate equipment slots, bought with coins.
+- **Wardrobe and Store:** hats, weapons, fishing rods and accessories are separate equipment slots, bought with coins. Gear is locked while the hero is on a trip.
+- **Welcome gift:** 150 coins once, on the first check-in, so a new player can buy a first item.
 - **Stats:** Health, Power and Stamina. Each adventure location tests a different mix, so every item has places where it's the best pick.
 
 ### Daily trips
@@ -64,11 +65,13 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ### Social (simulated in the prototype)
 - **Weekly league / leaderboard**, friends, and a **Hall of Fame**.
+- **Invite a friend** through the phone's share sheet (or a copied link). The friends list itself is still simulated.
 
 ### App
 - **Saved on the device:** automatic saving, history without limit, days that roll over at midnight even with the app open.
 - **Backup and restore** as a file, from Settings.
 - **Installable and offline:** home-screen icon, works without a connection after the first visit.
+- **Sound effects** for taps, check-ins, badges and finishing the day, made with Web Audio (no sound files). Can be turned off in Settings.
 - **Settings** with Light, Dark and System themes, plus app preferences and a Demo tools switch.
 
 ---
@@ -159,6 +162,6 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 
 ## Author
 
-**Fahad Al-Moussa**, Computer Science student at Imam Muhammad Ibn Saud Islamic University (IMSIU), Riyadh.
+**Fahad Almousa**, Computer Science student at Imam Muhammad Ibn Saud Islamic University (IMSIU), Riyadh.
 
-© 2026 Fahad Al-Moussa. All rights reserved.
+© 2026 Fahad Almousa. All rights reserved.

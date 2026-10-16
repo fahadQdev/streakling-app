@@ -1,6 +1,6 @@
 # Changelog: the Streakling lifecycle
 
-How the app went from an idea to the v0.9.2 prototype.
+How the app went from an idea to the current version.
 
 > **Note on version numbers:** version numbers started being used partway through development. Early stages are listed as phases. v0.7, v0.8 and v0.9.2 are confirmed version labels; the exact boundaries between some early phases are approximate.
 
@@ -83,6 +83,18 @@ The first version meant for real daily use.
 - **Home-screen app:** icon drawn from the hero sprite, works offline.
 - "Dismiss" on the comeback card and "Not now" on coach tips now last a day and a week, instead of forever.
 - A warning banner if the browser refuses to save (private mode, full storage).
+
+## v0.11.0: Feedback from real use (2026-10-16)
+Fixes and requests from the first days of daily use.
+- **Sound effects:** taps, the bottom navigation, check-ins, badges, purchases, returning trips, and a short fanfare for finishing every habit of the day. Made with Web Audio, so there are no files to download. Settings → Sounds turns them off.
+- **Gear locked during trips:** while the hero is on an adventure or fishing, the Wardrobe and Change look are locked. Items bought during a trip go to the Wardrobe and can be worn after.
+- **Hero identity is permanent:** name, character (boy/girl) and skin are chosen once at setup. Change look now only changes hair colour. The setup screen says so.
+- **Hero name check:** rude names (English and Arabic, including spaced-out and digit spellings) are refused, because other players see the name. Habit names are private and not checked. A hero who already has a rude name gets one rename.
+- **Welcome gift:** 150 coins once, on the first check-in (done or minimum, today only). Saves from older versions get it on their next check-in.
+- **Tap your hero's name** (on the Character screen or your own leaderboard row) to open the Hero tab. "Hide me from leaderboards" moved to Settings → Leaderboard.
+- **Invite a friend** opens the phone's share sheet with a link to the app, or copies the invite where sharing isn't available. The friends list is still simulated until there are accounts.
+- **Store and Wardrobe:** the owned/total numbers next to each category were removed.
+- **Trips catch up at once** when you come back to the app (switching apps, unlocking the phone), instead of on the next tick.
 
 ---
 
