@@ -28,6 +28,8 @@ def main(browser, res):
     a.tap('Save and continue')
     ch = a.state()['char']
     res.eq((ch['name'], ch['sex'], ch['skin'], ch['hc'], ch['clothes'], ch['hair']), ('Layla Al-Har', 'girl', 'deep', 'red', 'c_dress', 'hr_long'), 'girl hero with trimmed name and girl defaults')
+    res.eq(sorted(a.state()['owned']), sorted(['c_dress', 'hr_long', 's_boots', 'r_bamboo', 'bg_plain']), 'a girl hero gets only the girl starter items (and the plain background)')
+    res.eq(ch.get('bg'), 'bg_plain', 'new hero uses the plain background')
     a.pg.locator('button[aria-pressed]').filter(has_text='Learning').first.click(); a.wait(60)
     a.pg.locator('button[aria-pressed]').filter(has_text='Fitness').first.click(); a.wait(60)
     a.pg.locator('button[aria-pressed]').filter(has_text='Health').first.click(); a.wait(60)
@@ -57,8 +59,31 @@ def main(browser, res):
     res.ok('Unlocks at Lv 3' in t, 'rare items locked below Lv 3')
     res.ok('Needs a 14-day streak' in t, 'streak reward needs the streak')
     res.ok(a.pg.locator('button:has-text("Unlocks at Lv 3")').first.is_disabled(), 'locked item: button disabled')
+    # The boy's starter outfit and hair are in the Store for a girl hero, as normal items.
+    store = lambda: a.js("return c.renderVals().store.map(x => [x.name, x.actLabel, x.actOff]);")
+    names = [x[0] for x in store()]
+    res.ok("Traveler's Vest" in names and 'Coral Dress' not in names, 'Store sells the boy starter outfit, not the owned girl one (%s)' % names[:4])
+    res.eq([x[1] for x in store() if x[0] == "Traveler's Vest"], ['Buy · 150'], 'other starter outfit costs 150')
     spent0 = a.state()['spent']
-    a.pg.locator('button:has-text("Buy · 150")').first.click(); a.wait(200)
+    a.btn("Try on Traveler's Vest").dispatch_event('click'); a.wait(150)
+    res.ok(a.has("Trying: Traveler's Vest"), 'other starter outfit can be tried on')
+    a.btn('Buy · 150', nth=0).click(); a.wait(200)
+    st = a.state()
+    res.ok('c_vest' in st['owned'] and st['char']['clothes'] == 'c_vest', 'bought the boy starter outfit: owned and worn')
+    res.eq(st['spent'] - spent0, 150, 'starter outfit price deducted')
+    a.set({'cat': 'hair'})
+    hair = store()
+    res.eq([x[1] for x in hair if x[0] == 'Short & Tousled'], ['Buy · 120'], 'other starter hair costs 120')
+    res.ok('Long & Straight' not in [x[0] for x in hair], 'own starter hair is not in the Store')
+    sp1 = a.state()['spent']
+    a.btn('Try on Short & Tousled').dispatch_event('click'); a.wait(150)
+    a.btn('Buy · 120', nth=0).click(); a.wait(200)
+    st = a.state()
+    res.ok('hr_short' in st['owned'] and st['char']['hair'] == 'hr_short' and st['spent'] - sp1 == 120, 'bought the boy starter hair for 120')
+    a.set({'cat': 'clothes'})
+    spent0 = a.state()['spent']
+    a.btn('Try on Cozy Hoodie').dispatch_event('click'); a.wait(150)
+    a.btn('Buy · 150', nth=0).click(); a.wait(200)
     st = a.state()
     bought = [x for x in st['owned'] if I[x]['slot'] == 'clothes' and I[x]['rarity'] == 'common']
     res.eq(len(bought), 1, 'bought one common clothes item')
@@ -265,6 +290,136 @@ def main(browser, res):
     res.eq(a.state()['char']['hc'], 'black', 'cancel keeps the old hair colour')
     a.scan('hero-end')
     a.check_errors('hero')
+
+    # ---------- Character tab goes back to the Hero page ----------
+    def char_tab_from(label, patch):
+        a.set(dict({'screen': 'char', 'ctab': 'hero', 'tryOn': None, 'ccEdit': False, 'fishSel': None}, **patch), wait=200)
+        a.js("const el = c._sref.current; if (el) el.scrollTop = 500;"); a.wait(80)
+        moved = a.js("return c._sref.current.scrollTop;")
+        if label in ('Wardrobe', 'Store with a try-on', 'the Fish Book', 'the Hero page itself'):
+            res.ok(moved > 0, 'page scrolled down before tapping Character (%s: %s)' % (label, moved))
+        a.tap('Character', wait=250)
+        st = a.state()
+        res.ok(st['screen'] == 'char' and st['ctab'] == 'hero' and not st['fishSel'] and not st['ccEdit'] and not st['tryOn'],
+               'Character tab from %s opens the Hero page (%s)' % (label, (st['screen'], st['ctab'], st['fishSel'], st['ccEdit'])))
+        res.eq(a.js("return c._sref.current.scrollTop;"), 0, 'Character tab from %s scrolls to the top (was %s)' % (label, moved))
+        res.ok(a.has('Equipped'), 'Hero page shown after tapping Character from %s' % label)
+    char_tab_from('Wardrobe', {'ctab': 'wardrobe', 'cat': 'clothes'})
+    char_tab_from('Store with a try-on', {'ctab': 'store', 'cat': 'hat', 'tryOn': 'h_viking'})
+    char_tab_from('Explore', {'ctab': 'explore', 'etab': 'adventure'})
+    char_tab_from('Fishing', {'ctab': 'explore', 'etab': 'fishing'})
+    char_tab_from('the Fish Book', {'ctab': 'explore', 'etab': 'book'})
+    char_tab_from('a fish sheet', {'ctab': 'explore', 'etab': 'book', 'fishSel': 'minnow'})
+    char_tab_from('Change look', {'ctab': 'hero', 'ccEdit': True})
+    char_tab_from('the Hero page itself', {'ctab': 'hero'})
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'hat'}); a.tap('Today'); a.tap('Character', wait=200)
+    res.eq(a.state()['ctab'], 'store', 'from another tab, Character still opens where you left it')
+    a.set({'screen': 'char', 'ctab': 'explore', 'etab': 'book', 'fishSel': 'minnow'})
+    res.ok(a.pg.get_by_role('dialog').count() == 1, 'fish sheet open')
+    a.tap('Stats', wait=200)
+    res.eq((a.state()['screen'], a.state()['fishSel']), ('stats', None), 'the bottom bar works while a fish sheet is open')
+    a.check_errors('character tab')
+
+    # ---------- Backgrounds ----------
+    B = a.js("return c.bgData();")
+    I = items(a)
+    res.eq(len(B), 10, '10 new backgrounds')
+    res.eq(sorted(set(b['rarity'] for b in B.values())), ['common', 'epic', 'legendary', 'rare'], 'backgrounds spread across every rarity')
+    PR = {'common': (250, 1), 'rare': (500, 3), 'epic': (900, 5), 'legendary': (1500, 10)}
+    res.ok(all((b['price'], b['lvl']) == PR[b['rarity']] for b in B.values()), 'background prices: Common 250, Rare 500 (Lv 3), Epic 900 (Lv 5), Legendary 1,500 (Lv 10)')
+    res.ok(all(I[k]['slot'] == 'bg' and I[k]['price'] == B[k]['price'] and (I[k]['hp'], I[k]['pow'], I[k]['sta']) == (0, 0, 0) for k in B), 'backgrounds are Store items with no stats')
+    res.ok(I['bg_plain']['price'] == 0 and 'bg_plain' in a.state()['owned'], 'Plain is free and owned')
+    a.set({'bonus': 10000, 'demoXp': 0, 'advXp': 0, 'xpBase': 0, 'screen': 'char', 'ctab': 'store', 'cat': 'bg', 'tryOn': None, 'adv': None, 'fishing': None})
+    lvl = a.js("return c.levelInfo(c.xpOf(c.state)).L;")
+    res.ok(lvl < 3, 'low level for the lock check (Lv %s)' % lvl)
+    cards = a.js("return c.renderVals().store.map(x => ({ name: x.name, act: x.actLabel, off: x.actOff, style: x.isStyle, delta: x.hasDelta, thumb: x.thumbBg }));")
+    res.eq(len(cards), 10, 'Store → Backgrounds lists the 10 backgrounds')
+    res.ok(all(x['style'] and not x['delta'] for x in cards), 'backgrounds say Style only, with no stat change')
+    res.ok(all('url(' in x['thumb'] for x in cards), 'each background card shows its picture')
+    res.eq(sorted(set(x['act'] for x in cards)), ['Buy · 250', 'Unlocks at Lv 10', 'Unlocks at Lv 3', 'Unlocks at Lv 5'], 'level locks for rarer backgrounds')
+    res.ok(a.has('Backgrounds are style only'), 'Store note for backgrounds')
+    a.btn('Try on Sunny Meadow').dispatch_event('click'); a.wait(150)
+    res.ok('url(' in a.js("return c.renderVals().stageBox;"), 'try-on shows the background behind the hero')
+    res.ok(a.has('Style only, no stats'), 'try-on note: style only')
+    s0 = a.js("return c.statsOf(c.state.char, 1);")
+    sp = a.state()['spent']
+    a.btn('Buy · 250', nth=0).click(); a.wait(200)
+    st = a.state()
+    res.ok('bg_meadow' in st['owned'] and st['char']['bg'] == 'bg_meadow', 'bought background is used right away')
+    res.eq(st['spent'] - sp, 250, 'common background costs 250')
+    res.eq(a.js("return c.statsOf(c.state.char, 1);"), s0, 'a background changes no stats')
+    a.set({'ctab': 'hero'})
+    gs = a.js("return c.renderVals().gearSlots.map(g => [g.slot, g.name, g.stats, g.thumbBg.indexOf('url(') >= 0]);")
+    res.eq(gs[-1], ['Background', 'Sunny Meadow', 'Style only', True], 'Equipped list ends with a Background row')
+    res.ok('url(' in a.js("return c.renderVals().stageBox;"), 'Hero page shows the background')
+    a.pg.locator('button').filter(has_text='Sunny Meadow').first.click(); a.wait(200)
+    res.eq((a.state()['ctab'], a.state()['cat']), ('wardrobe', 'bg'), 'Background row opens Wardrobe → Backgrounds')
+    ward = a.js("return c.renderVals().wardrobe.map(x => [x.name, x.actLabel, x.actOff]);")
+    res.eq(ward, [['Plain', 'Use', False], ['Sunny Meadow', 'In use', True]], 'Wardrobe lists Plain and the bought background')
+    a.btn('Use Plain').click(); a.wait(150)
+    res.eq(a.state()['char']['bg'], 'bg_plain', 'switched back to Plain')
+    res.ok('url(' not in a.js("return c.renderVals().stageBox;"), 'Plain is the theme colour, no picture')
+    # Changing the background is fine during a trip (it is not gear)
+    a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });"); a.wait(60)
+    a.js("c.sendAdventure('woods');"); a.wait(100)
+    res.ok(a.state()['adv'] is not None, 'on a trip for the background check')
+    a.btn('Use Sunny Meadow').click(); a.wait(150)
+    res.eq(a.state()['char']['bg'], 'bg_meadow', 'background can change during a trip')
+    a.set({'ctab': 'store', 'cat': 'bg', 'demoXp': 6000})
+    a.btn('Try on Frost Peaks').dispatch_event('click'); a.wait(120)
+    a.btn('Buy · 500', nth=0).click(); a.wait(200)
+    res.eq(a.state()['char']['bg'], 'bg_frost', 'bought during a trip: used right away (Lv 3 unlocked)')
+    a.js("c.resolveAdventure();"); a.wait(150); a.dismiss_all()
+    a.set({'ctab': 'hero', 'ccEdit': False})
+    a.tap('Change look')
+    res.ok('url(' in a.js("return c.renderVals().ccStageBox;"), 'Change look preview shows the background')
+    a.tap('Cancel')
+    # Every background draws in the light and dark theme (night colours in dark mode)
+    pics = a.js("""const out = {}; Object.keys(c.bgData()).forEach(id => { out[id] = [c.bgImage(id, false), c.bgImage(id, true)]; }); return out;""")
+    res.ok(all(v[0] != v[1] for v in pics.values()), 'each background has a separate night version')
+    sizes = a.pg.evaluate("""async urls => { const out = []; for (const u of urls) { const src = u.slice(5, -2); out.push(await new Promise(r => { const im = new Image(); im.onload = () => r([im.naturalWidth, im.naturalHeight]); im.onerror = () => r(null); im.src = src; })); } return out; }""",
+                          [u for v in pics.values() for u in v])
+    res.ok(all(s == [88, 67] for s in sizes), 'all 20 background pictures load as 88×67 pixel art (%s)' % [s for s in sizes if s != [88, 67]][:3])
+    # The hero stays clearly visible on every background: the share of hero pixels that differ strongly from what is
+    # behind them (screenshot with and without the hero). The plain stage, measured the same way, is the reference:
+    # about 0.97 in light mode and 0.5–0.7 in dark mode. Every new picture must reach 0.5.
+    import io
+    from PIL import Image
+    worst = (9, '')
+    plain = {}
+    looks = {'brown boy': {'sex': 'boy', 'skin': 'medium', 'hc': 'brown', 'hair': 'hr_short', 'clothes': 'c_vest'},
+             'black-haired girl': {'sex': 'girl', 'skin': 'deep', 'hc': 'black', 'hair': 'hr_long', 'clothes': 'c_dress'},
+             'blonde girl': {'sex': 'girl', 'skin': 'light', 'hc': 'blonde', 'hair': 'hr_long', 'clothes': 'c_dress'}}
+    a.set({'owned': sorted(set(a.state()['owned']) | set(B.keys()) | {'c_vest', 'c_dress', 'hr_short', 'hr_long'}), 'ctab': 'hero', 'tryOn': None})
+    for theme in ('light', 'dark'):
+        for lname, look in looks.items():
+            for bid in ['bg_plain'] + sorted(B.keys()):
+                ch = dict(a.state()['char'], hat=None, acc=[], weapon=[], bg=bid, **look)
+                a.set({'char': ch, 'settings': dict(a.state()['settings'], theme=theme)}, wait=120)
+                stage = a.pg.locator('button:has-text("Change look")').locator('xpath=..')
+                A = Image.open(io.BytesIO(stage.screenshot())).convert('RGB')
+                a.pg.evaluate("() => { const b = Array.from(document.querySelectorAll('button')).find(x => x.innerText.trim() === 'Change look'); b.parentElement.firstElementChild.style.visibility = 'hidden'; }")
+                Bk = Image.open(io.BytesIO(stage.screenshot())).convert('RGB')
+                a.pg.evaluate("() => { const b = Array.from(document.querySelectorAll('button')).find(x => x.innerText.trim() === 'Change look'); b.parentElement.firstElementChild.style.visibility = ''; }")
+                pa, pb = A.load(), Bk.load()
+                hero = strong = 0
+                for y in range(A.size[1]):
+                    for x in range(A.size[0]):
+                        p, q = pa[x, y], pb[x, y]
+                        d2 = (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2
+                        if d2 > 64:
+                            hero += 1
+                            if d2 > 3600: strong += 1
+                share = strong / max(1, hero)
+                if bid == 'bg_plain':
+                    plain[(theme, lname)] = share
+                    continue
+                if hero < 5000 or share < 0.5:
+                    res.ok(False, 'hero clearly visible on %s (%s, %s): %d hero pixels, %.2f strong' % (bid, theme, lname, hero, share))
+                if share < worst[0]: worst = (share, '%s %s %s' % (bid, theme, lname))
+    print('  hero visibility: lowest share %.2f (%s); plain stage %s' % (worst[0], worst[1], {k: round(v, 2) for k, v in plain.items()}), flush=True)
+    res.ok(worst[0] >= 0.5, 'hero clearly visible on all 10 backgrounds, both themes, 3 looks (lowest %.2f: %s)' % worst)
+    a.check_errors('backgrounds')
 
 
 if __name__ == '__main__':

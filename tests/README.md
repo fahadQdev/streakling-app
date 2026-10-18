@@ -18,16 +18,16 @@ Each suite prints `N passed, M failed` and a list of screen problems it found.
 
 | File | What it checks |
 |---|---|
-| `t_logic.py` | Day states, streaks and freezes against an independent re-implementation (600 random habits), badges, coin and XP caps, levels, goals, stats totals |
-| `t_habits.py` | Creating every habit type and option, every form error, logging (check, amount, time, quit, skip, reasons), the stopwatch, past days and the edit window, editing, archive, delete, reorder |
-| `t_days.py` | Weeks of use on a simulated clock: midnight with the app open, days away, coins and XP carried over, the weekly league, real trip lengths, a timer across midnight, daylight-saving changes, year end |
-| `t_hero.py` | Hero setup, store, try-on, wardrobe rules, accessory slots, stats, adventures, fishing, bait, Fish Book rewards, selling, gear locked during trips, Change look |
-| `t_settings.py` | Themes, switches, leaderboard actions, invites, backup and restore, bad files, demo tools, start over, broken and old saves, storage full or blocked, two tabs, offline |
-| `t_more.py` | Coach tips, reasons card, heatmap taps, schedule edits, pop-up queue, trip shortcuts, countdowns, recap, the clock going back, skipping setup, singular words |
-| `t_long.py` | The longest allowed names (and Arabic) on every screen |
+| `t_logic.py` | Day states, streaks and freezes against an independent re-implementation (600 random habits), badges, coin and XP caps, levels, goals, stats totals, which habits Today shows on which days (600 random habits), done-habit order and Hide done (random lists), task coins over 400 random steps |
+| `t_habits.py` | Creating every habit type and option, every form error, logging (check, amount, time, quit, skip, reasons), the stopwatch, past days and the edit window, editing, archive, delete, reorder, habits only on their scheduled days, done habits moving down, Hide done |
+| `t_days.py` | Weeks of use on a simulated clock: midnight with the app open, days away, coins and XP carried over, the weekly league, real trip lengths, a timer across midnight, daylight-saving changes, year end, tasks and Hide done over days |
+| `t_hero.py` | Hero setup, starter items per character, store, try-on, wardrobe rules, accessory slots, stats, adventures, fishing, bait, Fish Book rewards, selling, gear locked during trips, Change look, the Character tab going back to Hero, backgrounds (prices, levels, wardrobe, trips, day and night pictures, the hero standing out on each one) |
+| `t_settings.py` | Themes, switches, leaderboard actions, invites, backup and restore (with tasks), bad files, demo tools, start over, broken and old saves (v0.12 starter items, damaged v0.13 fields), storage full or blocked, two tabs, offline |
+| `t_more.py` | Coach tips, reasons card, heatmap taps, schedule edits, pop-up queue, trip shortcuts, countdowns, recap and its one-week lock, the clock going back, skipping setup, singular words, one-time tasks (sections, dates, edit, delete, coins and farming, the next day) |
+| `t_long.py` | The longest allowed names (and Arabic), habit and task names, on every screen |
 | `t_pages.py` | Design boards, manifest, icons, service worker, theme colours |
-| `tour.py` | Visits ~120 screens, sheets and pop-ups and scans each one (see below). `python3 tour.py 320-light 390-dark 1280-light …` |
-| `t_monkey.py` | Random taps, typing, time jumps and reloads with checks after every step. `python3 t_monkey.py <steps> <seed…>` |
+| `tour.py` | Visits ~150 screens, sheets and pop-ups and scans each one (see below). `python3 tour.py 320-light 390-dark 1280-light …` |
+| `t_monkey.py` | Random taps, typing, time jumps and reloads with checks after every step (also task and background rules). `python3 t_monkey.py <steps> <seed…>` |
 
 `scan.js` is the screen scanner used everywhere: it flags `undefined`/`NaN` text, content sticking out of the screen, clipped or spilling text, buttons covered by something else, low contrast, small tap targets, unnamed buttons and duplicate ids.
 

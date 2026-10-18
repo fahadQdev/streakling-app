@@ -81,6 +81,52 @@ def states():
     def _(a):
         a.btn('Add 5 pages to Read', exact=False).click(); a.wait(120)
 
+    @st('today-hide-done')
+    def _(a): a.set({'settings': dict(a.state()['settings'], hideDone=True)})
+
+    @st('today-all-done-hidden')
+    def _(a):
+        a.js("c.setState(s => ({ settings: Object.assign({}, s.settings, { hideDone: true }), habits: s.habits.map(h => c.withDay(h, c.T, h.type === 'quit' ? { clean: true } : { v: h.target })) }));")
+        a.wait(150); a.dismiss_all()
+
+    @st('today-offday')
+    def _(a): a.set({'day': a.T() - 6})   # last Friday: Study (Sun–Thu) is not on the list
+
+    @st('today-nothing-scheduled')
+    def _(a):
+        a.js("c.setState(s => ({ habits: s.habits.filter(h => h.id === 'study'), day: c.T - 6 }));")
+
+    # ---------- Tasks ----------
+    @st('today-tasks')
+    def _(a): a.pg.get_by_role('tab', name=re.compile('^Tasks')).click()
+
+    @st('today-tasks-empty')
+    def _(a):
+        a.set({'tasks': []}); a.pg.get_by_role('tab', name=re.compile('^Tasks')).click()
+
+    @st('today-tasks-flash')
+    def _(a):
+        a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(100)
+        a.tap('Mark task Call the dentist done', wait=120)
+
+    @st('task-sheet-new')
+    def _(a):
+        a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(100); a.tap('New task')
+
+    @st('task-sheet-date')
+    def _(a):
+        a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(100); a.tap('New task')
+        a.fill('#tname', 'Renew the car registration'); a.pg.get_by_role('dialog').get_by_role('button', name='Pick a date').click()
+
+    @st('task-sheet-error')
+    def _(a):
+        a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(100); a.tap('New task'); a.tap('Add task')
+
+    @st('task-sheet-edit-armed')
+    def _(a):
+        a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(100)
+        a.tap('Edit task Buy groceries'); a.tap('Delete task')
+
     # ---------- Sheets ----------
     @st('sheet-amount')
     def _(a): a.tap('Log Read')
@@ -166,6 +212,10 @@ def states():
     @st('recap')
     def _(a):
         a.tap('Stats'); a.tap('Your 30-day recap Check-ins, best streak, top habit, totals', exact=False)
+
+    @st('stats-recap-locked')
+    def _(a):
+        a.set({'firstDay': a.T() - 2}); a.tap('Stats')
 
     @st('recap-empty')
     def _(a):
@@ -266,7 +316,7 @@ def states():
         a.js("c.setState({ adv: { zid: 'woods', start: Date.now(), end: Date.now() + 15 * 60000, demo: false, chance: 0.7, bonus: false }, trips: { day: c.T, adv: true, fish: false } });")
         a.tap('Character')
 
-    for cat in ['clothes', 'hat', 'hair', 'shoes', 'weapon', 'acc', 'rod']:
+    for cat in ['clothes', 'hat', 'hair', 'shoes', 'weapon', 'acc', 'rod', 'bg']:
         def mkw(cat):
             def f(a): a.set({'screen': 'char', 'ctab': 'wardrobe', 'cat': cat})
             return f
@@ -283,6 +333,21 @@ def states():
     @st('char-store-tryon-rod')
     def _(a):
         a.set({'screen': 'char', 'ctab': 'store', 'cat': 'rod'}); a.btn('Try on', exact=False).first.dispatch_event('click'); a.wait(150)
+
+    @st('char-store-tryon-bg')
+    def _(a):
+        a.set({'screen': 'char', 'ctab': 'store', 'cat': 'bg'}); a.btn('Try on Beach Day').dispatch_event('click'); a.wait(150)
+
+    for bid in ['bg_meadow', 'bg_room', 'bg_beach', 'bg_forest', 'bg_mushroom', 'bg_blossom', 'bg_frost', 'bg_cavern', 'bg_sky', 'bg_dragon']:
+        def mkb(bid):
+            def f(a):
+                a.js("c.setState(s => ({ owned: s.owned.indexOf(arg) < 0 ? s.owned.concat([arg]) : s.owned, char: Object.assign({}, s.char, { bg: arg }), screen: 'char', ctab: 'hero' }));", bid)
+            return f
+        S.append(('char-hero-' + bid, mkb(bid)))
+
+    @st('char-look-bg')
+    def _(a):
+        a.js("c.setState(s => ({ owned: s.owned.concat(['bg_dragon']), char: Object.assign({}, s.char, { bg: 'bg_dragon' }) }));"); a.tap('Character'); a.tap('Change look')
 
     @st('char-wardrobe-busy')
     def _(a):
@@ -446,7 +511,7 @@ def main(browser, res, configs):
         a.set({'settings': dict(a.state()['settings'], theme=theme)})
         a.dismiss_all()
         snap = a.state()
-        shoot = cfg in ('390-light', '390-dark', '320-light', '1280-light', '667x375-light')
+        shoot = cfg in ('390-light', '390-dark', '320-light', '320-dark', '1280-light', '1280-dark', '667x375-light')
         n = 0
         for name, fn in S:
             if only and only not in name:

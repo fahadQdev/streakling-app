@@ -20,6 +20,23 @@ CHECK_JS = r"""() => {
     [s.char.clothes, s.char.shoes, s.char.hair, s.char.rod].forEach(id => { if (id && !D.items[id]) out.push('unknown item ' + id); });
     (s.char.acc || []).concat(s.char.weapon || [], s.char.hat ? [s.char.hat] : []).forEach(id => { if (s.owned.indexOf(id) < 0) out.push('wearing unowned ' + id); });
   }
+  if (s.char) {
+    if (s.owned.indexOf('bg_plain') < 0) out.push('plain background not owned');
+    if (s.char.bg && s.char.bg !== 'bg_plain' && s.owned.indexOf(s.char.bg) < 0) out.push('using unowned background ' + s.char.bg);
+    [s.char.clothes, s.char.hair].forEach(id => { if (id && s.owned.indexOf(id) < 0) out.push('wearing unowned ' + id); });
+  }
+  if (!Array.isArray(s.tasks)) out.push('tasks not a list');
+  else {
+    const per = {}, ids = {};
+    s.tasks.forEach(t => {
+      if (!t || typeof t.name !== 'string' || !t.name.trim() || t.name.length > 60 || !isFinite(t.day)) out.push('bad task ' + JSON.stringify(t));
+      else if (t.paid && !t.done) out.push('paid but not done: ' + t.name);
+      if (t && t.paid) per[t.doneDay] = (per[t.doneDay] || 0) + 1;
+      if (t && ids[t.id]) out.push('duplicate task id ' + t.id);
+      if (t) ids[t.id] = true;
+    });
+    if (Object.values(per).some(n => n > 5)) out.push('more than 5 paid tasks in a day');
+  }
   if (s.timer && !s.habits.find(h => h.id === s.timer.hid)) out.push('timer for a missing habit');
   if (s.sheet && !s.habits.find(h => h.id === s.sheet.hid)) out.push('sheet for a missing habit');
   // A pop-up's main button must be reachable on screen.
@@ -52,6 +69,18 @@ def step(a, rng, log):
             import json as _j
             b, f = _j.loads(before), _j.loads(after)
             diff = [k for k in set(b) | set(f) if b.get(k) != f.get(k)]
+            # A running stopwatch keeps counting while the page reloads: its habit's day may gain a few seconds.
+            t = b.get('timer')
+            if 'habits' in diff and t and t.get('running'):
+                def cut(hs):
+                    hs = _j.loads(_j.dumps(hs)); v = 0
+                    for h in hs:
+                        d = h['days'].get(str(t['day'])) if h['id'] == t['hid'] else None
+                        if d is not None: v = d.pop('v', 0) or 0
+                    return hs, v
+                hb, vb = cut(b['habits']); hf, vf = cut(f['habits'])
+                if hb == hf and 0 <= vf - vb <= 10:
+                    diff.remove('habits')
             # day/lastDay can legitimately move only if the date changed
             if [k for k in diff if k not in ('lastDay',)]:
                 a.res.failed.append('reload changed data: %s | steps: %s' % (diff, ' > '.join(log[-12:])))
@@ -125,6 +154,9 @@ def session(browser, res, seed, steps, w, h, tz='Asia/Riyadh'):
             res.failed.append('seed %d step %d: %s | steps: %s' % (seed, i, bad, ' > '.join(log[-12:])))
         if i % 25 == 0:
             for it in a.scan('monkey', contrast=False):
+                # '{{x}}' is one of the texts typed above (a task only needs a name), not a template leak.
+                if it['kind'] in ('bad-text', 'bad-attr') and '{{x}}' in it['msg'] + it['where']:
+                    continue
                 if it['kind'] in ('bad-text', 'bad-attr', 'bad-style', 'overflow-x', 'hscroll', 'dup-id'):
                     res.failed.append('seed %d step %d: %s %s %s | steps: %s' % (seed, i, it['kind'], it['msg'], it['where'], ' > '.join(log[-8:])))
     res.passed += steps

@@ -196,6 +196,41 @@ def main(browser, res):
     a.check_errors('S4b')
     a.close()
 
+    # ============ S5: tasks, Hide done and the recap over days ============
+    a = App(browser, res, when=at(2026, 10, 15, 20, 0))   # Thursday evening
+    a.clear(); a.open(); onboard(a, focus=('health',)); a.dismiss_all()
+    T0 = a.T()
+    a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(150)
+    a.tap('New task'); a.fill('#tname', 'Book flights'); a.tap('Add task', wait=200)
+    a.tap('New task'); a.fill('#tname', 'Sunday errand'); a.pg.get_by_role('dialog').get_by_role('button', name='Pick a date').click(); a.wait(60)
+    a.pg.locator('#tdate').fill('2026-10-18'); a.wait(60); a.tap('Add task', wait=200)
+    a.tap('New task'); a.fill('#tname', 'Water plants'); a.tap('Add task', wait=200)
+    a.tap('Mark task Water plants done', wait=200)
+    a.pg.get_by_role('tab', name='Habits').click(); a.wait(120)
+    a.tap('Hide done', wait=150)
+    c0, x0 = coins(a), xp(a)
+    res.eq(c0, 5, 'one finished task: 5 coins')
+    reopen_after(a, 3 * DAY)    # Sunday: a new league week
+    titles = a.dismiss_all()
+    res.eq(a.T(), T0 + 3, 'three days later (Sunday)')
+    res.ok(any(t in ('Trophy won!', 'Promoted!', 'Moved down', 'Week complete') for t in titles), 'league week closed (%s)' % titles)
+    res.eq((coins(a), xp(a)), (c0, x0), 'task coins kept over days away; tasks never add XP')
+    res.eq(a.state()['settings']['hideDone'], True, 'Hide done remembered over days')
+    a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(150)
+    m = {i['name']: i['meta'] for s in a.js("return c.renderVals().taskSections.map(s => s.items.map(i => ({ name: i.name, meta: i.meta })));") for i in s}
+    res.eq(m, {'Book flights': 'Overdue · Thu 15 Oct', 'Sunday errand': 'Today'}, 'old task overdue, Sunday task due today, finished task gone')
+    res.eq(a.js("return c.renderVals().taskSections.map(s => s.label);"), ['Today'], 'no Upcoming section when nothing is upcoming')
+    res.ok(a.js("return c.renderVals().recapOpen;") is False, 'recap still locked on day 4')
+    a.save(); a.blank()
+    a.pg.clock.fast_forward(16 * DAY); a.pg.clock.fast_forward(15 * DAY)   # 31 days in two steps (one step overflows)
+    a.open(700); a.dismiss_all()
+    res.eq(a.T(), T0 + 34, '31 more days')
+    res.ok(all(t['name'] != 'Water plants' for t in a.state()['tasks']), 'finished tasks are cleared after 30 days')
+    res.eq(coins(a), c0, 'clearing old tasks keeps their coins')
+    res.ok(a.js("return c.renderVals().recapOpen;") is True, 'recap open after a week')
+    a.check_errors('S5')
+    a.close()
+
 
 if __name__ == '__main__':
     sys.exit(1 if run('days', main) else 0)

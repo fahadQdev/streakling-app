@@ -270,6 +270,88 @@ def main(browser, res):
     res.ok(('Full days\n%d' % st['done']) in t, 'stats: full days total (%s)' % st['done'])
     res.ok(('Days missed\n%d' % st['miss']) in t, 'stats: missed total (%s)' % st['miss'])
     a.scan('stats-logic')
+
+    # ---------- 8. Today lists a habit only on its scheduled days (600 random habits, every day) ----------
+    rng = random.Random(11)
+    bad = 0
+    for i in range(600):
+        h = rand_habit(rng, T, 's%d' % i)
+        if rng.random() < 0.15: h['archived'] = True
+        got = a.js("return Array.from({ length: c.T + 1 }, (_, j) => c.onToday(arg, j));", h)
+        def cfg(j):
+            for p in h.get('past', []):
+                if j <= p['until']: return p
+            return h
+        want = []
+        for j in range(T + 1):
+            e = h['days'].get(str(j), {})
+            f = cfg(j)['freq']
+            off = h['type'] != 'quit' and f['kind'] == 'days' and (j % 7) not in f['days']
+            want.append(not h['archived'] and h['start'] <= j and (not off or (e.get('v') or 0) > 0 or bool(e.get('skip'))))
+        if got != want:
+            bad += 1
+            if bad <= 3: print('ONTODAY MISMATCH', h['freq'], h['start'], [j for j in range(T + 1) if got[j] != want[j]][:5])
+    res.eq(bad, 0, 'Today shows a habit on its scheduled days only (or when that day is logged), for 600 random habits')
+
+    # ---------- 9. Done habits sink, Hide done hides them (random lists) ----------
+    rng = random.Random(5)
+    bad = bad2 = 0
+    parts = ['morning', 'afternoon', 'evening', 'anytime']
+    for trial in range(40):
+        hs = []
+        for k in range(rng.randint(1, 9)):
+            typ = rng.choice(['check', 'amount', 'quit'])
+            h = rand_habit(rng, T, 'o%d_%d' % (trial, k))
+            h.update({'type': typ, 'target': 1 if typ != 'amount' else 10, 'min': 4 if typ == 'amount' else 0, 'part': rng.choice(parts), 'name': 'N%d' % k,
+                      'freq': {'kind': 'daily', 'n': 7, 'days': []}, 'start': T - 3, 'past': [], 'pauses': [], 'archived': False})
+            st = rng.choice(['none', 'done', 'skip', 'min', 'zero'])
+            dd = {'none': {}, 'done': {'v': h['target']} if typ != 'quit' else {'clean': True}, 'skip': {'skip': True} if typ != 'quit' else {}, 'min': {'v': 4} if typ == 'amount' else {}, 'zero': {'v': 0} if typ != 'quit' else {'slip': True}}[st]
+            h['days'] = {str(T): dd}
+            hs.append(h)
+        hide = rng.random() < 0.5
+        a.js("c.setState({ habits: arg.hs, reorder: false, day: c.T, ttab: 'habits', settings: Object.assign({}, c.state.settings, { hideDone: arg.hide }) });", {'hs': hs, 'hide': hide})
+        a.wait(40)
+        got = a.js("""const v = c.renderVals(); return { groups: v.groups.map(g => [g.label, g.items.map(h => h.name)]), allHidden: v.allHidden,
+          x: Object.fromEntries(c.state.habits.map(h => [h.name, c.build(h)[c.T]])) };""")
+        want = []
+        for p in parts:
+            items = [h['name'] for h in hs if h['part'] == p]
+            if not items: continue
+            done = [n for n in items if got['x'][n] in 'dps']
+            und = [n for n in items if n not in done]
+            shown = und if hide else und + done
+            if shown: want.append([p.capitalize(), shown])
+        if got['groups'] != want: bad += 1
+        all_done = all(got['x'][h['name']] in 'dps' for h in hs)
+        if got['allHidden'] != (hide and all_done): bad2 += 1
+    a.js("c.setState({ settings: Object.assign({}, c.state.settings, { hideDone: false }) });")
+    res.eq(bad, 0, 'not-done habits first, then done (done, minimum, skipped), each in saved order; Hide done leaves only not-done (40 random lists)')
+    res.eq(bad2, 0, '"All done" note exactly when everything is done and hidden')
+
+    # ---------- 10. Task coins can't be farmed (random add / tick / untick / delete / new day) ----------
+    rng = random.Random(3)
+    a.js("c.setState({ tasks: [], coinsBase: 0, bonus: 0, spent: 0, habits: [], celebrate: [] });"); a.wait(80)
+    base = a.js("return c.coinsOf(c.state);")
+    xp0 = a.js("return c.xpOf(c.state);")
+    T0 = a.T()
+    problems = []
+    for stepn in range(400):
+        op = rng.random()
+        if op < 0.3:
+            a.js("c.setState({ taskSheet: Object.assign(c.newTaskSheet(), { name: 'Task ' + Math.random().toString(36).slice(2, 6) }) }); c.saveTask();")
+        elif op < 0.75:
+            a.js("const open = c.state.tasks; if (open.length) c.toggleTask(open[Math.floor(Math.random() * open.length)].id);")
+        elif op < 0.9:
+            a.js("const l = c.state.tasks; if (l.length) { const t = l[Math.floor(Math.random() * l.length)]; c.setState({ taskSheet: { mode: 'edit', id: t.id, name: t.name, when: 'today', date: '', error: '', confirmDel: false } }); c.deleteTask(); c.deleteTask(); }")
+        else:
+            a.js("const st = c.state; c.T = c.T + 1; c.setState(Object.assign(c.rolloverPatch(st, c.T - 1), { day: c.T }));")
+        a.wait(15)
+        chk = a.js("""const s = c.state, L = s.tasks; const per = {}; L.forEach(t => { if (t.paid) per[t.doneDay] = (per[t.doneDay] || 0) + 1; });
+          return { coins: c.coinsOf(s), paid: L.filter(t => t.paid).length, base: s.coinsBase, perMax: Math.max(0, ...Object.values(per)), bad: L.filter(t => t.paid && !t.done).length, xp: c.xpOf(s) };""")
+        if chk['coins'] != base + chk['base'] + 5 * chk['paid'] or chk['perMax'] > 5 or chk['bad'] or chk['xp'] != xp0:
+            problems.append((stepn, chk))
+    a.js("c.T = arg;", T0)
+    res.eq(problems[:3], [], 'coins always equal 5 × paid tasks (plus cleared ones), at most 5 paid a day, no XP (400 random steps)')
     a.check_errors('logic')
 
 

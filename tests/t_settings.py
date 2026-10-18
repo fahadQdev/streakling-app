@@ -96,6 +96,13 @@ def main(browser, res):
     a.check_errors('leaderboard')
 
     # ---------- Backup and restore ----------
+    a.tap('Today')
+    a.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); a.wait(150)
+    a.tap('New task'); a.fill('#tname', 'Pay rent'); a.tap('Add task', wait=200)
+    a.tap('Mark task Pay rent done', wait=200)
+    a.pg.get_by_role('tab', name='Habits').click(); a.wait(150)
+    a.tap('Hide done', wait=150)
+    saved_tasks = a.state()['tasks']
     a.go_settings()
     with a.pg.expect_download() as dl:
         a.tap('Download backup', wait=300)
@@ -106,10 +113,14 @@ def main(browser, res):
     res.ok(a.has('Last backup: 15 Oct 2026'), 'last backup date shown')
     res.ok(a.has('Backup saved'), 'backup confirmation')
     res.ok('sheet' not in env['state'] and 'screen' not in env['state'], 'backup leaves out screen state')
+    res.eq(env['state'].get('tasks'), saved_tasks, 'backup includes the tasks')
+    res.ok(env['state']['settings'].get('hideDone') is True and env['state'].get('schema') == 13 and isinstance(env['state'].get('firstDay'), int), 'backup includes Hide done, schema and first day')
+    res.ok('ttab' not in env['state'] and 'taskSheet' not in env['state'], 'backup leaves out the Tasks screen state')
     saved_habits = env['state']['habits']
     # change data, then restore
     a.tap('Today'); a.tap('New habit'); a.fill('#hemoji', '🎯'); a.fill('#hname', 'After backup'); a.tap('Create habit', wait=200)
     res.ok(any(h['name'] == 'After backup' for h in a.state()['habits']), 'habit added after backup')
+    a.set({'tasks': [], 'settings': dict(a.state()['settings'], hideDone=False)})
     a.go_settings()
     a.pg.locator('#restoreFile').set_input_files(path); a.wait(400)
     res.ok(a.has('Restoring replaces everything on this device'), 'restore asks first')
@@ -122,6 +133,8 @@ def main(browser, res):
     a.dismiss_all()
     res.ok(not any(h['name'] == 'After backup' for h in a.state()['habits']), 'restore replaced the data')
     res.eq([h['name'] for h in a.state()['habits']], [h['name'] for h in saved_habits], 'restored habits match the backup')
+    res.eq(a.state()['tasks'], saved_tasks, 'restored tasks match the backup')
+    res.eq(a.state()['settings']['hideDone'], True, 'restored Hide done choice')
     # bad files
     a.go_settings()
     import tempfile
@@ -196,6 +209,53 @@ def main(browser, res):
     res.eq(b.state()['settings']['sounds'], True, 'old save: sounds on by default')
     res.eq(b.state()['starterBonus'], False, 'old save: welcome gift pending')
     b.check_errors('old save')
+    # v0.12 saves: every hero owned both characters' starter outfit and hair. Only this hero's set stays, plus anything worn.
+    old = json.loads(json.dumps(env))
+    for k in ('schema', 'firstDay', 'tasks'): old['state'].pop(k, None)
+    old['state']['settings'].pop('hideDone', None)
+    old['state']['char'].pop('bg', None)
+    old['state']['owned'] = ['c_vest', 'c_dress', 'hr_short', 'hr_long', 's_boots', 'r_bamboo', 'h_cap']
+    old['state']['char'].update({'sex': 'boy', 'clothes': 'c_vest', 'hair': 'hr_short'})
+    starts = [h['start'] for h in old['state']['habits']]
+    old['state']['habits'][0]['start'] = min(starts) - 3
+    b.put_env(old); b.open()
+    st = b.state()
+    res.eq(sorted(st['owned']), sorted(['c_vest', 'hr_short', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain']), 'old boy save: girl starter outfit and hair removed, plain background added')
+    res.eq((st['schema'], st['char']['bg'], st['tasks'], st['settings']['hideDone']), (13, 'bg_plain', [], False), 'old save: new fields get their defaults')
+    res.eq(st['firstDay'], min(starts) - 3, 'old save: first day comes from the oldest habit')
+    b.set({'screen': 'char', 'ctab': 'store', 'cat': 'clothes'})
+    res.ok('Coral Dress' in b.js("return c.renderVals().store.map(x => x.name);"), 'the removed outfit is back in the Store')
+    b.check_errors('migrate boy')
+    old2 = json.loads(json.dumps(old))
+    old2['state']['char'].update({'sex': 'girl', 'clothes': 'c_vest', 'hair': 'hr_long'})
+    b.put_env(old2); b.open()
+    res.eq(sorted(b.state()['owned']), sorted(['c_vest', 'c_dress', 'hr_long', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain']), 'old girl save wearing the boy vest: the vest stays, the boy hair goes')
+    res.eq(b.state()['char']['clothes'], 'c_vest', 'still wearing the vest')
+    b.check_errors('migrate girl')
+    # A v0.13 save is not migrated again: a boy who bought the girl outfit keeps it.
+    new = json.loads(json.dumps(env))
+    new['state']['owned'] = new['state']['owned'] + ['c_dress']
+    b.put_env(new); b.open()
+    res.ok('c_dress' in b.state()['owned'], 'bought starter items are kept in v0.13 saves')
+    # Damaged task list and background in a save
+    bad2 = json.loads(json.dumps(env))
+    bad2['state']['tasks'] = [None, 'x', {'name': ''}, {'name': 'No day', 'day': 'soon'}, {'name': '  Fine  ', 'day': 30, 'done': True, 'doneDay': 30, 'paid': True},
+                              {'id': 'dup', 'name': 'A', 'day': 31}, {'id': 'dup', 'name': 'B', 'day': 32, 'done': 'yes'}]
+    bad2['state']['char']['bg'] = 'bg_nowhere'
+    bad2['state']['firstDay'] = 'yesterday'
+    b.put_env(bad2); b.open()
+    st = b.state()
+    res.eq([(x['name'], x['day'], x['done'], x['paid']) for x in st['tasks']], [('Fine', 30, True, True), ('A', 31, False, False), ('B', 32, False, False)], 'bad tasks dropped, good ones kept')
+    res.eq(len(set(x['id'] for x in st['tasks'])), 3, 'task ids made unique')
+    res.eq(st['char']['bg'], 'bg_plain', 'unknown background falls back to Plain')
+    res.ok(isinstance(st['firstDay'], int), 'bad first day replaced')
+    b.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); b.wait(150)
+    b.tap('Stats')
+    b.check_errors('damaged v0.13 save')
+    bad3 = json.loads(json.dumps(env)); bad3['state']['tasks'] = 'not a list'
+    b.put_env(bad3); b.open()
+    res.eq(b.state()['tasks'], [], 'tasks that are not a list become an empty list')
+    b.check_errors('tasks not a list')
     # unfinished onboarding resumes
     b.clear(); b.open(); b.tap('Get started'); b.fill('#obname', 'Resume'); b.tap('Create my hero')
     b.save(); b.pg.reload(); b.wait(600)

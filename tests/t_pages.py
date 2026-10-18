@@ -16,9 +16,9 @@ def main(browser, res):
         code = urllib.request.urlopen(URL + ic['src']).status
         res.eq(code, 200, 'icon ' + ic['src'])
     sw = urllib.request.urlopen(URL + 'sw.js').read().decode()
-    res.ok("streakling-v0.12.0" in sw, 'service worker cache named for this version')
+    res.ok("streakling-v0.13.0" in sw, 'service worker cache named for this version')
     html = urllib.request.urlopen(URL).read().decode()
-    res.ok('v0.12.0' in html, 'index built from v0.12.0')
+    res.ok('v0.13.0' in html, 'index built from v0.13.0')
     for th in ['light', 'dark']:
         a = App(browser, res)
         a.clear(); a.open(); demo(a); a.set({'settings': dict(a.state()['settings'], theme=th)})

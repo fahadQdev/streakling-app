@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.12.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.13.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,27 +33,35 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.12.0)
+## Features (as of v0.13.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
 - **Day states:** Done, Minimum, Skipped, Missed, plus Clean/Slipped for Quit habits.
-- **Schedules:** Mon–Fri is the default, chosen for a worldwide audience.
+- **Schedules:** daily, specific days (Mon–Fri is the default, chosen for a worldwide audience) or times per week. A specific-days habit only shows on Today on its scheduled days (and on an off day you logged); times-a-week habits show every day.
 - **Streaks** with **streak freeze** protection.
 - **Manual logging:** a log sheet for every habit. Amounts can be typed or adjusted with −/+, and time can be typed or recorded with the stopwatch.
+- **A tidy Today:** inside each time of day, habits still to do come first and done ones (done, minimum, skipped) move to the bottom, both in your own order. **Hide done** hides finished habits (the choice is remembered) and shows "All done for today" when nothing is left.
 - **Past days:** go back to earlier days from the week strip or the heatmap. Future days are locked.
 - **Emoji-only habit icons.** The field is empty until the user picks one, with no fake defaults.
+
+### Tasks
+- **One-time tasks** on Today, behind a Habits / Tasks switch: for today or a date you pick. Today's and overdue tasks first, upcoming ones in their own section. Tick, untick, edit, delete.
+- **5 coins per finished task**, no XP, for up to 5 tasks a day. Unticking or deleting a task takes its coins back, so tasks can't be farmed. Tasks never count toward streaks, trips or the league.
 
 ### Goals and stats
 - **Long-term goals** with a deadline picked from a calendar, linked to a habit and filled automatically from its logs.
 - **Stats dashboard:** a GitHub-style heatmap per habit, current vs best streak, and completion trends.
+- **30-day recap** card (check-ins, best streak, top habit, totals). It opens a week after your first day in the app.
 - **Milestone badges per habit:** first check-in, then 7, 14, 30, 90 and 365-day streaks. They are earned automatically and can't be edited.
 - **Celebration pop-ups** for badges and for finishing every habit of the day.
 
 ### The hero (RPG layer)
 - **Character first:** the user creates their pixel hero (boy or girl) before adding any habit. Name, character and skin are permanent after setup; hair colour and outfits can change. Rude hero names are refused (habit names are private and not checked).
-- **Character tab** in the center of the bottom navigation.
+- **Character tab** in the center of the bottom navigation. Tapping it again from anywhere inside Character goes back to the Hero page.
+- **Starter items by character:** a boy starts with the boy outfit and hair, a girl with the girl ones. The other character's starters are in the Store (clothes 150, hair 120).
 - **Wardrobe and Store:** hats, weapons, fishing rods and accessories are separate equipment slots, bought with coins. Gear is locked while the hero is on a trip.
+- **Backgrounds:** 10 pixel-art scenes behind the hero (Common 250, Rare 500, Epic 900, Legendary 1,500), each with a night version for dark mode. Style only, no stats; the plain background is free.
 - **Welcome gift:** 150 coins once, on the first check-in, so a new player can buy a first item.
 - **Stats:** Health, Power and Stamina. Each adventure location tests a different mix, so every item has places where it's the best pick.
 
@@ -129,10 +137,10 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 ## How it was built
 
 - UI prototyped as interactive components in Claude's design canvas.
-- Pixel art (hero, gear, 25 fish, fishing scene) generated with Python/PIL scripts.
+- Pixel art (hero, gear, 25 fish, fishing scene, 10 backgrounds with day and night versions) generated with Python/PIL scripts.
 - Game economy balanced with simulations of casual, regular and dedicated player types over a full year (coins, XP, leveling, item prices).
 - QA with automated checks: Node.js logic harnesses with simulated dates and timers, a template checker for undefined/NaN/clipped text, and Playwright browser runs covering every screen in light and dark mode.
-- Browser test suite in [`tests/`](tests/README.md): every habit flow, weeks of use on a simulated clock (midnight, days away, daylight saving, time-zone changes), the hero and trips, settings and backups, a screen scanner run on ~120 screens at sizes from 320 px to desktop, and random sessions.
+- Browser test suite in [`tests/`](tests/README.md): every habit and task flow, weeks of use on a simulated clock (midnight, days away, daylight saving, time-zone changes), the hero, backgrounds and trips, settings and backups, a screen scanner run on ~145 screens at sizes from 320 px to desktop, and random sessions.
 - Saving tested with a simulated clock in a real browser: first-time setup, reloads, midnight with the app open, a full week of use, time away, real-length trips, backup and restore, a year of history, and long random sessions that reload and compare the screen.
 
 ---

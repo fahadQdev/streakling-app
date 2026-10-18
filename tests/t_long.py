@@ -6,6 +6,8 @@ LONG = 'Meditate every morning before work start'[:40]
 AR = 'قراءة القرآن الكريم يومياً بعد صلاة الفجر'[:40]
 UNIT = 'minutes of practice x'[:20]
 HERO = 'WWWWWWWWWWWWWW'
+TASK = 'Call the insurance company about the claim for the car repairs'[:60]
+TASK_AR = 'الاتصال بشركة التأمين بخصوص مطالبة إصلاح السيارة قبل نهاية الأسبوع'[:60]
 
 
 def main(browser, res):
@@ -17,7 +19,8 @@ def main(browser, res):
               char: Object.assign({}, s.char, { name: arg.hero }),
               habits: s.habits.map(h => h.id === 'read' ? Object.assign({}, h, { name: arg.long, unit: arg.unit, target: 999999 }) : (h.id === 'quran' ? Object.assign({}, h, { name: arg.ar }) : h)),
               goals: s.goals.map(g => Object.assign({}, g, { title: g.id === 'g1' ? 'A very long goal title that takes all sixty characters here' : g.title, target: g.id === 'g1' ? 9999999 : g.target })),
-              settings: Object.assign({}, s.settings, { theme: arg.theme }) }));""", {'hero': HERO, 'long': LONG, 'ar': AR, 'unit': UNIT, 'theme': theme})
+              tasks: s.tasks.map((t, i) => Object.assign({}, t, { name: i % 2 ? arg.task : arg.tar })),
+              settings: Object.assign({}, s.settings, { theme: arg.theme }) }));""", {'hero': HERO, 'long': LONG, 'ar': AR, 'unit': UNIT, 'theme': theme, 'task': TASK, 'tar': TASK_AR})
             a.wait(200); a.dismiss_all()
             snap = a.state()
             for name, fn in states():
@@ -32,7 +35,7 @@ def main(browser, res):
                     continue
                 for it in a.scan(name, contrast=False):
                     pass
-                if w == 320 and theme == 'light' and name in ('today', 'detail-read', 'detail-quran', 'stats', 'goals', 'sheet-amount', 'char-hero', 'ranks-league-tier1', 'archived-list', 'recap'):
+                if w == 320 and theme == 'light' and name in ('today', 'detail-read', 'detail-quran', 'stats', 'goals', 'sheet-amount', 'char-hero', 'ranks-league-tier1', 'archived-list', 'recap', 'today-tasks', 'task-sheet-date', 'stats-recap-locked'):
                     a.shot('long-320__' + name)
             a.check_errors('long %d %s' % (w, theme))
             a.close()
