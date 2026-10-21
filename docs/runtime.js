@@ -45,7 +45,8 @@
   }
 
   var HOLE = /\{\{([\s\S]+?)\}\}/g;
-  var WHOLE = /^\s*\{\{([\s\S]+?)\}\}\s*$/;
+  // One hole and nothing else ("{{a}} {{b}}" is two holes, not one).
+  var WHOLE = /^\s*\{\{((?:(?!\}\})[\s\S])+)\}\}\s*$/;
 
   function toText(v) {
     if (v == null || typeof v === 'boolean') return '';

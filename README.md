@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.13.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.14.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.13.0)
+## Features (as of v0.14.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -103,6 +103,7 @@ docs/                   The standalone web app (served by GitHub Pages)
   design/               The three design boards as plain pages
 prototype/              Source of truth, in Claude's design-canvas format
   Main.dc.html          The app: template + logic (this is the main version now)
+  i18n/en.json          Every piece of text the app shows, by key (more languages go next to it)
   Characters.dc.html    Pixel character style sheet
   Items.dc.html         Items, stats and economy design board
   Fishing.dc.html       Fishing, Fish Book and league design board
@@ -113,7 +114,7 @@ tests/                  Browser tests (Playwright for Python), see tests/README.
 
 ### How it works
 
-The app is designed in `prototype/Main.dc.html`: an HTML template with `{{value}}` placeholders, `<sc-if>` / `<sc-for>` blocks, and a logic class whose `renderVals()` returns everything the template shows. Those files only run inside Claude's design canvas, so `scripts/build.mjs` converts them into `docs/`, where `runtime.js` renders the same template and logic with Preact in any browser.
+The app is designed in `prototype/Main.dc.html`: an HTML template with `{{value}}` placeholders, `<sc-if>` / `<sc-for>` blocks, and a logic class whose `renderVals()` returns everything the template shows. Text is never written into the template or logic: the template reads `{{L.someKey}}` and the logic calls `tr('someKey', [values])`, both looked up in `prototype/i18n/<lang>.json`. Those files only run inside Claude's design canvas, so `scripts/build.mjs` converts them into `docs/`, where `runtime.js` renders the same template and logic with Preact in any browser.
 
 ### Run it locally
 

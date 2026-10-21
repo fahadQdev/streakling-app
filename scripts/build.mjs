@@ -1,6 +1,6 @@
 // Builds the standalone web app (docs/index.html) from prototype/Main.dc.html.
 // Usage: node scripts/build.mjs
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -32,6 +32,21 @@ if (!logic.includes(fixed)) throw new Error('Root size string not found; check r
 logic = logic.replace(fixed, 'width: 100%; height: 100%;');
 
 const version = (src.match(/Streakling v([0-9.]+)/) || [])[1] || 'dev';
+// Text: every prototype/i18n/<lang>.json, inlined so the app needs no extra request and works offline.
+const strings = {};
+for (const f of readdirSync(join(root, 'prototype/i18n')).filter(f => f.endsWith('.json'))) {
+  strings[f.slice(0, -5)] = JSON.parse(readFileSync(join(root, 'prototype/i18n', f), 'utf8'));
+}
+if (!strings.en) throw new Error('prototype/i18n/en.json is missing');
+// Every key the prototype uses must exist in English (the fallback for every other language).
+const used = [...src.matchAll(/\btr\('([^']+)'(?!\s*\+)/g), ...src.matchAll(/\{\{L\.([\w$]+)\}\}/g)].map(m => m[1]);
+const missing = [...new Set(used.filter(k => !(k in strings.en)))];
+if (missing.length) throw new Error('Text keys missing from prototype/i18n/en.json: ' + missing.join(', '));
+for (const [lang, t] of Object.entries(strings)) {
+  const extra = Object.keys(t).filter(k => !(k in strings.en));
+  if (extra.length) throw new Error(`prototype/i18n/${lang}.json has keys English lacks: ${extra.join(', ')}`);
+}
+
 if (template.includes('</template>')) throw new Error('Template contains </template>');
 if (logic.includes('</script')) throw new Error('Logic contains </script');
 
@@ -71,6 +86,7 @@ ${template}
 </template>
 <script src="vendor/preact.min.js"></script>
 <script src="runtime.js"></script>
+<script>var STREAKLING_STR = ${JSON.stringify(strings).replace(/</g, '\\u003c')};</script>
 <script>
 StreaklingBoot({
   template: 'app-template',

@@ -16,9 +16,21 @@ def main(browser, res):
         code = urllib.request.urlopen(URL + ic['src']).status
         res.eq(code, 200, 'icon ' + ic['src'])
     sw = urllib.request.urlopen(URL + 'sw.js').read().decode()
-    res.ok("streakling-v0.13.0" in sw, 'service worker cache named for this version')
+    res.ok("streakling-v0.14.0" in sw, 'service worker cache named for this version')
     html = urllib.request.urlopen(URL).read().decode()
-    res.ok('v0.13.0' in html, 'index built from v0.13.0')
+    res.ok('v0.14.0' in html, 'index built from v0.14.0')
+    # Text comes from the language tables; a missing key would show up as the key itself.
+    a = App(browser, res)
+    a.clear(); a.open(); demo(a)
+    keys = a.pg.evaluate("() => Object.keys(STREAKLING_STR.en).filter(k => /[a-z][A-Z]/.test(k))")
+    res.ok(len(keys) > 500, 'English text table is inlined (%d camelCase keys)' % len(keys))
+    seen = ''
+    for tab in ['Today', 'Stats', 'Character', 'Goals', 'Leaderboard']:
+        a.tap(tab, wait=400); seen += a.text()
+    a.go_settings(); seen += a.text()
+    shown = sorted(k for k in keys if k in seen)
+    res.ok(not shown, 'no raw text keys on screen (%s)' % shown[:5])
+    a.close()
     for th in ['light', 'dark']:
         a = App(browser, res)
         a.clear(); a.open(); demo(a); a.set({'settings': dict(a.state()['settings'], theme=th)})

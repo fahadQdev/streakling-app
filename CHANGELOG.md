@@ -131,5 +131,14 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.14.0: All text in translation files (2026-10-21)
+- **Groundwork for more languages. Nothing you see changes.** Every word the app shows (about 1,060 strings: buttons, labels, messages, pop-ups, item, fish and place names) now lives in `prototype/i18n/en.json` instead of being written into the screens and logic. A new language is one more file next to it.
+- Sentences that were glued together from pieces ("You are " + rank + " of 20 with …") are now one string with numbered gaps (`You are {0} of 20 with {1} XP this week.`), so a translation can put the words in its own order.
+- The build puts the text into `docs/index.html`, so the app still works offline from one page. It stops with an error if the app uses a text key the English file doesn't have.
+- Runtime fix: an attribute that starts and ends with a value, like `{{L.log}} {{h.name}}`, was read as one broken value and dropped. Now each value is filled in.
+- **Tests:** the pages suite checks that the text table is in the app and that no raw key ever shows on Today, Stats, Character, Goals, Leaderboard or Settings. The full regression passes with the same results as v0.13.0.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).
