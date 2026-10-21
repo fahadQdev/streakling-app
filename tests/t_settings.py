@@ -141,7 +141,8 @@ def main(browser, res):
     res.ok(a.has('Backup saved'), 'backup confirmation')
     res.ok('sheet' not in env['state'] and 'screen' not in env['state'], 'backup leaves out screen state')
     res.eq(env['state'].get('tasks'), saved_tasks, 'backup includes the tasks')
-    res.ok(env['state']['settings'].get('hideDone') is True and env['state'].get('schema') == 13 and isinstance(env['state'].get('firstDay'), int), 'backup includes Hide done, schema and first day')
+    res.ok(env['state']['settings'].get('hideDone') is True and env['state'].get('schema') == 14 and isinstance(env['state'].get('firstDay'), int), 'backup includes Hide done, schema and first day')
+    res.ok(isinstance(env['state'].get('gems'), dict) and isinstance(env['state'].get('purchases'), list), 'backup includes diamonds and purchases')
     res.ok('ttab' not in env['state'] and 'taskSheet' not in env['state'], 'backup leaves out the Tasks screen state')
     saved_habits = env['state']['habits']
     # change data, then restore

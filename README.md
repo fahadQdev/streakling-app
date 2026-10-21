@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.15.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.16.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.15.0)
+## Features (as of v0.16.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -70,6 +70,12 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **Adventure:** once a day. It can succeed or fail depending on the hero's gear and level.
 - **Fishing:** once a day, running in parallel with the adventure. The hero is away for 3 hours with a painted fishing scene and a countdown, and comes back with 1–4 fish based on level.
 - **Fish Book:** 25 fish across Common, Rare, Epic and Legendary.
+
+### Diamonds (the rare currency)
+- **Two currencies.** Coins come from habits and tasks, as before. **Diamonds** are rare: they come from the weekly league and from packs, and are shown next to coins at the top of the Character tab.
+- **League rewards:** the top 10 of each week earn diamonds, more in higher leagues (1st place: 30 in Bronze, 45 in Silver, 60 in Gold, 90 in Diamond). Hidden players earn none. The League tab shows this week's rewards.
+- **Packs:** 100, 550 (+10%), 1,200 (+20%) and 2,500 (+25%). Payments are not connected yet: the packs say Coming soon. With Demo tools on, a test payment step (clearly marked, no money) lets you try the whole flow.
+- Diamonds never change coins, XP or the weekly league score.
 
 ### Social (simulated in the prototype)
 - **Weekly league / leaderboard**, friends, and a **Hall of Fame**.
@@ -161,11 +167,13 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 **Later**
 - [ ] Mobile app
 - [ ] Real accounts, friends and leaderboard (needs a backend)
+- [ ] Google Play release with Play Billing for diamond packs (needs the server above first)
 - [ ] Real push notifications and habit reminders (needs a server)
 - [ ] Home-screen widget with one-tap check-in
 
 **Known limitations**
 - Data lives on one device; there is no sync between devices.
+- **Diamonds with a simulated league.** The 19 other players in your league are generated on the device from a seed, with weekly XP in a fixed range for each league. Your place is your real weekly XP against those numbers, so league diamonds are in practice a reward for keeping your habits up (about 60–90 a week for a steady player in Gold or Diamond); nobody is competing against you. Before real payments go live, the diamond balance, purchases and the league must move to a server: on the device, paid diamonds would be lost when browser data is cleared, and a balance could be edited.
 - Leaderboard, friends and league data are simulated.
 - Reminders and notifications do not fire yet (the app says so where you set them).
 - Not yet verified on a real iPhone or in Safari (tested in Chromium at phone sizes; CSS features that need iOS 16.2+ were removed).

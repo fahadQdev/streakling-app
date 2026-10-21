@@ -822,7 +822,7 @@ input,select{font-family:inherit}
 </div>
 </sc-if>
 </div>
-<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.15.0 · {{L.savedOnThisDevice}}</div>
+<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.16.0 · {{L.savedOnThisDevice}}</div>
 </div>
 </sc-if>
 
@@ -1008,7 +1008,10 @@ input,select{font-family:inherit}
 <span style="height: 26px; padding: 0 10px; border-radius: 99px; background: var(--inv); color: var(--invInk); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; flex: none">{{lvText}}</span>
 </div>
 </div>
-<div aria-label="{{L.coins4}}" style="height: 40px; padding: 0 14px 0 10px; border-radius: 99px; background: var(--card); display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#E6B84C" stroke="#A9781E" stroke-width="2"></circle><path d="M12 8v8M9.5 10.5h4" stroke="#A9781E" stroke-width="2" stroke-linecap="round"></path></svg>{{coins}}</div>
+<div style="display: flex; align-items: center; gap: 6px; flex: none">
+<div aria-label="{{L.coins4}}" style="height: 40px; padding: 0 12px 0 9px; border-radius: 99px; background: var(--card); display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="#E6B84C" stroke="#A9781E" stroke-width="2"></circle><path d="M12 8v8M9.5 10.5h4" stroke="#A9781E" stroke-width="2" stroke-linecap="round"></path></svg>{{coins}}</div>
+<button onClick="{{openGems}}" aria-label="{{gemsAria}}" style="height: 40px; padding: 0 12px 0 9px; border-radius: 99px; border: none; background: var(--card); color: var(--ink); display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11l4 5.5L12 20.5 2.5 9z" fill="#6FD3F0" stroke="#2A88AE" stroke-width="1.8" stroke-linejoin="round"></path><path d="M2.5 9h19M9.5 3.5 12 9l2.5-5.5M12 9v11.5" fill="none" stroke="#2A88AE" stroke-width="1.3" stroke-linejoin="round"></path></svg>{{gems}}</button>
+</div>
 </div>
 <sc-if value="{{showStage}}" hint-placeholder-val="{{ true }}">
 <div style="{{stickyWrap}}">
@@ -1106,7 +1109,8 @@ input,select{font-family:inherit}
 <button onClick="{{demoLevel}}" style="{{demoBtn}}">{{L.n1Level}}</button>
 <button onClick="{{demoTrips}}" style="{{demoBtn}}">{{L.resetTodaySTrips}}</button>
 <button onClick="{{demoFish}}" style="{{demoBtn}}">{{L.catch10Fish}}</button>
-<button onClick="{{demoStreaks}}" style="{{demoBtnWide}}">{{demoStreakLabel}}</button>
+<button onClick="{{demoGems}}" style="{{demoBtn}}">{{L.n100Diamonds}}</button>
+<button onClick="{{demoStreaks}}" style="{{demoBtn}}">{{demoStreakLabel}}</button>
 </div>
 </div>
 </sc-if>
@@ -1338,6 +1342,7 @@ input,select{font-family:inherit}
 <div style="flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.4">{{myRankText}}</div>
 <span style="{{trophyPill}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0z"></path><path d="M7 6H4a3 3 0 0 0 3.5 3M17 6h3a3 3 0 0 1-3.5 3"></path><path d="M12 13v4M8 20h8M9 17h6"></path></svg>{{trophyText}}</span>
 </div>
+<div style="display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--muted); font-weight: 600; line-height: 1.45; padding: 0 4px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M6.5 3.5h11l4 5.5L12 20.5 2.5 9z" fill="#6FD3F0" stroke="#2A88AE" stroke-width="1.8" stroke-linejoin="round"></path><path d="M2.5 9h19M9.5 3.5 12 9l2.5-5.5M12 9v11.5" fill="none" stroke="#2A88AE" stroke-width="1.3" stroke-linejoin="round"></path></svg><span style="min-width: 0">{{gemRewardText}}</span></div>
 <div style="background: var(--card); border-radius: 20px; padding: 6px; display: flex; flex-direction: column">
 <sc-for list="{{lbRows}}" as="r" hint-placeholder-count="20">
 <button onClick="{{r.open}}" aria-label="{{r.aria}}" style="{{r.style}}">
@@ -1522,6 +1527,31 @@ input,select{font-family:inherit}
 </div>
 </sc-if>
 
+<sc-if value="{{hasGemSheet}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 10">
+<button aria-label="{{L.close}}" onClick="{{closeGems}}" style="position: absolute; inset: 0; border: none; padding: 0; background: var(--scrim)"></button>
+<div role="dialog" aria-modal="true" aria-label="{{L.diamonds}}" class="dc-col" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
+<span style="display: block; width: 40px; height: 5px; border-radius: 99px; background: var(--line); margin: 0 auto; flex: none"></span>
+<div style="display: flex; align-items: center; gap: 10px">
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700; color: var(--muted)">{{L.yourDiamonds}}</div><div style="display: flex; align-items: center; gap: 8px; margin-top: 2px; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11l4 5.5L12 20.5 2.5 9z" fill="#6FD3F0" stroke="#2A88AE" stroke-width="1.8" stroke-linejoin="round"></path><path d="M2.5 9h19M9.5 3.5 12 9l2.5-5.5M12 9v11.5" fill="none" stroke="#2A88AE" stroke-width="1.3" stroke-linejoin="round"></path></svg>{{gems}}</div></div>
+<button aria-label="{{L.close}}" onClick="{{closeGems}}" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: var(--card); color: var(--ink); display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+<div style="font-size: 13px; color: var(--muted); font-weight: 500; line-height: 1.5">{{L.diamondsExplain}}</div>
+<sc-if value="{{gemMsg}}" hint-placeholder-val="{{ false }}"><div role="status" style="background: var(--accentSoft); color: var(--accentInk); border-radius: 14px; padding: 10px 14px; font-size: 13.5px; font-weight: 700">{{gemMsgText}}</div></sc-if>
+<sc-if value="{{gemConfirm}}" hint-placeholder-val="{{ false }}">
+<div style="background: var(--card); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: inset 0 0 0 2px var(--accentSoft)">
+<div style="font-size: 15px; font-weight: 800">{{gemConfirmTitle}}</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 600; line-height: 1.4">{{L.testPurchaseNoMoney}}</div>
+<div style="display: flex; gap: 8px"><button onClick="{{confirmGems}}" disabled="{{gemBusy}}" style="flex: 1; min-width: 0; min-height: 46px; border-radius: 12px; border: none; background: var(--accent); color: #FFFFFF; font-size: 14px; font-weight: 800">{{L.confirmTestPurchase}}</button><button onClick="{{cancelGems}}" style="min-height: 46px; padding: 0 14px; border-radius: 12px; border: none; background: var(--soft); color: var(--ink); font-size: 13.5px; font-weight: 700; flex: none">{{L.cancel}}</button></div>
+</div>
+</sc-if>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{gemPacks}}" as="g" hint-placeholder-count="4"><button onClick="{{g.pick}}" disabled="{{g.off}}" aria-label="{{g.aria}}" style="{{g.style}}"><span style="display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11l4 5.5L12 20.5 2.5 9z" fill="#6FD3F0" stroke="#2A88AE" stroke-width="1.8" stroke-linejoin="round"></path><path d="M2.5 9h19M9.5 3.5 12 9l2.5-5.5M12 9v11.5" fill="none" stroke="#2A88AE" stroke-width="1.3" stroke-linejoin="round"></path></svg>{{g.gems}}</span><sc-if value="{{g.bonus}}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 800; color: var(--accentInk)">{{g.bonus}}</span></sc-if><span style="font-size: 12.5px; font-weight: 700; color: var(--muted)">{{g.price}}</span></button></sc-for>
+</div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 600; line-height: 1.45; text-align: center">{{gemModeNote}}</div>
+</div>
+</div>
+</sc-if>
 <sc-if value="{{hasPcard}}" hint-placeholder-val="{{ false }}">
 <div style="position: absolute; inset: 0; z-index: 10">
 <button aria-label="{{L.close}}" onClick="{{closePcard}}" style="position: absolute; inset: 0; border: none; padding: 0; background: var(--scrim)"></button>
@@ -1642,6 +1672,23 @@ function fmtNum(n) { return Number(n).toLocaleString('en-US'); }
 // Miss reasons are stored in English ('Tired', 'Busy', …) and shown in the current language.
 function reasonName(r) { return hasTr('reason' + r) ? tr('reason' + r) : r; }
 
+// ---------- Diamonds ----------
+// Real payments will go through Google Play Billing (Digital Goods API + Payment Request inside a
+// Trusted Web Activity). Until that is connected BILLING stays 'off', and with Demo tools on a stub
+// stands in for the payment step, so the whole flow can be tried without money.
+const BILLING = 'off';
+const GEM_PACKS = [
+  { sku: 'diamonds_100', gems: 100, extra: 0, price: 'US$0.99' },
+  { sku: 'diamonds_550', gems: 550, extra: 10, price: 'US$4.99' },
+  { sku: 'diamonds_1200', gems: 1200, extra: 20, price: 'US$9.99' },
+  { sku: 'diamonds_2500', gems: 2500, extra: 25, price: 'US$19.99' }
+];
+// Same shape as the store adapter that will replace it: listProducts() and buy(sku) -> { ok, token }.
+const billingStub = {
+  listProducts: () => Promise.resolve(GEM_PACKS.map(p => Object.assign({}, p))),
+  buy: sku => Promise.resolve({ ok: GEM_PACKS.some(p => p.sku === sku), token: 'stub-' + sku + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8) })
+};
+
 class Component extends DCLogic {
   // Days are numbered from a fixed real date (this.epoch, always a Sunday, so j % 7 is the weekday).
   // T is today's number. It grows by one every day, so history is never cut off.
@@ -1757,12 +1804,15 @@ class Component extends DCLogic {
     const firstLaurel = top3 && st.owned.indexOf('h_laurel') < 0;
     if (firstLaurel) res.owned = st.owned.concat(['h_laurel']);
     const where = tr('youFinishedOf20InLeague', [ord(rank), TIERS[lg.tier]]);
+    const won = this.leagueGems(rank, lg.tier, lg.hidden);
+    if (won) { const g = this.gemsOf(st); res.gems = Object.assign({}, g, { earned: g.earned + won }); }
     let title, body;
     if (top3) { title = tr('trophyWon'); body = where + (firstLaurel ? tr('theChampionLaurelIsInYour') : tr('thatMakesTrophies', [trophies])) + (up ? tr('youMoveUpToLeague', [TIERS[tier]]) : tr('youStayInDiamondTheTop')); }
     else if (up) { title = tr('promoted'); body = tr('top5MoveUpWelcomeTo', [where, TIERS[tier]]); }
     else if (down) { title = tr('movedDown'); body = tr('youMoveToLeagueAFresh', [where, TIERS[tier]]); }
     else { title = tr('weekComplete'); body = tr('youStayInLeagueAFresh', [where, TIERS[tier]]); }
-    res.celebrate = (st.celebrate || []).concat([{ kind: 'badge', badge: ord(rank), quiet: !top3 && !up, kicker: tr('leagueResults'), title, body }]);
+    if (won) body += tr('leagueGemsWon', [won]);
+    res.celebrate = (st.celebrate || []).concat([{ kind: 'badge', badge: ord(rank), quiet: !top3 && !up && !won, kicker: tr('leagueResults'), title, body }]);
     return res;
   }
 
@@ -1773,7 +1823,7 @@ class Component extends DCLogic {
   transientKeys() {
     return ['screen', 'from', 'formFrom', 'sel', 'day', 'reorder', 'sheet', 'sheetVal', 'sheetH', 'sheetM', 'sheetDirty', 'sheetErr',
       'confirmDel', 'confirmGoal', 'confirmReset', 'confirmFresh', 'form', 'gform', 'tryOn', 'ccEdit', 'flash', 'pcard', 'fishSel',
-      'soldNote', 'now', 'saveFail', 'importInfo', 'backupMsg', 'ccErr', 'inviteMsg', 'vw', 'ttab', 'taskSheet', 'hold'];
+      'soldNote', 'now', 'saveFail', 'importInfo', 'backupMsg', 'ccErr', 'inviteMsg', 'vw', 'ttab', 'taskSheet', 'hold', 'gemSheet'];
   }
 
   defaultSettings() { return { theme: 'light', remindersOn: true, celebrate: true, freezes: true, editWindow: 7, demoTools: false, sounds: true, hideDone: false, lang: this.deviceLang() }; }
@@ -1864,6 +1914,9 @@ class Component extends DCLogic {
     if (!(saved.schema >= 13)) Object.assign(st, this.migrate13(saved));
     // Fields from v0.13 are checked on every load, so a damaged save or backup can't break the screens.
     st.tasks = this.cleanTasks(st.tasks);
+    // Diamonds (v0.16) are checked the same way.
+    st.gems = this.gemsOf(st);
+    st.purchases = (Array.isArray(st.purchases) ? st.purchases : []).filter(p => p && typeof p.token === 'string' && GEM_PACKS.some(k => k.sku === p.sku));
     if (!(typeof st.firstDay === 'number' && isFinite(st.firstDay))) st.firstDay = this.migrate13(Object.assign({}, saved, { firstDay: null })).firstDay;
     if (st.char) {
       if (!Array.isArray(st.owned)) st.owned = this.starterOwned(st.char.sex);
@@ -2063,7 +2116,7 @@ class Component extends DCLogic {
       league: { week: 0, tier: 1, trophies: 0, hidden: false, baseL: 1, start: Math.floor(T / 7) * 7 }, ltab: 'league', cheered: {}, pcard: null, weekTrip: (T % 7) * 25, weekTodayBase: 0, invited: false,
       onboard: null, comeback: null, comebackDismissed: false, coachSkip: {}, flash: null, confirmFresh: false, starterBonus: true,
       lastDay: T, lastBackup: null, saveFail: false, importInfo: null, backupMsg: '',
-      schema: 13, firstDay: 0, ttab: 'habits', taskSheet: null,
+      schema: 14, firstDay: 0, ttab: 'habits', taskSheet: null, gems: { earned: 30, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null,
       tasks: [
         { id: 't1', name: tr('returnTheLibraryBooks'), day: T - 2, done: false, doneDay: null, paid: false },
         { id: 't2', name: tr('callTheDentist'), day: T, done: false, doneDay: null, paid: false },
@@ -2088,7 +2141,7 @@ class Component extends DCLogic {
       comeback: null, comebackDismissed: false, coachSkip: {}, timer: null, sheet: null, form: null, day: T, xpBase: 0, lastDay: T, sel: null,
       gform: { open: false, hid: '', title: '', target: '', deadline: 'month', date: '', error: '' },
       screen: 'onboard', onboard: { step: 0, focus: [], picks: [] }, starterBonus: false,
-      schema: 13, firstDay: T, tasks: [], ttab: 'habits', taskSheet: null };
+      schema: 14, firstDay: T, tasks: [], ttab: 'habits', taskSheet: null, gems: { earned: 0, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null };
   }
 
   freshState(settings) { return Object.assign(this.demoState(settings), this.freshPatch()); }
@@ -3177,6 +3230,42 @@ class Component extends DCLogic {
 
   // Weekly league XP: past days of this week are a snapshot, today counts live, plus XP from trips this week.
   weekXp(st) { return (st.weekBase || 0) + Math.max(0, this.habitXp(st.habits, this.T, this.T) - (st.weekTodayBase || 0)) + (st.weekTrip || 0); }
+
+  // Diamonds keep their sources apart (league, purchases, demo tools); the balance is worked out from them.
+  gemsOf(st) {
+    const g = st.gems || {}, n = v => (typeof v === 'number' && isFinite(v) && v > 0 ? Math.floor(v) : 0);
+    return { earned: n(g.earned), bought: n(g.bought), spent: n(g.spent), demo: n(g.demo) };
+  }
+  // Weekly league reward: by place, times the league the week was played in. Hidden players earn none.
+  leagueGems(rank, tier, hidden) {
+    if (hidden) return 0;
+    const base = rank === 1 ? 30 : rank === 2 ? 20 : rank === 3 ? 15 : rank <= 5 ? 10 : rank <= 10 ? 5 : 0;
+    return Math.round(base * [1, 1.5, 2, 3][tier]);
+  }
+  diamondsOf(st) { const g = this.gemsOf(st); return Math.max(0, g.earned + g.bought + g.demo - g.spent); }
+  billingMode(st) { return BILLING !== 'off' ? BILLING : (st.settings.demoTools ? 'stub' : 'off'); }
+  // Asks the payment step for one pack. Only the stub exists for now.
+  buyGems() {
+    const st = this.state, sheet = st.gemSheet;
+    if (!sheet || !sheet.confirm || sheet.busy || this.billingMode(st) !== 'stub') return;
+    const sku = sheet.confirm;
+    this.setState({ gemSheet: Object.assign({}, sheet, { busy: true }) });
+    return billingStub.buy(sku).then(r => this.creditPurchase(sku, r));
+  }
+  // A finished purchase pays out once: the same token never credits twice.
+  creditPurchase(sku, r) {
+    this.setState(st => {
+      const pack = GEM_PACKS.find(p => p.sku === sku), list = st.purchases || [];
+      const done = st.gemSheet ? { gemSheet: Object.assign({}, st.gemSheet, { busy: false, confirm: null }) } : {};
+      if (!pack || !r || !r.ok || !r.token || list.some(p => p.token === r.token)) return done;
+      const g = this.gemsOf(st);
+      return Object.assign(done, {
+        gems: Object.assign({}, g, { bought: g.bought + pack.gems }),
+        purchases: list.concat([{ sku, gems: pack.gems, token: r.token, day: this.T, test: this.billingMode(st) === 'stub' }]),
+        gemSheet: st.gemSheet ? { confirm: null, busy: false, msg: tr('diamondsAdded', [fmtNum(pack.gems)]) } : null
+      });
+    });
+  }
 
   coinsOf(st) { return Math.max(0, st.coinsBase + st.bonus + this.earnToday(st.habits) + this.taskCoins(st) - st.spent); }
 
@@ -5307,8 +5396,9 @@ class Component extends DCLogic {
       tripHead, tripState, tripFill, tripMark, tripPill, tripPillStyle, slotAdv, slotFish,
       tripCount: TI.none ? tr('noHabits') : (TI.due ? Math.min(TI.got, TI.due) + ' / ' + TI.due + (TI.unlocked ? '' : tr('unlocksAt', [TI.goal])) : tr('nothingDue')),
       tripNote: tr('finishingHalfOfTodaySHabits'),
-      demoBtn, demoBtnWide: demoBtn + '; grid-column: 1 / -1', demoStreakLabel: s.demoBadges ? tr('relockStreakItems') : tr('unlockStreakItems'),
+      demoBtn, demoStreakLabel: s.demoBadges ? tr('relockStreakItems') : tr('unlockStreakItems'),
       demoCoins: () => this.setState(st => ({ bonus: (st.bonus || 0) + 500 })),
+      demoGems: () => this.setState(st => { const g = this.gemsOf(st); return { gems: Object.assign({}, g, { demo: g.demo + 100 }) }; }),
       demoLevel: () => this.setState(st => {
         const info = this.levelInfo(this.xpOf(st));
         const res = { demoXp: (st.demoXp || 0) + (info.need - info.into) };
@@ -5359,6 +5449,7 @@ class Component extends DCLogic {
       tierName: tr('league3', [TIERS[LG.tier]]),
       tierRule: LG.tier === 3 ? tr('theTopLeagueTop3Win') : (LG.tier === 0 ? tr('top5MoveUpToSilver') : tr('top5MoveUpToBottom', [TIERS[LG.tier + 1], TIERS[LG.tier - 1]])),
       tierIconStyle: 'width: 52px; height: 52px; border-radius: 16px; background: var(--invSoft); display: flex; align-items: center; justify-content: center; flex: none; color: ' + TCOL[LG.tier] + ';',
+      gemRewardText: LG.hidden ? tr('gemRewardHidden') : tr('gemRewardText', [1, 2, 3, 4, 6].map(r => this.leagueGems(r, LG.tier, false))),
       myRankText: myRank ? tr('youAreOf20WithXp', [ord(myRank), fmtNum(myWeekXp)]) : '',
       trophyText: trP(LG.trophies, 'n1Trophy', 'trophies', [LG.trophies]),
       trophyPill: 'height: 32px; padding: 0 10px; border-radius: 99px; display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 800; flex: none; background: ' + (LG.trophies ? 'var(--tl)' : 'var(--soft)') + '; color: ' + (LG.trophies ? 'var(--rl)' : 'var(--muted)') + ';',
@@ -5376,6 +5467,23 @@ class Component extends DCLogic {
         return Object.assign(res, { weekBase: 0, weekTrip: 0, weekTodayBase: this.habitXp(st.habits, T, T) });
       }),
       hasPcard: !!pc, pc: pc || {}, closePcard: () => this.setState({ pcard: null }),
+      gems: fmtNum(this.diamondsOf(s)), gemsAria: tr('diamondsAria', [fmtNum(this.diamondsOf(s))]),
+      openGems: () => this.setState({ gemSheet: { confirm: null, busy: false, msg: '' } }),
+      closeGems: () => this.setState({ gemSheet: null }),
+      hasGemSheet: !!s.gemSheet,
+      gemConfirm: !!(s.gemSheet && s.gemSheet.confirm), gemBusy: !!(s.gemSheet && s.gemSheet.busy),
+      gemConfirmTitle: (() => { const p = s.gemSheet && GEM_PACKS.find(k => k.sku === s.gemSheet.confirm); return p ? tr('buyPackTitle', [fmtNum(p.gems), p.price]) : ''; })(),
+      confirmGems: () => this.buyGems(),
+      cancelGems: () => this.setState(st => ({ gemSheet: st.gemSheet ? Object.assign({}, st.gemSheet, { confirm: null }) : null })),
+      gemMsg: !!(s.gemSheet && s.gemSheet.msg), gemMsgText: (s.gemSheet && s.gemSheet.msg) || '',
+      gemPacks: GEM_PACKS.map(p => {
+        const live = this.billingMode(s) !== 'off', on = !!(s.gemSheet && s.gemSheet.confirm === p.sku);
+        const price = live ? tr('testPrice', [p.price]) : tr('comingSoon');
+        return { gems: fmtNum(p.gems), bonus: p.extra ? tr('packBonus', [p.extra]) : '', price, off: !live || !!(s.gemSheet && s.gemSheet.busy), aria: tr('packAria', [fmtNum(p.gems), price]),
+          pick: () => this.setState(st => ({ gemSheet: Object.assign({}, st.gemSheet, { confirm: p.sku, msg: '' }) })),
+          style: 'min-height: 88px; border-radius: 18px; border: none; padding: 12px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 4px; color: var(--ink); background: var(--card); ' + (on ? 'box-shadow: inset 0 0 0 2px var(--accent);' : '') + (live ? '' : ' opacity: 0.6;') };
+      }),
+      gemModeNote: this.billingMode(s) === 'off' ? tr('gemsOffNote') : tr('gemsStubNote'),
       toggleHide: () => this.setState(st => ({ league: Object.assign({}, st.league, { hidden: !(st.league || {}).hidden }) })),
       rootStyle: 'width: 390px; height: 844px; position: relative; overflow: hidden; background: var(--bg); color: var(--ink); font-family: \'Manrope\', \'IBM Plex Sans Arabic\', system-ui, sans-serif; color-scheme: ' + (dark ? 'dark' : 'light') + '; --accent: ' + accent + '; ' + vars,
       isToday: s.screen === 'today', isDetail: s.screen === 'detail' && !!sel, isGoals: s.screen === 'goals', isForm: s.screen === 'form', isSettings: s.screen === 'settings', isArchived: s.screen === 'archived',

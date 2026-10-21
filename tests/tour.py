@@ -314,6 +314,21 @@ def states():
     @st('char-hero')
     def _(a): a.tap('Character')
 
+    @st('gems-off')
+    def _(a):
+        a.tap('Character'); a.set({'gemSheet': {'confirm': None, 'busy': False, 'msg': ''}})
+
+    @st('gems-test-confirm')
+    def _(a):
+        a.tap('Character')
+        a.set({'settings': dict(a.state()['settings'], demoTools=True), 'gemSheet': {'confirm': 'diamonds_2500', 'busy': False, 'msg': ''}})
+
+    @st('gems-bought')
+    def _(a):
+        a.tap('Character')
+        a.set({'settings': dict(a.state()['settings'], demoTools=True), 'gemSheet': {'confirm': None, 'busy': False, 'msg': ''}})
+        a.js("c.creditPurchase('diamonds_550', { ok: true, token: 'tour-1' });"); a.wait(150)
+
     @st('char-hero-busy')
     def _(a):
         a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });")

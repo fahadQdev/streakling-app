@@ -153,5 +153,17 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.16.0: Diamonds (2026-10-22)
+- **A second currency.** Coins stay as they are (habits and tasks). Diamonds are the rare one: a diamond counter sits next to the coins at the top of the Character tab and opens the Diamonds sheet.
+- **League rewards.** When the week closes, the top 10 earn diamonds: 30 / 20 / 15 for 1st–3rd, 10 for 4th–5th, 5 for 6th–10th, times 1 in Bronze, 1.5 in Silver, 2 in Gold and 3 in Diamond (so 1st in Diamond pays 90). The week-end pop-up says how many; the League tab lists this week's rewards. Hidden players earn none.
+- **Packs: 100, 550 (+10%), 1,200 (+20%), 2,500 (+25%).** The payment step goes through a `billing` adapter with the same shape as Google Play Billing for web apps (Digital Goods API + Payment Request in a Trusted Web Activity), so connecting it later only swaps that adapter. `BILLING` is `'off'`: packs say Coming soon. With Demo tools on, a stub fakes the payment, clearly marked "Test purchase: no money is charged".
+- **Each purchase pays once.** Purchases are saved with their token; the same token, a failed payment or an unknown pack never credits diamonds. Diamonds are kept apart by source (league, bought, demo) and the balance is worked out from them, so it can't go below 0. Damaged saves and backups load with a clean balance.
+- Diamonds never touch coins, XP or the weekly league score.
+- **How this works with a simulated league:** the 19 other players are generated on the device, so league diamonds are in practice a habit reward. Before real payments, the balance, purchases and the league need a server (see README → Known limitations).
+- Demo tools: +100 diamonds.
+- **Tests:** the reward table for every place and league, hidden players, the week-end pop-up, diamonds never changing coins, XP or the league score, damaged balances; the buy flow with payments off (nothing credited, even when forced), the test payment, cancel, one credit per token, reloads and damaged saves; the Diamonds sheet in the screen tour, in English and Arabic.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).

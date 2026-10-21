@@ -352,6 +352,31 @@ def main(browser, res):
             problems.append((stepn, chk))
     a.js("c.T = arg;", T0)
     res.eq(problems[:3], [], 'coins always equal 5 × paid tasks (plus cleared ones), at most 5 paid a day, no XP (400 random steps)')
+
+    # ---------- Diamonds: league rewards ----------
+    a.clear(); a.open(); demo(a); a.dismiss_all()
+    ranks = [1, 2, 3, 4, 5, 6, 10, 11, 20]
+    table = a.js("return [0, 1, 2, 3].map(t => arg.map(r => c.leagueGems(r, t, false)));", ranks)
+    base = [30, 20, 15, 10, 10, 5, 5, 0, 0]
+    want = [[int(b * m + 0.5) for b in base] for m in (1, 1.5, 2, 3)]
+    res.eq(table, want, 'league diamonds by place and league (Bronze x1, Silver x1.5, Gold x2, Diamond x3)')
+    res.eq(a.js("return [1, 3, 10].map(r => c.leagueGems(r, 3, true));"), [0, 0, 0], 'hidden players earn no league diamonds')
+    close = "const s = c.state; const r = c.closeLeague(s, arg, c.T, c.T, c.levelInfo(c.xpOf(s)).L); return { gems: r.gems || null, body: r.celebrate[r.celebrate.length - 1].body };"
+    for tier, name in [(0, 'Bronze'), (2, 'Gold'), (3, 'Diamond')]:
+        a.set({'league': dict(a.state()['league'], tier=tier, hidden=False), 'gems': {'earned': 7, 'bought': 0, 'spent': 0, 'demo': 0}})
+        r = a.js(close, 1e9)
+        res.eq((r['gems'] or {}).get('earned'), 7 + want[tier][0], 'first place in %s pays %d diamonds' % (name, want[tier][0]))
+        res.ok(('+%d diamonds' % want[tier][0]) in r['body'], 'the week-end pop-up says how many diamonds (%s)' % name)
+    res.eq(a.js(close, 0)['gems'], None, 'last place: no diamonds')
+    a.set({'league': dict(a.state()['league'], tier=2, hidden=True)})
+    res.eq(a.js(close, 1e9)['gems'], None, 'hidden: first place still pays no diamonds')
+    a.set({'league': dict(a.state()['league'], hidden=False)})
+    before = a.js("return [c.coinsOf(c.state), c.xpOf(c.state), c.weekXp(c.state)];")
+    a.set({'gems': {'earned': 500, 'bought': 900, 'spent': 0, 'demo': 0}})
+    res.eq(a.js("return [c.coinsOf(c.state), c.xpOf(c.state), c.weekXp(c.state)];"), before, 'diamonds never change coins, XP or the weekly league score')
+    res.eq(a.js("return c.diamondsOf(c.state);"), 1400, 'balance adds league and bought diamonds')
+    a.set({'gems': {'earned': -5, 'bought': 'x', 'spent': 9e9, 'demo': None}})
+    res.eq(a.js("return c.diamondsOf(c.state);"), 0, 'a damaged balance never goes below 0')
     a.check_errors('logic')
 
 
