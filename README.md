@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.14.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.15.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.14.0)
+## Features (as of v0.15.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -80,6 +80,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **Backup and restore** as a file, from Settings.
 - **Installable and offline:** home-screen icon, works without a connection after the first visit.
 - **Sound effects** for taps, check-ins, badges and finishing the day, made with Web Audio (no sound files). Can be turned off in Settings.
+- **English and Arabic.** A Language switch in Settings; a phone set to Arabic starts in Arabic. Arabic is fully right to left (layout, icons, progress bars, switches) with proper Arabic plural forms, an Arabic font, and Western digits.
 - **Settings** with Light, Dark and System themes, plus app preferences and a Demo tools switch.
 
 ---
@@ -152,6 +153,7 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 - [x] Standalone web build with a live GitHub Pages demo
 - [x] Save data on the device, offline, with backup and restore
 - [x] Real first-run experience; demo data behind a switch
+- [x] Full Arabic + RTL support
 
 **Next**
 - [ ] A 7-day real-use trial, then fix what it shows
@@ -161,7 +163,6 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 - [ ] Real accounts, friends and leaderboard (needs a backend)
 - [ ] Real push notifications and habit reminders (needs a server)
 - [ ] Home-screen widget with one-tap check-in
-- [ ] Full Arabic + RTL support
 
 **Known limitations**
 - Data lives on one device; there is no sync between devices.

@@ -11,9 +11,12 @@ TASK_AR = 'الاتصال بشركة التأمين بخصوص مطالبة إص
 
 
 def main(browser, res):
-    for w, h in [(320, 568), (390, 844)]:
-        for theme in ['light', 'dark']:
-            a = App(browser, res, width=w, height=h, when=WHEN, label='long-%d-%s:' % (w, theme))
+    runs = [(w, h, theme, 'en') for w, h in [(320, 568), (390, 844)] for theme in ['light', 'dark']]
+    runs += [(320, 568, 'light', 'ar'), (320, 568, 'dark', 'ar'), (360, 740, 'light', 'ar')]
+    for w, h, theme, lang in runs:
+        if True:
+            tag = '' if lang == 'en' else '-ar'
+            a = App(browser, res, width=w, height=h, when=WHEN, label='long-%d-%s%s:' % (w, theme, tag))
             a.clear(); a.open(); demo(a)
             a.js("""c.setState(s => ({
               char: Object.assign({}, s.char, { name: arg.hero }),
@@ -21,6 +24,8 @@ def main(browser, res):
               goals: s.goals.map(g => Object.assign({}, g, { title: g.id === 'g1' ? 'A very long goal title that takes all sixty characters here' : g.title, target: g.id === 'g1' ? 9999999 : g.target })),
               tasks: s.tasks.map((t, i) => Object.assign({}, t, { name: i % 2 ? arg.task : arg.tar })),
               settings: Object.assign({}, s.settings, { theme: arg.theme }) }));""", {'hero': HERO, 'long': LONG, 'ar': AR, 'unit': UNIT, 'theme': theme, 'task': TASK, 'tar': TASK_AR})
+            # Arabic: steps navigate with English names, then the screen is switched to Arabic in place.
+            to_lang = (lambda: (a.js("c.setState(s => ({ settings: Object.assign({}, s.settings, { lang: 'ar' }) }));"), a.wait(150))) if lang == 'ar' else (lambda: None)
             a.wait(200); a.dismiss_all()
             snap = a.state()
             for name, fn in states():
@@ -33,11 +38,14 @@ def main(browser, res):
                     # some tour steps look for the sample names that were renamed here
                     a.js("c.setState({ sheet: null, pcard: null, fishSel: null, celebrate: [] });")
                     continue
+                to_lang()
                 for it in a.scan(name, contrast=False):
                     pass
-                if w == 320 and theme == 'light' and name in ('today', 'detail-read', 'detail-quran', 'stats', 'goals', 'sheet-amount', 'char-hero', 'ranks-league-tier1', 'archived-list', 'recap', 'today-tasks', 'task-sheet-date', 'stats-recap-locked'):
+                if lang == 'ar' and w == 320 and theme == 'light' and name in ('today', 'detail-quran', 'stats', 'goals', 'char-hero', 'ranks-league-tier1', 'today-tasks', 'settings', 'explore', 'explore-book'):
+                    a.shot('long-320-ar__' + name)
+                if lang == 'en' and w == 320 and theme == 'light' and name in ('today', 'detail-read', 'detail-quran', 'stats', 'goals', 'sheet-amount', 'char-hero', 'ranks-league-tier1', 'archived-list', 'recap', 'today-tasks', 'task-sheet-date', 'stats-recap-locked'):
                     a.shot('long-320__' + name)
-            a.check_errors('long %d %s' % (w, theme))
+            a.check_errors('long %d %s %s' % (w, theme, lang))
             a.close()
 
 

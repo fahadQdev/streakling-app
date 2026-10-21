@@ -12,6 +12,8 @@ for c in 390-light 390-dark 320-light; do run tour.py $c & done; wait
 for c in 320-dark 360-light 375-light; do run tour.py $c & done; wait
 for c in 430-light 430-dark 667x375-light; do run tour.py $c & done; wait
 for c in 1280-light 1280-dark; do run tour.py $c & done; wait
+for c in 390-light-ar 390-dark-ar 320-light-ar; do run tour.py $c & done; wait
+for c in 360-light-ar 430-light-ar 667x375-light-ar; do run tour.py $c & done; wait
 for s in 9 10 11 12; do run t_monkey.py 200 $s & done; wait
 for s in 13 14 15 16; do run t_monkey.py 200 $s & done; wait
 echo ALLDONE >> logs/progress.log

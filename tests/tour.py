@@ -13,6 +13,10 @@ CONFIGS = {
     '667x375-light': (667, 375, 'light'),
     '1280-light': (1280, 800, 'light'), '1280-dark': (1280, 800, 'dark'),
 }
+# Arabic: each step navigates in English (the steps tap English names), then the app switches to
+# Arabic in place, so the same screen is scanned right to left with Arabic text.
+for _k in ['320-light', '360-light', '390-light', '390-dark', '430-light', '667x375-light']:
+    CONFIGS[_k + '-ar'] = CONFIGS[_k]
 WHEN = at(2026, 10, 15, 21, 0)  # a Thursday evening
 
 
@@ -511,7 +515,8 @@ def main(browser, res, configs):
         a.set({'settings': dict(a.state()['settings'], theme=theme)})
         a.dismiss_all()
         snap = a.state()
-        shoot = cfg in ('390-light', '390-dark', '320-light', '320-dark', '1280-light', '1280-dark', '667x375-light')
+        shoot = cfg in ('390-light', '390-dark', '320-light', '320-dark', '1280-light', '1280-dark', '667x375-light', '390-light-ar', '320-light-ar')
+        arabic = cfg.endswith('-ar')
         n = 0
         for name, fn in S:
             if only and only not in name:
@@ -525,6 +530,9 @@ def main(browser, res, configs):
                 print('  setup failed', cfg, name, str(e).splitlines()[0][:200], flush=True)
                 a.js("c.setState({ sheet: null, pcard: null, fishSel: null, celebrate: [] });")
                 continue
+            if arabic:
+                a.js("c.setState(s => ({ settings: Object.assign({}, s.settings, { lang: 'ar' }) }));"); a.wait(150)
+                res.eq(a.pg.evaluate("document.querySelector('#app > div').getAttribute('dir')"), 'rtl', cfg + ' ' + name + ' is right to left')
             a.scan(name)
             if shoot:
                 a.shot('%s__%s' % (cfg, name))

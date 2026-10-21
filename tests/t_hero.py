@@ -267,7 +267,8 @@ def main(browser, res):
     a.set({'ctab': 'wardrobe', 'cat': 'hat'})
     a.js("const v = c.renderVals(); v.wardrobe.forEach(w => w.act());"); a.wait(150)
     res.eq(a.state()['char'], before, 'wardrobe changes ignored during a trip')
-    a.set({'ctab': 'store', 'cat': 'hat'})
+    # The adventure earlier can drop a random item (sometimes the last Lv 1 hat), so put one back in the store.
+    a.set({'ctab': 'store', 'cat': 'hat', 'owned': [x for x in a.state()['owned'] if x != 'h_headband']})
     item = a.js("const D = c.px(); return D.order.find(id => D.items[id].slot === 'hat' && !D.items[id].earn && c.state.owned.indexOf(id) < 0 && D.items[id].lvl <= 1);")
     a.set({'bonus': 5000})
     a.js("c.buyItem(arg, c.coinsOf(c.state), 1, 2);", item); a.wait(100)

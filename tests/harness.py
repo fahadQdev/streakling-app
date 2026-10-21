@@ -65,10 +65,10 @@ def at(y, mo, d, h=10, mi=0):
 class App:
     """One browser page running the app, with helpers."""
 
-    def __init__(self, browser, res, width=390, height=844, tz='Asia/Riyadh', when=None, scheme='light', label=''):
+    def __init__(self, browser, res, width=390, height=844, tz='Asia/Riyadh', when=None, scheme='light', label='', locale='en-US'):
         self.res = res
         self.ctx = browser.new_context(viewport={'width': width, 'height': height}, color_scheme=scheme, timezone_id=tz,
-                                       locale='en-US', device_scale_factor=1, has_touch=False)
+                                       locale=locale, device_scale_factor=1, has_touch=False)
         try:
             self.ctx.grant_permissions(['clipboard-read', 'clipboard-write'], origin=URL.rstrip('/'))
         except Exception:

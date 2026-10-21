@@ -140,5 +140,18 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.15.0: Arabic, right to left (2026-10-22)
+- **Arabic.** A new Language row in Settings → Appearance switches between English and العربية. The choice is saved; on first run the app follows the phone (Arabic for any Arabic locale, English otherwise). Every screen, pop-up, item, fish and place is translated (`prototype/i18n/ar.json`).
+- **Right to left for real, not just translated text.** The page and the app get `dir="rtl"`, so rows, the week strip, tabs, the bottom bar, progress bars and switches all run right to left. Text aligns to the start of the line, offsets and margins use start/end instead of left/right, and chevrons and back arrows flip. Pixel art, fish and the fishing painting are not flipped.
+- **Arabic grammar.** Counted words use Arabic plural forms (zero, one, two, few, many) through `Intl.PluralRules`, for example يومان / 3 أيام / 11 يومًا. Ordinals, dates, short month names, durations (س / د / ث) and AM/PM (ص / م) are per language. Miss reasons are still stored in English, so old logs keep working, and shown in the chosen language.
+- **Western digits everywhere** (1,500 not ١٬٥٠٠), in both languages.
+- **IBM Plex Sans Arabic** font for Arabic text; Manrope and Space Grotesk stay for Latin text and numbers.
+- Text that was English-only inside sentences (miss / slip, running / paused, "it" / "them", plural "s") now comes from the language tables.
+- The locked-trip label reads as one sentence ("Finish 1 more habit to unlock …").
+- Test fix: the hero suite assumed a Lv 1 hat was still in the store, but an earlier adventure can randomly drop it. The test now puts one back first.
+- **Tests:** Settings checks the language switch, direction, reload, Western digits and the first run on an Arabic phone (18 new checks). The long-text suite also runs the whole app in Arabic at 320 and 360 px, and the screen tour has six Arabic sizes (`-ar` configs) that check every screen is right to left. Arabic adds no layout problems the English app doesn't already have.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).

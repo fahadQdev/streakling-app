@@ -29,6 +29,33 @@ def main(browser, res):
     res.eq(bg, 'rgb(244, 243, 239)', 'system theme follows the phone (light)')
     a.tap('Light')
 
+    # ---------- Language ----------
+    dirs = "[document.documentElement.lang, document.documentElement.dir, document.querySelector('#app > div').getAttribute('dir')]"
+    res.eq(a.state()['settings'].get('lang'), 'en', 'English by default on an English phone')
+    res.eq(a.pg.evaluate(dirs), ['en', 'ltr', 'ltr'], 'English page is left to right')
+    res.eq(a.btn('العربية').get_attribute('lang'), 'ar', 'each language name is marked with its own language')
+    a.tap('العربية', wait=300)
+    res.eq(a.state()['settings']['lang'], 'ar', 'switch to Arabic')
+    res.eq(a.pg.evaluate(dirs), ['ar', 'rtl', 'rtl'], 'Arabic page is right to left')
+    res.ok(a.has('الإعدادات') and a.has('اللغة') and a.has('السمة'), 'Settings shown in Arabic')
+    res.ok(not a.has('Theme') and not a.has('All reminders') and not a.has('Language'), 'no English labels left in Arabic')
+    res.eq(a.btn('العربية').get_attribute('aria-pressed'), 'true', 'Arabic shown as chosen')
+    a.save(); a.open(wait=600)
+    res.eq(a.state()['settings']['lang'], 'ar', 'Arabic kept after a reload')
+    res.eq(a.pg.evaluate(dirs), ['ar', 'rtl', 'rtl'], 'still right to left after a reload')
+    res.ok(a.has('اليوم') and a.has('العادات'), 'Today in Arabic after a reload')
+    import re as _re
+    res.ok(not _re.search('[٠-٩۰-۹]', a.text()), 'numbers use Western digits in Arabic')
+    a.set({'screen': 'settings'}); a.tap('English', wait=300)
+    res.eq(a.state()['settings']['lang'], 'en', 'switch back to English')
+    res.eq(a.pg.evaluate(dirs), ['en', 'ltr', 'ltr'], 'English is left to right again')
+    res.ok(a.has('Theme') and a.has('Language') and a.has('All reminders'), 'Settings back in English')
+    b = App(browser, res, when=WHEN, locale='ar-SA')
+    b.clear(); b.open()
+    res.eq(b.state()['settings'].get('lang'), 'ar', 'a phone set to Arabic starts in Arabic')
+    res.eq(b.pg.evaluate(dirs), ['ar', 'rtl', 'rtl'], 'first run on an Arabic phone is right to left')
+    b.check_errors('arabic phone'); b.close()
+
     # ---------- Switches ----------
     for name, key in [('All reminders', 'remindersOn'), ('Celebration pop-ups', 'celebrate'), ('Streak freezes', 'freezes'), ('Sounds', 'sounds'), ('Demo tools', 'demoTools')]:
         v0 = a.state()['settings'].get(key, True if key == 'sounds' else None)

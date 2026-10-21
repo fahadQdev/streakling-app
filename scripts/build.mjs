@@ -43,7 +43,8 @@ const used = [...src.matchAll(/\btr\('([^']+)'(?!\s*\+)/g), ...src.matchAll(/\{\
 const missing = [...new Set(used.filter(k => !(k in strings.en)))];
 if (missing.length) throw new Error('Text keys missing from prototype/i18n/en.json: ' + missing.join(', '));
 for (const [lang, t] of Object.entries(strings)) {
-  const extra = Object.keys(t).filter(k => !(k in strings.en));
+  // 'key#few' and similar are extra plural forms of an English key (see trP in the prototype).
+  const extra = Object.keys(t).filter(k => !(k.split('#')[0] in strings.en));
   if (extra.length) throw new Error(`prototype/i18n/${lang}.json has keys English lacks: ${extra.join(', ')}`);
 }
 
