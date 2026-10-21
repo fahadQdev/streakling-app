@@ -66,8 +66,9 @@
   };
 
   // 2. Anything sticking out of the app sideways (not clipped by an ancestor).
+  // Decoration meant to be cut off at the edge (falling confetti) is skipped.
   all.forEach(el => {
-    if (!isVisible(el)) return;
+    if (!isVisible(el) || el.closest('[data-decor]')) return;
     const r = el.getBoundingClientRect();
     if (r.right > R.right + 1 || r.left < R.left - 1) {
       const c = clipRect(el);

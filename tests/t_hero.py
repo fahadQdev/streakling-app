@@ -463,6 +463,74 @@ def main(browser, res):
     a.put_env(env); a.open(wait=600)
     res.eq([gems(), a.state()['purchases']], [0, []], 'a damaged save loads with a clean diamond balance')
     a.check_errors('diamonds')
+    a.close()
+
+    # ---------- Weapon types ----------
+    a = App(browser, res, when=WHEN)
+    a.clear(); a.open(); onboard(a); a.dismiss_all()
+    W = a.js("const D = c.px(); return D.order.filter(id => D.items[id].slot === 'weapon').map(id => Object.assign({ id }, D.items[id], { parts: null, pal: null }));")
+    by = {t: [w for w in W if w.get('wtype') == t and not w.get('earn') and w['id'].startswith('w_')] for t in ('sword', 'mace', 'spear')}
+    res.eq([len(by[t]) for t in ('sword', 'mace', 'spear')], [6, 6, 6], '6 new weapons of each type')
+    val = lambda w: w['pow'] + w['hp'] / 4
+    tiers_ok, split_ok, prog_ok = True, True, True
+    for k in range(6):
+        sw, mc, sp = by['sword'][k], by['mace'][k], by['spear'][k]
+        tiers_ok &= val(sw) == val(mc) == val(sp) and sw['price'] == mc['price'] == sp['price'] and sw['lvl'] == mc['lvl'] == sp['lvl'] and sw['rarity'] == mc['rarity'] == sp['rarity']
+        split_ok &= mc['hp'] > sw['hp'] > sp['hp'] and sp['pow'] > sw['pow'] > mc['pow']
+        if k:
+            prev = by['sword'][k - 1]
+            prog_ok &= sw['price'] > prev['price'] and sw['lvl'] > prev['lvl'] and val(sw) > val(prev)
+    res.ok(tiers_ok, 'in each tier sword, mace and spear cost the same and have the same total strength')
+    res.ok(split_ok, 'maces lean Health, spears lean Power, swords in between')
+    res.ok(prog_ok, 'price, level and strength go up tier by tier')
+    res.eq([(w['lvl'], w['price']) for w in by['sword']], [(2, 200), (4, 450), (7, 650), (9, 950), (13, 1250), (16, 1800)], 'level and price ladder')
+    res.ok(all(w.get('wtype') == 'sword' for w in W if w['id'] in ('a_wsword', 'a_ksword', 'a_dsword')) and not [w for w in W if w['id'] == 'a_shield'][0].get('wtype'), 'old swords are swords; the shield has no type')
+    # Store: filter, labels, gates
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'weapon', 'bonus': 100000})
+    names = lambda: a.js("return c.renderVals().store.map(x => x.name);")
+    res.ok(a.has('Swords') and a.has('Maces') and a.has('Spears'), 'weapon type filter shown')
+    a.tap('Maces', wait=150)
+    res.eq(sorted(names()), sorted(w['name'] for w in by['mace']), 'Maces shows only maces')
+    res.ok(a.has('Common · Mace · Lv 2'), 'card says the weapon type')
+    a.tap('Spears', wait=150)
+    res.eq(sorted(names()), sorted(w['name'] for w in by['spear']), 'Spears shows only spears')
+    a.tap('All', wait=150)
+    res.ok('Round Shield' in names() and 'Ember of Thirty' in names(), 'All also shows the shield and the streak weapon')
+    lvl = a.js("return c.levelInfo(c.xpOf(c.state)).L;")
+    a.js("c.buyItem('w_mc6', 100000, arg, 2);", lvl); a.wait(120)
+    res.ok('w_mc6' not in a.state()['owned'], 'a Lv 16 weapon can not be bought below Lv 16')
+    a.js("c.buyItem('w_sp1', 199, 2, 2);"); a.wait(120)
+    res.ok('w_sp1' not in a.state()['owned'], 'not enough coins: not bought')
+    sp0 = a.state()['spent']
+    a.js("c.buyItem('w_sp1', 100000, 2, 2);"); a.wait(120)
+    res.ok('w_sp1' in a.state()['owned'] and a.state()['spent'] - sp0 == 200 and a.state()['char']['weapon'][0] == 'w_sp1', 'Hunter\'s Spear bought for 200 and held in the main hand')
+    st0 = a.js("const s = c.state; return c.statsOf(s.char, c.levelInfo(c.xpOf(s)).L);")
+    a.js("c.setState(s => ({ owned: s.owned.concat(['w_mc1']) }));"); a.wait(60)
+    a.js("c.setState(s => ({ char: c.equip(s.char, 'w_mc1', false, 2) }));"); a.wait(100)
+    st1 = a.js("const s = c.state; return c.statsOf(s.char, c.levelInfo(c.xpOf(s)).L);")
+    res.eq((st1['hp'] - st0['hp'], st1['pow'] - st0['pow']), (16 - 4, 2 - 5), 'swapping the spear for the club: +12 Health, -3 Power')
+    res.eq(a.state()['char']['weapon'], ['w_mc1'], 'only one main-hand weapon at a time')
+    # Ember of Thirty: only from a 30-day streak, never bought
+    a.js("c.buyItem('w_ember', 1e9, 99, 2);"); a.wait(120)
+    res.ok('w_ember' not in a.state()['owned'], 'Ember of Thirty can not be bought')
+    a.js("""const T = c.T; c.setState(s => ({ habits: s.habits.map(h => {
+      if (h.name !== 'Sleep by 11 PM') return h;
+      const days = {}; for (let j = T - 29; j < T; j++) days[j] = { v: 1 };
+      return Object.assign({}, h, { start: T - 29, days, badges: { first: true, s7: true, s14: true } }); }) }));"""); a.wait(150)
+    card = lambda: a.js("const x = c.renderVals().store.find(x => x.name === 'Ember of Thirty'); return x && [x.actLabel, x.actOff];")
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'weapon', 'wfilter': 'all'})
+    res.eq(card(), ['Needs a 1-month streak', True], 'locked at a 29-day streak')
+    a.set({'screen': 'today'}); a.tap('Mark Sleep by 11 PM done', wait=300)
+    titles = a.dismiss_all()
+    res.ok(any('1 month' in (t or '') for t in titles), 'the 30th day earns the 1-month badge (%s)' % titles)
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'weapon', 'wfilter': 'all'})
+    res.eq(card(), ['Claim free', False], 'unlocked at a 30-day streak')
+    sp0 = a.state()['spent']
+    a.pg.locator('button:has-text("Claim free")').first.click(); a.wait(150)
+    res.ok('w_ember' in a.state()['owned'] and a.state()['spent'] == sp0, 'Ember of Thirty claimed for free')
+    a.set({'settings': dict(a.state()['settings'], lang='ar'), 'ctab': 'wardrobe'})
+    res.ok(a.has('جمرة الثلاثين') and a.has('السيوف'), 'weapon names and filter in Arabic')
+    a.check_errors('weapons')
 
 
 if __name__ == '__main__':

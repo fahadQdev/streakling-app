@@ -329,6 +329,10 @@ def states():
         a.set({'settings': dict(a.state()['settings'], demoTools=True), 'gemSheet': {'confirm': None, 'busy': False, 'msg': ''}})
         a.js("c.creditPurchase('diamonds_550', { ok: true, token: 'tour-1' });"); a.wait(150)
 
+    @st('char-store-maces')
+    def _(a):
+        a.tap('Character'); a.set({'ctab': 'store', 'cat': 'weapon', 'wfilter': 'mace'})
+
     @st('char-hero-busy')
     def _(a):
         a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });")

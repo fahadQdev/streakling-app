@@ -165,5 +165,19 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.17.0: Swords, maces and spears (2026-10-22)
+- **Weapon types.** Every weapon is now a sword, a mace or a spear, shown on its card ("Rare · Mace · Lv 4"). Swords are balanced, maces give more Health, spears more Power. The Wooden, Knight and Dragon swords are swords; the shield stays an off-hand item with no type.
+- **18 new weapons, 6 per type,** drawn in the same pixel style as the existing swords. Tiers: Common Lv 2 (200), Rare Lv 4 (450), Rare Lv 7 (650), Epic Lv 9 (950), Epic Lv 13 (1,250), Legendary Lv 16 (1,800). In each tier the three types cost the same and have the same total strength (Power + Health ÷ 4, the mix adventures use), only split differently, so no type is simply better.
+  - Swords: Iron Sword, Steel Sabre, Silver Longsword, Runed Blade, Storm Edge, Sunfire Sword.
+  - Maces: Oak Club, Iron Mace, Spiked Morningstar, Bronze Flanged Mace, Crystal Mace, Titan Maul.
+  - Spears: Hunter's Spear, Iron Pike, Coral Lance, Falcon Glaive, Lightning Spear, Dragonfang Lance.
+- **Ember of Thirty**, a glowing ember sword that can't be bought. It unlocks when any habit reaches a 30-day streak (the 1-month badge) and is then claimed for free. Legendary strength plus 2 Stamina.
+- **Type filter:** All / Swords / Maces / Spears under the Weapons chips in the Store and the Wardrobe.
+- New weapons can also drop from adventures, like other gear of their rarity.
+- The celebration confetti is marked as decoration (and hidden from screen readers); the screen scanner no longer reports a falling piece cut off at the edge as content sticking out.
+- **Tests:** 6 weapons per type, equal cost and strength in each tier with the right Health / Power lean, the price and level ladder, the filter, level and coin gates, swapping weapons, the Ember locked at 29 days and unlocked by the 30th check-in, never buyable, and Arabic names. The screen tour has the Maces filter in English and Arabic.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).

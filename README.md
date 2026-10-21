@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.16.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.17.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.16.0)
+## Features (as of v0.17.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -61,6 +61,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **Character tab** in the center of the bottom navigation. Tapping it again from anywhere inside Character goes back to the Hero page.
 - **Starter items by character:** a boy starts with the boy outfit and hair, a girl with the girl ones. The other character's starters are in the Store (clothes 150, hair 120).
 - **Wardrobe and Store:** hats, weapons, fishing rods and accessories are separate equipment slots, bought with coins. Gear is locked while the hero is on a trip.
+- **Three weapon types:** swords (balanced), maces (more Health) and spears (more Power), 6 of each from Lv 2 (200 coins) to Lv 16 (1,800). In each tier the three have the same total strength, so the choice is about the adventures you plan. A filter in the Weapons section shows one type at a time. The **Ember of Thirty** can't be bought: it unlocks when any habit reaches a 30-day streak.
 - **Backgrounds:** 10 pixel-art scenes behind the hero (Common 250, Rare 500, Epic 900, Legendary 1,500), each with a night version for dark mode. Style only, no stats; the plain background is free.
 - **Welcome gift:** 150 coins once, on the first check-in, so a new player can buy a first item.
 - **Stats:** Health, Power and Stamina. Each adventure location tests a different mix, so every item has places where it's the best pick.
