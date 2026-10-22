@@ -565,6 +565,63 @@ def main(browser, res):
     a.set({'settings': dict(a.state()['settings'], lang='ar'), 'ctab': 'store', 'cat': 'rod'})
     res.ok(a.has('صنارة ضوء القمر') and a.has('نادر جدًا'), 'diamond items in Arabic')
     a.check_errors('ultra')
+    a.close()
+
+    # ---------- Showoff stats ----------
+    a = App(browser, res, when=WHEN)
+    a.clear(); a.open(); demo(a); a.dismiss_all()
+    a.set({'screen': 'char', 'ctab': 'hero', 'showoff': []})
+    opts = a.js("return c.renderVals().showOpts.map(o => [o.text, o.on]);")
+    res.eq(len(opts), 12, '12 stats to choose from')
+    res.ok(all(not on for _, on in opts), 'nothing shown until the player picks')
+    chips = lambda: a.js("return c.renderVals().myShow.map(x => x.text);")
+    res.eq(chips(), [], 'no chips next to the name before picking')
+    tap = lambda label: a.pg.locator('button').filter(has_text=label).first.click()
+    tap('Longest streak:'); a.wait(120); tap('Fish Book:'); a.wait(120)
+    res.eq(a.state()['showoff'], ['streak', 'book'], 'two picks in order')
+    res.eq(len(chips()), 2, 'two chips next to the name')
+    tap('Adventures won:'); a.wait(120)
+    res.eq(a.state()['showoff'], ['book', 'advwon'], 'a third pick replaces the oldest: never more than 2')
+    tap('Fish Book:'); a.wait(120)
+    res.eq(a.state()['showoff'], ['advwon'], 'tapping a shown stat removes it')
+    tap('Rarest fish:'); a.wait(120)
+    res.eq(a.js("return c.renderVals().showOpts.filter(o => o.on).length;"), 2, 'the picker marks the 2 shown stats')
+    res.ok(chips()[1].startswith('🐟') and 'No fish' not in chips()[1], 'the rarest fish chip names a fish (%s)' % chips())
+    a.save(); a.open(wait=600)
+    res.eq(a.state()['showoff'], ['advwon', 'rarefish'], 'the choice is kept after a reload')
+    env = a.env(); env['state']['showoff'] = ['streak', 'book', 'tasks', 'nope', 'days']
+    a.put_env(env); a.open(wait=600)
+    res.eq(a.state()['showoff'], ['tasks', 'days'], 'a damaged save shows at most 2 known stats')
+    # My card on the leaderboard
+    a.set({'screen': 'ranks', 'ltab': 'league', 'pcard': 'me'})
+    res.eq(len(a.js("return c.renderVals().pc.show;")), 2, 'my card shows my 2 stats next to my name')
+    # A simulated player: 2 stats, the same every time the card opens
+    pid = a.js("return c.leagueData(c.state, c.levelInfo(c.xpOf(c.state)).L, 3).league.find(p => !p.me).pid;")
+    a.set({'pcard': pid}); one = a.js("return c.renderVals().pc.show.map(x => x.text);")
+    a.set({'pcard': None}); a.set({'pcard': pid}); two = a.js("return c.renderVals().pc.show.map(x => x.text);")
+    res.ok(len(one) == 2 and one == two and one[0] != one[1], 'other players show 2 different stats, the same each time (%s)' % one)
+    a.set({'pcard': None})
+    # Counters
+    cnt = lambda: a.state()['counts']
+    k0 = cnt()
+    a.js("""const seq = [0.0, 0.0, 0.99]; const orig = Math.random; Math.random = () => (seq.length > 1 ? seq.shift() : seq[0]);
+      c.setState({ adv: { zid: 'caverns', start: 0, end: 1, demo: false, chance: 0.5, bonus: false } }); c.resolveAdventure(); Math.random = orig;"""); a.wait(150)
+    res.eq((cnt()['advWon'], cnt()['topZone']), (k0['advWon'] + 1, max(k0['topZone'], 4)), 'a won adventure counts, and Ember Caverns becomes the hardest place cleared')
+    a.js("""const orig = Math.random; Math.random = () => 0.99; c.setState({ adv: { zid: 'spire', start: 0, end: 1, demo: false, chance: 0.5, bonus: false } }); c.resolveAdventure(); Math.random = orig;"""); a.wait(150)
+    res.eq((cnt()['advWon'], cnt()['topZone']), (k0['advWon'] + 1, max(k0['topZone'], 4)), 'a lost adventure counts nothing')
+    a.dismiss_all()
+    open_task = a.js("const t = c.state.tasks.find(t => !t.done); return t && t.id;")
+    t0 = cnt()['tasksDone']
+    a.js("c.toggleTask(arg);", open_task); a.wait(100)
+    res.eq(cnt()['tasksDone'], t0 + 1, 'finishing a task counts')
+    a.js("c.toggleTask(arg);", open_task); a.wait(100)
+    res.eq(cnt()['tasksDone'], t0, 'unticking it takes the count back')
+    a.js("c.toggleTask(arg);", open_task); a.wait(100)
+    a.js("const t = c.state.tasks.find(t => t.id === arg); c.setState({ taskSheet: { mode: 'edit', id: t.id, name: t.name, when: 'today', date: '', error: '', confirmDel: true } }); c.deleteTask();", open_task); a.wait(100)
+    res.eq(cnt()['tasksDone'], t0, 'deleting a finished task takes the count back (no pumping it)')
+    a.set({'settings': dict(a.state()['settings'], lang='ar'), 'screen': 'char', 'ctab': 'hero', 'showoff': ['streak', 'perfect']})
+    res.ok(a.has('سلسلة') and a.has('أيام مثالية'), 'showoff stats in Arabic')
+    a.check_errors('showoff')
 
 
 if __name__ == '__main__':

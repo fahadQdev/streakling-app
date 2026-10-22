@@ -346,6 +346,15 @@ def states():
         a.tap('Character'); a.set({'ctab': 'explore', 'etab': 'adventure', 'demoXp': 400000})
         a.pg.evaluate("() => { const el = document.querySelector('#app > div > div'); el.scrollTop = el.scrollHeight; }"); a.wait(100)
 
+    @st('showoff-picker')
+    def _(a):
+        a.tap('Character'); a.set({'showoff': ['rarefish', 'zone']})
+        a.pg.evaluate("() => { const el = document.querySelector('#app > div > div'); el.scrollTop = 900; }"); a.wait(100)
+
+    @st('pcard-showoff-me')
+    def _(a):
+        a.tap('Leaderboard'); a.set({'showoff': ['zone', 'bigfish'], 'pcard': 'me'})
+
     @st('char-hero-busy')
     def _(a):
         a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });")

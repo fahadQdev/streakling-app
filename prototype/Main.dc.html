@@ -822,7 +822,7 @@ input,select{font-family:inherit}
 </div>
 </sc-if>
 </div>
-<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.19.0 · {{L.savedOnThisDevice}}</div>
+<div style="font-size: 12px; color: var(--muted); text-align: center; font-weight: 600; margin-top: 4px">Streakling v0.20.0 · {{L.savedOnThisDevice}}</div>
 </div>
 </sc-if>
 
@@ -1003,9 +1003,10 @@ input,select{font-family:inherit}
 <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
 <div style="min-width: 0">
 <div style="font-size: 13px; font-weight: 600; color: var(--muted)">{{L.yourHero}}</div>
-<div style="display: flex; align-items: center; gap: 8px; margin-top: 2px; min-width: 0">
+<div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-top: 2px; min-width: 0">
 <button onClick="{{goHero}}" aria-label="{{L.openHero}}" style="border: none; background: none; padding: 0; margin: -5px 0; min-height: 44px; display: flex; align-items: center; color: inherit; min-width: 44px; text-align: start"><h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{charName}}</h1></button>
 <span style="height: 26px; padding: 0 10px; border-radius: 99px; background: var(--inv); color: var(--invInk); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; display: flex; align-items: center; flex: none">{{lvText}}</span>
+<sc-for list="{{myShow}}" as="x" hint-placeholder-count="2"><span aria-label="{{x.aria}}" style="{{x.style}}">{{x.text}}</span></sc-for>
 </div>
 </div>
 <div style="display: flex; align-items: center; gap: 6px; flex: none">
@@ -1079,6 +1080,13 @@ input,select{font-family:inherit}
 <span style="width: 38px; height: 38px; border-radius: 12px; background: var(--soft); color: var(--st); display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2L4.5 13.5h6.5L9.5 22l9-11.5h-6.5z" fill="currentColor"></path></svg></span>
 <div style="flex: 1; min-width: 0"><div style="font-size: 14.5px; font-weight: 800">{{L.stamina4}}</div><div style="font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px">{{rowS.note}}</div></div>
 <div style="text-align: right; flex: none"><div style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700">{{rowS.v}}</div><div style="font-size: 11.5px; color: var(--muted); font-weight: 600">{{rowS.split}}</div></div>
+</div>
+</div>
+<div style="background: var(--card); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><div style="font-size: 15px; font-weight: 800">{{L.showoffTitle}}</div><div style="font-size: 12px; color: var(--muted); font-weight: 700; flex: none">{{showCount}}</div></div>
+<div style="font-size: 12.5px; color: var(--muted); font-weight: 500; line-height: 1.45; margin-top: -4px">{{L.showoffHint}}</div>
+<div role="group" aria-label="{{L.showoffTitle}}" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{showOpts}}" as="o" hint-placeholder-count="12"><button aria-pressed="{{o.on}}" onClick="{{o.pick}}" style="{{o.style}}">{{o.text}}</button></sc-for>
 </div>
 </div>
 <div style="background: var(--card); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
@@ -1565,7 +1573,7 @@ input,select{font-family:inherit}
 <div role="dialog" aria-modal="true" aria-label="{{pc.name}}" class="dc-col" style="position: absolute; left: 0; right: 0; bottom: 0; max-height: 92%; overflow-y: auto; background: var(--bg); border-radius: 28px 28px 0 0; padding: 12px 20px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px">
 <span style="display: block; width: 40px; height: 5px; border-radius: 99px; background: var(--line); margin: 0 auto; flex: none"></span>
 <div style="display: flex; align-items: center; gap: 10px">
-<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700; color: var(--muted)">{{pc.sub}}</div><div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pc.name}}</div></div>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 700; color: var(--muted)">{{pc.sub}}</div><div style="display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0"><div style="font-size: 24px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; max-width: 100%">{{pc.name}}</div><sc-for list="{{pc.show}}" as="x" hint-placeholder-count="2"><span aria-label="{{x.aria}}" style="{{x.style}}">{{x.text}}</span></sc-for></div></div>
 <span style="height: 30px; padding: 0 12px; border-radius: 99px; background: var(--inv); color: var(--invInk); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; flex: none">{{pc.lv}}</span>
 <button aria-label="{{L.close}}" onClick="{{closePcard}}" style="width: 44px; height: 44px; border-radius: 14px; border: none; background: var(--card); color: var(--ink); display: flex; align-items: center; justify-content: center; flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
 </div>
@@ -1936,6 +1944,8 @@ class Component extends DCLogic {
     if (!(saved.schema >= 15)) Object.assign(st, this.migrate15(st));
     // Diamonds (v0.16) are checked the same way.
     st.gems = this.gemsOf(st);
+    st.showoff = (Array.isArray(st.showoff) ? st.showoff : []).filter(k => this.showoffIds().indexOf(k) >= 0).slice(-2);
+    st.counts = this.countsOf(st);
     st.purchases = (Array.isArray(st.purchases) ? st.purchases : []).filter(p => p && typeof p.token === 'string' && GEM_PACKS.some(k => k.sku === p.sku));
     if (!(typeof st.firstDay === 'number' && isFinite(st.firstDay))) st.firstDay = this.migrate13(Object.assign({}, saved, { firstDay: null })).firstDay;
     if (st.char) {
@@ -2136,7 +2146,7 @@ class Component extends DCLogic {
       league: { week: 0, tier: 1, trophies: 0, hidden: false, baseL: 1, start: Math.floor(T / 7) * 7 }, ltab: 'league', cheered: {}, pcard: null, weekTrip: (T % 7) * 25, weekTodayBase: 0, invited: false,
       onboard: null, comeback: null, comebackDismissed: false, coachSkip: {}, flash: null, confirmFresh: false, starterBonus: true,
       lastDay: T, lastBackup: null, saveFail: false, importInfo: null, backupMsg: '',
-      schema: 15, firstDay: 0, ttab: 'habits', taskSheet: null, gems: { earned: 30, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null,
+      schema: 15, firstDay: 0, ttab: 'habits', taskSheet: null, gems: { earned: 30, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null, showoff: ['streak', 'rarefish'], counts: { advWon: 12, topZone: 4, tasksDone: 9 },
       tasks: [
         { id: 't1', name: tr('returnTheLibraryBooks'), day: T - 2, done: false, doneDay: null, paid: false },
         { id: 't2', name: tr('callTheDentist'), day: T, done: false, doneDay: null, paid: false },
@@ -2161,7 +2171,7 @@ class Component extends DCLogic {
       comeback: null, comebackDismissed: false, coachSkip: {}, timer: null, sheet: null, form: null, day: T, xpBase: 0, lastDay: T, sel: null,
       gform: { open: false, hid: '', title: '', target: '', deadline: 'month', date: '', error: '' },
       screen: 'onboard', onboard: { step: 0, focus: [], picks: [] }, starterBonus: false,
-      schema: 15, firstDay: T, tasks: [], ttab: 'habits', taskSheet: null, gems: { earned: 0, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null };
+      schema: 15, firstDay: T, tasks: [], ttab: 'habits', taskSheet: null, gems: { earned: 0, bought: 0, spent: 0, demo: 0 }, purchases: [], gemSheet: null, showoff: [], counts: { advWon: 0, topZone: -1, tasksDone: 0 } };
   }
 
   freshState(settings) { return Object.assign(this.demoState(settings), this.freshPatch()); }
@@ -3284,6 +3294,74 @@ class Component extends DCLogic {
   advMins(st, z) { return this.perk(st, 'advTime') ? z.mins - Math.max(1, Math.round(z.mins * 0.1)) : z.mins; }
   fishHours(st) { return this.perk(st, 'fishTime') ? 2.5 : 3; }
 
+  // Lifetime counters that history can't rebuild (tasks and the adventure log are trimmed).
+  countsOf(st) {
+    const c = st.counts || {}, n = v => (typeof v === 'number' && isFinite(v) ? Math.floor(v) : 0);
+    return { advWon: Math.max(0, n(c.advWon)), topZone: Math.max(-1, typeof c.topZone === 'number' ? n(c.topZone) : -1), tasksDone: Math.max(0, n(c.tasksDone)) };
+  }
+
+  // ---------- Showoff stats: a player picks up to 2 to show next to their name ----------
+  showoffIds() { return ['streak', 'rarefish', 'bigfish', 'book', 'caught', 'advwon', 'zone', 'perfect', 'badges', 'trophies', 'tasks', 'days']; }
+  // Picking a third one drops the oldest, so there are never more than 2.
+  pickShowoff(id) {
+    this.setState(st => {
+      const cur = (st.showoff || []).filter(k => k !== id);
+      return { showoff: cur.length === (st.showoff || []).length ? cur.concat([id]).slice(-2) : cur };
+    });
+  }
+  // Values for every showoff stat: { text, rar } (rar colours the rarest fish).
+  showoffValues(src, fmtCm) {
+    const D = this.px(), R = ['common', 'rare', 'epic', 'legendary'], Z = this.zones();
+    const v = {}, put = (k, text, rar) => { v[k] = { text, rar: rar || '' }; };
+    put('streak', tr('show_streak', [src.streak]));
+    if (src.rareFish) put('rarefish', tr('show_rarefish', [D.fish[src.rareFish].name]), D.fish[src.rareFish].rarity);
+    else put('rarefish', tr('show_nofish'));
+    put('bigfish', src.bigFish ? tr('show_bigfish', [fmtCm(src.bigFish)]) : tr('show_nofish'));
+    put('book', tr('show_book', [src.species, D.fishOrder.length]));
+    put('caught', tr('show_caught', [fmtNum(src.caught)]));
+    put('advwon', tr('show_advwon', [fmtNum(src.advWon)]));
+    put('zone', src.topZone >= 0 && Z[src.topZone] ? tr('show_zone', [Z[src.topZone].name]) : tr('show_nozone'));
+    put('perfect', tr('show_perfect', [fmtNum(src.perfect)]));
+    put('badges', tr('show_badges', [src.badges]));
+    put('trophies', tr('show_trophies', [src.trophies]));
+    put('tasks', tr('show_tasks', [fmtNum(src.tasks)]));
+    put('days', tr('show_days', [fmtNum(src.days)]));
+    return v;
+  }
+  // My own numbers, from history, the Fish Book and the counters.
+  myShowoffSource(st, allD) {
+    const D = this.px(), book = st.book || {}, R = ['common', 'rare', 'epic', 'legendary'], cnt = this.countsOf(st);
+    let rareFish = null, bigFish = 0, caught = 0, species = 0;
+    Object.keys(book).forEach(id => {
+      const b = book[id], f = D.fish[id];
+      if (!f || !b || !(b.caught > 0)) return;
+      species++; caught += b.caught; bigFish = Math.max(bigFish, b.best || 0);
+      const better = !rareFish || R.indexOf(f.rarity) > R.indexOf(D.fish[rareFish].rarity) || (f.rarity === D.fish[rareFish].rarity && (b.best || 0) > (book[rareFish].best || 0));
+      if (better) rareFish = id;
+    });
+    const first = typeof st.firstDay === 'number' ? st.firstDay : this.T;
+    let perfect = 0;
+    for (let j = Math.max(0, first); j <= this.T; j++) if (this.allDone(st.habits || [], j)) perfect++;
+    return { streak: allD.reduce((m, h) => Math.max(m, h.best), 0), badges: allD.reduce((a, h) => a + h.badgeCount, 0), species, caught, rareFish, bigFish,
+      advWon: cnt.advWon, topZone: cnt.topZone, perfect, trophies: (st.league || {}).trophies || 0, tasks: cnt.tasksDone, days: Math.max(1, this.T - first + 1) };
+  }
+  // Simulated players get 2 stats with believable numbers, seeded by who they are (same every time).
+  simShowoff(p) {
+    let h = 7;
+    String(p.pid).split('').forEach(ch => { h = (h * 31 + ch.charCodeAt(0)) >>> 0; });
+    const r = this.rng(h), D = this.px(), ids = this.showoffIds(), Z = this.zones();
+    const a = ids[Math.floor(r() * ids.length)];
+    let b = ids[Math.floor(r() * ids.length)];
+    if (b === a) b = ids[(ids.indexOf(a) + 5) % ids.length];
+    const rar = p.level >= 30 && r() < 0.5 ? 'legendary' : p.level >= 12 ? 'epic' : p.level >= 5 ? 'rare' : 'common';
+    const pool = D.fishOrder.filter(id => D.fish[id].rarity === rar), fish = pool[Math.floor(r() * pool.length)];
+    const top = Z.reduce((m, z, i) => (z.lvl <= p.level ? i : m), 0);
+    const src = { streak: p.streak, badges: p.badges, species: p.fish, caught: p.fish * 3 + Math.floor(r() * 20), rareFish: fish,
+      bigFish: D.fish[fish].size[0] + r() * (D.fish[fish].size[1] - D.fish[fish].size[0]), advWon: Math.floor(p.level * 4 + r() * 30), topZone: top,
+      perfect: Math.floor(p.level * 2 + r() * 25), trophies: Math.floor(r() * (1 + p.level / 6)), tasks: Math.floor(r() * 60 + 5), days: Math.floor(p.level * 6 + r() * 40) };
+    return { ids: [a, b], src };
+  }
+
   // Weekly league reward: by place, times the league the week was played in. Hidden players earn none.
   leagueGems(rank, tier, hidden) {
     if (hidden) return 0;
@@ -3337,8 +3415,10 @@ class Component extends DCLogic {
       if (!t) return {};
       let nt;
       const res = {};
-      if (t.done) nt = Object.assign({}, t, { done: false, doneDay: null, paid: false });
+      const k = this.countsOf(st);
+      if (t.done) { nt = Object.assign({}, t, { done: false, doneDay: null, paid: false }); res.counts = Object.assign({}, k, { tasksDone: Math.max(0, k.tasksDone - 1) }); }
       else {
+        res.counts = Object.assign({}, k, { tasksDone: k.tasksDone + 1 });
         const pay = this.paidOn(st, T) < this.taskCap();
         nt = Object.assign({}, t, { done: true, doneDay: T, paid: pay });
         if (pay) { res.flash = { id, text: '+' + this.taskCoin() }; this.flashLater(); }
@@ -3397,7 +3477,8 @@ class Component extends DCLogic {
       const ts = st.taskSheet;
       if (!ts || ts.mode !== 'edit') return {};
       if (!ts.confirmDel) return { taskSheet: Object.assign({}, ts, { confirmDel: true, error: '' }) };
-      return { tasks: (st.tasks || []).filter(x => x.id !== ts.id), taskSheet: null };
+      const gone = (st.tasks || []).find(x => x.id === ts.id), k = this.countsOf(st);
+      return Object.assign({ tasks: (st.tasks || []).filter(x => x.id !== ts.id), taskSheet: null }, gone && gone.done ? { counts: Object.assign({}, k, { tasksDone: Math.max(0, k.tasksDone - 1) }) } : {});
     });
   }
 
@@ -3485,6 +3566,7 @@ class Component extends DCLogic {
       const la = this.levelInfo(this.xpOf(Object.assign({}, st, { advXp }))).L;
       const res = { adv: null, advXp, weekTrip: (st.weekTrip || 0) + xp, bonus: (st.bonus || 0) + coins, advLog: [{ zid: z.id, win, coins, xp, drop }].concat(st.advLog || []).slice(0, 5) };
       if (drop) res.owned = st.owned.concat([drop]);
+      if (win) { const k = this.countsOf(st); res.counts = Object.assign({}, k, { advWon: k.advWon + 1, topZone: Math.max(k.topZone, this.zones().findIndex(x => x.id === z.id)) }); }
       const q = [{ kind: 'adv', quiet: !win, icon: z.id, kicker: z.name, title: win ? tr('victory') : tr('yourHeroRetreated'),
         body: tr('coinsXp', [win ? z.win : z.lose, coins, a.bonus ? tr('n25ForFinishingEveryHabit') : '', xp, drop ? tr('found', [D.items[drop].name]) : '', win ? '' : tr('gearWithTheHealthOrPower')]) }];
       if (la > lb && la > (st.lvlSeen || 0)) { if (st.settings.celebrate) q.push(this.levelCele(la)); res.lvlSeen = la; }
@@ -4850,7 +4932,7 @@ class Component extends DCLogic {
     const EARN = { s7: tr('a7DayStreak'), s14: tr('a14DayStreak'), s30: tr('a1MonthStreak'), s90: tr('a3MonthStreak'), s365: tr('a1YearStreak'), fb_common: tr('allCommonFishN', [nFish('common')]), fb_rare: tr('allRareFishN', [nFish('rare')]), fb_epic: tr('allEpicFishN', [nFish('epic')]), fb_legend: tr('allLegendaryFishN', [nFish('legendary')]), league: tr('aTop3LeagueFinish') };
     const earnKind = k => (k.indexOf('fb_') === 0 ? tr('fishBookReward') : (k === 'league' ? tr('leagueReward') : tr('streakReward')));
     const styleOnly = it => it.slot === 'hair' || it.slot === 'bg' || !!it.cosmetic;
-    const fmtCm = v => (v >= 100 ? (Math.round(v) / 100).toFixed(2) + ' m' : tr('cm', [(Math.round(v * 10) / 10).toFixed(1)]));
+    const fmtCm = v => (v >= 100 ? tr('meters', [(Math.round(v) / 100).toFixed(2)]) : tr('cm', [(Math.round(v * 10) / 10).toFixed(1)]));
     const fmtRange = (a, b) => (a >= 100 ? a / 100 + '–' + b / 100 + ' m' : tr('cm2', [a, b]));
     const hcNow = ch ? ch.hc : 'brown';
     const compact = ctab === 'store' || ctab === 'wardrobe';
@@ -5121,6 +5203,16 @@ class Component extends DCLogic {
     const segS = on => 'height: 40px; border-radius: 11px; border: none; font-size: 13px; font-weight: 800; padding: 0 2px; ' + (on ? 'background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,0.12);' : 'background: transparent; color: var(--muted);');
     const ctabs = [['hero', tr('hero')], ['wardrobe', tr('wardrobe')], ['store', tr('store')], ['explore', tr('explore')]].map(t => ({ label: t[1], on: ctab === t[0], style: segS(ctab === t[0]),
       pick: () => { this.setState(st => ({ ctab: t[0], tryOn: t[0] === 'store' ? st.tryOn : null, fishSel: null })); this.toTop(); } }));
+    // Showoff stats: my values, the 2 shown chips and the picker.
+    // Worked out only where they show (the Character tabs and player cards): perfect days walk the whole history.
+    const myShowVals = ch && (onChar || s.pcard) ? this.showoffValues(this.myShowoffSource(s, allD), fmtCm) : {};
+    const chipOf = (vals, id) => { const x = vals[id]; return x ? { text: x.text, aria: x.text, style: 'display: inline-block; height: 26px; line-height: 26px; padding: 0 10px; border-radius: 99px; font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; box-sizing: border-box; background: var(--soft); color: ' + (x.rar ? RAR[x.rar][1] : 'var(--ink)') + ';' } : null; };
+    const myShow = (s.showoff || []).slice(0, 2).map(id => chipOf(myShowVals, id)).filter(Boolean);
+    const showOpts = ch && myShowVals.streak ? this.showoffIds().map(id => {
+      const on = (s.showoff || []).indexOf(id) >= 0;
+      return { on, text: tr('showName_' + id) + ': ' + myShowVals[id].text, pick: () => this.pickShowoff(id),
+        style: 'min-height: 40px; padding: 8px 12px; border-radius: 14px; border: none; font-size: 13px; font-weight: 700; text-align: start; line-height: 1.3; max-width: 100%; ' + (on ? 'background: var(--inv); color: var(--invInk);' : 'background: var(--soft); color: var(--ink);') };
+    }) : [];
     const cats = [['clothes', tr('clothes')], ['hat', tr('hats')], ['hair', tr('hair')], ['shoes', tr('shoes')], ['weapon', tr('weapons')], ['acc', tr('accessories')], ['rod', tr('rods')], ['bg', tr('backgrounds')]].map(c2 => {
       const on = cat === c2[0];
       return { label: c2[1], on, style: pill(on), pick: () => this.setState({ cat: c2[0], tryOn: null }) };
@@ -5235,7 +5327,8 @@ class Component extends DCLogic {
         if (p) {
           const sp = this.sprite(p.look, 5), ck = p.pid + '|' + LG.week, did = !!(s.cheered || {})[ck];
           const where = p.me ? tr('thisIsWhatOthersSee') : (LD.friends.indexOf(p) >= 0 ? tr('friend') : (LD.legends.indexOf(p) >= 0 ? tr('hallOfFame') : tr('league', [TIERS[LG.tier], ord(league.indexOf(p) + 1)])));
-          pc = { name: p.name, isMe: !!p.me, notMe: !p.me, box: sp.box, dot: sp.dot, lv: tr('lv3', [p.level]), sub: where,
+          const sh = p.me ? { ids: (s.showoff || []).slice(0, 2), vals: myShowVals } : (() => { const x = this.simShowoff(p); return { ids: x.ids, vals: this.showoffValues(x.src, fmtCm) }; })();
+          pc = { name: p.name, isMe: !!p.me, show: sh.ids.slice(0, 2).map(id => chipOf(sh.vals, id)).filter(Boolean), notMe: !p.me, box: sp.box, dot: sp.dot, lv: tr('lv3', [p.level]), sub: where,
             stats: [{ k: tr('weeklyXp'), v: fmtNum(p.xp) }, { k: tr('bestStreak'), v: p.streak + (trP(p.streak, 'day', 'days')) }, { k: tr('badges'), v: String(p.badges) }, { k: tr('fishBook'), v: p.fish + ' / ' + PXD.fishOrder.length }],
             rarest: p.rarest || tr('starterGear'), rarestStyle: 'font-size: 14px; font-weight: 800; text-align: right; color: ' + RAR[p.rarestR][1] + ';',
             cheerLabel: did ? tr('cheered') : tr('cheerOn', [p.name]), cheerOff: did,
@@ -5470,6 +5563,7 @@ class Component extends DCLogic {
       sH, sP, sS, ctabs, etabs,
       isHero: ctab === 'hero', isWardrobe: ctab === 'wardrobe', isStore: ctab === 'store', isExplore, isAdvTab, isFishTab, isBookTab, showTripCard: isExplore && etab !== 'book',
       showCats: ctab === 'wardrobe' || ctab === 'store',
+      myShow, showOpts, showCount: tr('showCount', [(s.showoff || []).length]),
       cats, wtypeOpts, showWtypes: cat === 'weapon' && (ctab === 'store' || ctab === 'wardrobe'), wardrobe, store, storeEmpty: !!ch && ctab === 'store' && store.length === 0,
       wardEmpty: !!ch && ctab === 'wardrobe' && wardrobe.length === 0, wardHas: wardrobe.length > 0,
       wardEmptyText: tr('youHaveNoYetGetSome', [tr('catLower_' + ({ clothes: 1, hat: 1, hair: 1, shoes: 1, weapon: 1, acc: 1, rod: 1, bg: 1 }[cat] ? cat : 'items'))]),

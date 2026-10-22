@@ -213,5 +213,15 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.20.0: Showoff stats (2026-10-22)
+- **Show off 2 stats next to your name.** A new Showoff stats card on the Hero page lists 12 lifetime stats with your current value: longest streak, rarest fish (named and coloured by rarity), biggest fish, Fish Book, fish caught, adventures won, hardest place cleared, perfect days, streak badges, league trophies, tasks done and days with Streakling. Pick up to 2; a third pick replaces the oldest, tapping a shown one removes it. Never more than 2, even from a damaged save.
+- **Where they show:** as small chips right next to the name, on the Hero page header and on the player card (yours on the leaderboard, "This is what others see"). On narrow phones the chips move just below the name instead of squeezing it.
+- **Other players** show 2 stats too, with believable numbers for their level, seeded per player so they stay the same every time the card opens (players are still simulated).
+- **New lifetime counters** for what history can't rebuild: adventures won, the hardest place cleared, and tasks done. They start at 0 for existing saves. Unticking or deleting a finished task takes its count back, so the number can't be pumped. Perfect days are counted from your history.
+- Fix: big fish sizes in metres were always written in English ("4.01 m"); Arabic now shows "4.01 م".
+- **Tests:** 12 choices, never more than 2, the oldest replaced, remove, kept after a reload, damaged saves, my card and other players' cards (2 different stats, the same each time), every counter including undo and delete, Arabic; the screen tour adds the picker and my card with chips, so long names and Arabic are scanned for overflow at every size.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).

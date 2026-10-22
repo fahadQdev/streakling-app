@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.19.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.20.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.19.0)
+## Features (as of v0.20.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -91,6 +91,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ### Social (simulated in the prototype)
 - **Weekly league / leaderboard**, friends, and a **Hall of Fame**.
+- **Showoff stats:** pick up to 2 of 12 lifetime stats (longest streak, rarest fish, biggest fish, Fish Book, fish caught, adventures won, hardest place, perfect days, badges, trophies, tasks done, days with Streakling). They sit next to your name on your Hero page and on your player card; other players' cards show theirs. A third pick replaces the oldest.
 - **Invite a friend** through the phone's share sheet (or a copied link). The friends list itself is still simulated.
 
 ### App
