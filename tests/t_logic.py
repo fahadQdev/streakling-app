@@ -377,6 +377,82 @@ def main(browser, res):
     res.eq(a.js("return c.diamondsOf(c.state);"), 1400, 'balance adds league and bought diamonds')
     a.set({'gems': {'earned': -5, 'bought': 'x', 'spent': 9e9, 'demo': None}})
     res.eq(a.js("return c.diamondsOf(c.state);"), 0, 'a damaged balance never goes below 0')
+
+    # ---------- Diamond items: convenience perks only ----------
+    a.clear(); a.open(); demo(a); a.dismiss_all()
+    U = {'advTime': 'u_cloak', 'fishTime': 'u_hat', 'softLoss': 'u_hair', 'lureSave': 'u_boots', 'dropUp': 'u_blade', 'autoSell': 'u_satchel', 'rareOdds': 'u_rod'}
+    base_char = a.state()['char']
+    def wear(ids):
+        a.js("c.setState(s => { let ch = s.char; arg.forEach(id => { ch = c.equip(ch, id, true, 2); }); return { owned: s.owned.concat(arg), char: ch, adv: null, fishing: null, celebrate: [] }; });", ids); a.wait(80)
+    def plain():
+        a.set({'char': base_char, 'adv': None, 'fishing': None, 'celebrate': []}, wait=80)
+    # Trips are started with the daily gate open, so only the perk decides the length.
+    open_gate = "c.tripInfo = () => ({ unlocked: true, advUsed: false, fishUsed: false, all: false, none: false, due: 1, got: 1, goal: 1, need: 0 });"
+    def trip_len(kind):
+        a.js(open_gate + (" c.setState({ adv: null, fishing: null, settings: Object.assign({}, c.state.settings, { demoTools: false }) }); c.sendAdventure('woods');" if kind == 'adv' else
+             " c.setState({ adv: null, fishing: null, bait: 'worm', settings: Object.assign({}, c.state.settings, { demoTools: false }) }); c.sendFishing();")); a.wait(120)
+        t = a.state()['adv' if kind == 'adv' else 'fishing']
+        return round((t['end'] - t['start']) / 60000)
+    plain(); res.eq(trip_len('adv'), 15, 'Whispering Woods takes 15 min without the cloak')
+    plain(); wear([U['advTime']]); res.eq(trip_len('adv'), 13, "Wayfarer's Cloak: 10% shorter, at least 1 minute (15 -> 13 min)")
+    plain(); res.eq(trip_len('fish'), 180, 'fishing takes 3 h without the hat')
+    plain(); wear([U['fishTime']]); res.eq(trip_len('fish'), 150, 'Tidewatch Hat: fishing takes 2.5 h')
+    # Adventure results with fixed dice: Math.random returns the given values in order (last one repeats).
+    resolve = """const seq = arg.seq.slice(); const orig = Math.random; Math.random = () => (seq.length > 1 ? seq.shift() : seq[0]);
+      const z = c.zones().find(x => x.id === 'woods'); const s0 = c.state;
+      c.setState({ adv: Object.assign({ zid: 'woods', start: 0, end: 1, demo: false, chance: 0.5, bonus: false }, arg.flags), owned: s0.owned.filter(id => !arg.unown || arg.unown.indexOf(id) < 0) });
+      c.resolveAdventure(); Math.random = orig; return null;"""
+    def adv(seq, flags, unown=None):
+        b0 = a.state()['bonus']; x0 = a.js("return c.xpOf(c.state);"); o0 = len(a.state()['owned'])
+        a.js(resolve, {'seq': seq, 'flags': flags, 'unown': unown}); a.wait(150)
+        st = a.state()
+        return st['bonus'] - b0, a.js("return c.xpOf(c.state);") - x0, len(st['owned']) - o0 + (len(unown) if unown else 0)
+    plain()
+    z = a.js("return c.zones().find(x => x.id === 'woods');")
+    lose_plain = adv([0.99], {})
+    lose_soft = adv([0.99], {'soft': True})
+    res.eq((lose_plain[0], lose_soft[0]), (round((z['coins'][0] + z['coins'][1]) / 8), round((z['coins'][0] + z['coins'][1]) / 4)), 'Phoenix Crest: a lost adventure keeps half the coins instead of a quarter')
+    res.eq(lose_plain[1], lose_soft[1], 'Phoenix Crest: XP from a lost adventure is unchanged')
+    roll = z['drop'] + 0.05
+    win_plain = adv([0.0, 0.0, roll, 0.0], {})
+    win_up = adv([0.0, 0.0, roll, 0.0], {'dropUp': True})
+    res.eq((win_plain[2], win_up[2]), (0, 1), 'Starforged Blade: +10% item chance (a roll just above the normal chance still finds an item)')
+    res.eq(win_plain[1], win_up[1], 'Starforged Blade: XP from a won adventure is unchanged')
+    # Fishing odds and results
+    odds = a.js("return [c.fishOdds(80, 'worm', false), c.fishOdds(80, 'worm', true), c.fishCount(10, false)];")
+    res.ok(odds[1][0] < odds[0][0] and all(odds[1][k] > odds[0][k] for k in (1, 2, 3)), 'Moonlit Rod: rare, epic and legendary fish more likely')
+    res.ok(abs(sum(odds[1]) - 1) < 1e-9, 'odds with the Moonlit Rod still add up to 1')
+    fish = """const orig = Math.random; Math.random = () => arg.r; const L = c.levelInfo(c.xpOf(c.state)).L;
+      c.setState(s => ({ fishing: Object.assign({ start: 0, end: 1, demo: false, n: 3, bait: arg.bait, sta: 60, bonus: false }, arg.flags), book: arg.book || s.book, celebrate: [] }));
+      c.resolveFishing(); Math.random = orig; return null;"""
+    def fishing(flags, bait='worm', r=0.1, book=None):
+        b0 = a.state()['bonus']; x0 = a.js("return c.xpOf(c.state);")
+        a.js(fish, {'flags': flags, 'bait': bait, 'r': r, 'book': book}); a.wait(250)
+        st = a.state()
+        return st['bonus'] - b0, a.js("return c.xpOf(c.state);") - x0, st
+    plain()
+    f_plain = fishing({})
+    f_lucky = fishing({'lucky': True})
+    res.eq(f_plain[1], f_lucky[1], 'Moonlit Rod: same number of fish and XP per trip')
+    g_plain = fishing({}, bait='golden', r=0.1)
+    g_saved = fishing({'lureSave': True}, bait='golden', r=0.1)
+    res.eq(g_saved[0] - g_plain[0], 200, 'Tidewalker Boots: a golden lure comes back (200 coins) when the dice say so')
+    res.ok('came back' in (g_saved[2]['celebrate'][-1].get('body') or ''), 'the catch pop-up says the lure came back')
+    g_kept = fishing({'lureSave': True}, bait='golden', r=0.9)
+    res.eq(g_kept[0], g_plain[0], 'Tidewalker Boots: no refund on an unlucky roll')
+    full = {k: {'caught': 4, 'kept': 3, 'best': 10} for k in a.js("return c.px().fishOrder;")}
+    sold = fishing({'autoSell': True}, book=full)
+    res.ok(all(b['kept'] <= 1 for b in sold[2]['book'].values()) and sold[0] > 0, "Angler's Satchel: extra fish sold right after the trip")
+    res.eq(sold[1], f_plain[1], "Angler's Satchel: XP unchanged")
+    # The league never sees perks: same XP and week score with every diamond item worn.
+    plain()
+    before = a.js("return [c.xpOf(c.state), c.weekXp(c.state), c.levelInfo(c.xpOf(c.state)).L];")
+    wear(list(U.values()) + ['bg_aurora'])
+    res.eq(a.js("return [c.xpOf(c.state), c.weekXp(c.state), c.levelInfo(c.xpOf(c.state)).L];"), before, 'wearing every diamond item changes no XP, level or weekly league score')
+    r1 = a.js("const s = c.state; return c.closeLeague(s, c.weekXp(s), c.T, c.T, c.levelInfo(c.xpOf(s)).L).league;")
+    plain()
+    r0 = a.js("const s = c.state; return c.closeLeague(s, c.weekXp(s), c.T, c.T, c.levelInfo(c.xpOf(s)).L).league;")
+    res.eq((r1['tier'], r1['trophies']), (r0['tier'], r0['trophies']), 'the week closes with the same result with or without diamond items')
     a.check_errors('logic')
 
 

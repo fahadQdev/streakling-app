@@ -333,6 +333,14 @@ def states():
     def _(a):
         a.tap('Character'); a.set({'ctab': 'store', 'cat': 'weapon', 'wfilter': 'mace'})
 
+    @st('char-store-ultra')
+    def _(a):
+        a.tap('Character'); a.set({'ctab': 'store', 'cat': 'rod', 'gems': {'earned': 500, 'bought': 0, 'spent': 0, 'demo': 0}})
+
+    @st('char-tryon-aurora')
+    def _(a):
+        a.tap('Character'); a.set({'ctab': 'store', 'cat': 'bg', 'tryOn': 'bg_aurora'})
+
     @st('char-hero-busy')
     def _(a):
         a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });")

@@ -322,7 +322,7 @@ def main(browser, res):
     a.check_errors('character tab')
 
     # ---------- Backgrounds ----------
-    B = a.js("return c.bgData();")
+    B = {k: v for k, v in a.js("return c.bgData();").items() if v['rarity'] != 'ultra'}  # coin backgrounds (Aurora Sky costs diamonds)
     I = items(a)
     res.eq(len(B), 10, '10 new backgrounds')
     res.eq(sorted(set(b['rarity'] for b in B.values())), ['common', 'epic', 'legendary', 'rare'], 'backgrounds spread across every rarity')
@@ -334,6 +334,7 @@ def main(browser, res):
     lvl = a.js("return c.levelInfo(c.xpOf(c.state)).L;")
     res.ok(lvl < 3, 'low level for the lock check (Lv %s)' % lvl)
     cards = a.js("return c.renderVals().store.map(x => ({ name: x.name, act: x.actLabel, off: x.actOff, style: x.isStyle, delta: x.hasDelta, thumb: x.thumbBg }));")
+    cards = [x for x in cards if x['name'] != 'Aurora Sky']  # the diamond background is checked with the diamond items
     res.eq(len(cards), 10, 'Store → Backgrounds lists the 10 backgrounds')
     res.ok(all(x['style'] and not x['delta'] for x in cards), 'backgrounds say Style only, with no stat change')
     res.ok(all('url(' in x['thumb'] for x in cards), 'each background card shows its picture')
@@ -531,6 +532,38 @@ def main(browser, res):
     a.set({'settings': dict(a.state()['settings'], lang='ar'), 'ctab': 'wardrobe'})
     res.ok(a.has('جمرة الثلاثين') and a.has('السيوف'), 'weapon names and filter in Arabic')
     a.check_errors('weapons')
+    a.close()
+
+    # ---------- Diamond-only items ----------
+    a = App(browser, res, when=WHEN)
+    a.clear(); a.open(); demo(a); a.dismiss_all()
+    U = a.js("const D = c.px(); return D.order.filter(id => D.items[id].rarity === 'ultra').map(id => ({ id, slot: D.items[id].slot, dprice: D.items[id].dprice, perk: D.items[id].perk, price: D.items[id].price, lvl: D.items[id].lvl, hp: D.items[id].hp, pow: D.items[id].pow, sta: D.items[id].sta }));")
+    res.eq(sorted(u['slot'] for u in U), sorted(['clothes', 'hat', 'hair', 'shoes', 'weapon', 'acc', 'rod', 'bg']), 'one diamond item in every store section')
+    res.ok(all(u['dprice'] > 0 and u['perk'] and not u['price'] for u in U), 'each costs diamonds only and has a perk')
+    best = a.js("""const D = c.px(); return arg.map(u => { const it = D.items[u.id];
+      const pool = D.order.filter(id => { const x = D.items[id]; return x.slot === it.slot && x.price > 0 && !x.earn && x.rarity !== 'ultra' && (it.slot !== 'weapon' || x.spot === 'hand'); });
+      const max = Math.max(...pool.map(id => D.items[id].price));
+      return pool.filter(id => D.items[id].price === max).map(id => [D.items[id].hp, D.items[id].pow, D.items[id].sta, D.items[id].lvl]); });""", U)
+    res.ok(all(not b or any([u['hp'], u['pow'], u['sta']] == x[:3] and (u['lvl'] >= x[3] or not any(x[:3])) for x in b) for u, b in zip(U, best)), 'stats match a top-priced coin item of the section, at its level (no early strength)')
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'clothes', 'bonus': 100000, 'demoXp': 20000, 'gems': {'earned': 0, 'bought': 0, 'spent': 0, 'demo': 0}})
+    card = lambda name: a.js("const x = c.renderVals().store.find(x => x.name === arg); return x && [x.actLabel, x.actOff, x.perkText, x.rarText];", name)
+    res.eq(card("Wayfarer's Cloak"), ['Need 400 more diamonds', True, 'Adventures take 10% less time', 'Ultra rare · Lv 10'], 'card: diamond price, perk and Ultra rare label')
+    lvl = a.js("return c.levelInfo(c.xpOf(c.state)).L;")
+    a.js("c.buyItem('u_cloak', 1e9, arg, 2);", lvl); a.wait(120)
+    res.ok('u_cloak' not in a.state()['owned'], 'coins can not buy a diamond item')
+    a.set({'gems': {'earned': 1000, 'bought': 0, 'spent': 0, 'demo': 0}})
+    coins0 = a.js("return c.coinsOf(c.state);")
+    res.eq(card("Wayfarer's Cloak")[:2], ['Buy · 400 diamonds', False], 'enough diamonds: can buy')
+    a.pg.locator('button:has-text("Buy · 400 diamonds")').first.click(); a.wait(200)
+    res.ok('u_cloak' in a.state()['owned'] and a.state()['char']['clothes'] == 'u_cloak', 'bought with diamonds and worn')
+    res.eq([a.js("return c.diamondsOf(c.state);"), a.js("return c.coinsOf(c.state);")], [600, coins0], 'diamonds go down by 400, coins stay the same')
+    a.js("c.buyItem('u_blade', 0, 10, 2);"); a.wait(120)
+    res.ok('u_blade' not in a.state()['owned'], 'Starforged Blade needs Lv 16 like the best coin sword')
+    a.set({'ctab': 'explore', 'etab': 'adventure'})
+    res.ok('Lv 1 · 13m trip' in a.js("return c.renderVals().zones.map(z => z.meta);"), 'Explore shows the shorter trip while the cloak is worn')
+    a.set({'settings': dict(a.state()['settings'], lang='ar'), 'ctab': 'store', 'cat': 'rod'})
+    res.ok(a.has('صنارة ضوء القمر') and a.has('نادر جدًا'), 'diamond items in Arabic')
+    a.check_errors('ultra')
 
 
 if __name__ == '__main__':

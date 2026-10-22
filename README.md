@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.17.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.18.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.17.0)
+## Features (as of v0.18.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -77,6 +77,17 @@ The habit tracking comes first. The game exists to support it, not to replace it
 - **League rewards:** the top 10 of each week earn diamonds, more in higher leagues (1st place: 30 in Bronze, 45 in Silver, 60 in Gold, 90 in Diamond). Hidden players earn none. The League tab shows this week's rewards.
 - **Packs:** 100, 550 (+10%), 1,200 (+20%) and 2,500 (+25%). Payments are not connected yet: the packs say Coming soon. With Demo tools on, a test payment step (clearly marked, no money) lets you try the whole flow.
 - Diamonds never change coins, XP or the weekly league score.
+- **Ultra-rare diamond items:** one in every Store section, bought only with diamonds. Each has the stats of the best coin item of its section (at the same level) plus one convenience perk: shorter trips, better odds, comfort. No perk touches XP, levels or the league.
+  | Section | Item | 💎 | Perk |
+  |---|---|---|---|
+  | Clothes | Wayfarer's Cloak | 400 | Adventures 10% shorter (at least 1 min) |
+  | Hats | Tidewatch Hat | 300 | Fishing trips 2.5 h instead of 3 h |
+  | Hair | Phoenix Crest | 250 | A lost adventure keeps half its coins, not a quarter |
+  | Shoes | Tidewalker Boots | 250 | A shiny or golden lure comes back 1 time in 4 |
+  | Weapons | Starforged Blade | 500 | +10% item chance on a won adventure |
+  | Accessories | Angler's Satchel | 200 | Extra fish sold for you after each trip |
+  | Rods | Moonlit Rod | 450 | Rare, epic and legendary fish 20% more likely (same fish count and XP) |
+  | Backgrounds | Aurora Sky | 150 | Animated aurora (looks only) |
 
 ### Social (simulated in the prototype)
 - **Weekly league / leaderboard**, friends, and a **Hall of Fame**.

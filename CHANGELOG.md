@@ -179,5 +179,24 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.18.0: Ultra-rare diamond items (2026-10-22)
+- **One ultra-rare item in every Store section, bought only with diamonds.** A new Ultra rare rarity (cyan) sits above Legendary. Cards show the diamond price ("Buy · 400 diamonds") and the perk; coins can't buy them.
+- **No stat edge.** Each item has exactly the stats of the best coin item of its section and needs the same level (the Wayfarer's Cloak is Dragon Scale Armour's stats at Lv 10; the Starforged Blade is the Sunfire Sword's at Lv 16). Diamonds buy convenience, never strength early.
+- **Perks, convenience only:**
+  - Wayfarer's Cloak (clothes, 400): adventures take 10% less time, at least 1 minute (Whispering Woods 15 → 13 min). Explore shows the shorter time.
+  - Tidewatch Hat (hats, 300): fishing trips take 2.5 h instead of 3 h.
+  - Phoenix Crest (hair, 250): a lost adventure keeps half its coins instead of a quarter. XP unchanged.
+  - Tidewalker Boots (shoes, 250): a shiny or golden lure comes back 1 time in 4 (the catch pop-up says so). This replaces the planned "Homing Boots": finished trips already collect themselves when the app opens, so that perk would have done nothing.
+  - Starforged Blade (weapons, 500): +10% chance to find an item on a won adventure. XP unchanged.
+  - Angler's Satchel (accessories, 200): extra fish are sold for you right after each trip, at the normal price.
+  - Moonlit Rod (rods, 450): rare, epic and legendary fish bite 20% more often. Same number of fish, same 5 XP each.
+  - Aurora Sky (backgrounds, 150): a new pixel background with an aurora that slowly pulses (an animated SVG, no script). Looks only.
+- **The league never sees perks.** Perks are read through one `perk()` helper that only trips, odds and selling use; XP, levels, stats and the league don't. Trip length was never part of the score (one adventure and one fishing trip a day either way).
+- Hall of Fame "Rarest gear" ranks Ultra rare above Legendary. It is a showcase only and doesn't affect the league.
+- Fix: background names now follow a language switch (they were cached in the first language).
+- **Tests:** every perk checked with fixed dice (trip lengths, loss coins, item chance, lure refund, auto-sell, fishing odds), each next to the same trip without the perk to show XP is unchanged; wearing all eight items changes no XP, level, weekly score or week result; one item per section, diamond price only, stats equal to the best coin item, level gates, buying lowers diamonds and leaves coins alone, Arabic. The tour has the Ultra rare rod and the Aurora Sky try-on in English and Arabic.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).
