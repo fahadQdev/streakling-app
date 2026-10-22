@@ -141,7 +141,7 @@ def main(browser, res):
     res.ok(a.has('Backup saved'), 'backup confirmation')
     res.ok('sheet' not in env['state'] and 'screen' not in env['state'], 'backup leaves out screen state')
     res.eq(env['state'].get('tasks'), saved_tasks, 'backup includes the tasks')
-    res.ok(env['state']['settings'].get('hideDone') is True and env['state'].get('schema') == 14 and isinstance(env['state'].get('firstDay'), int), 'backup includes Hide done, schema and first day')
+    res.ok(env['state']['settings'].get('hideDone') is True and env['state'].get('schema') == 15 and isinstance(env['state'].get('firstDay'), int), 'backup includes Hide done, schema and first day')
     res.ok(isinstance(env['state'].get('gems'), dict) and isinstance(env['state'].get('purchases'), list), 'backup includes diamonds and purchases')
     res.ok('ttab' not in env['state'] and 'taskSheet' not in env['state'], 'backup leaves out the Tasks screen state')
     saved_habits = env['state']['habits']
@@ -249,7 +249,7 @@ def main(browser, res):
     b.put_env(old); b.open()
     st = b.state()
     res.eq(sorted(st['owned']), sorted(['c_vest', 'hr_short', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain']), 'old boy save: girl starter outfit and hair removed, plain background added')
-    res.eq((st['schema'], st['char']['bg'], st['tasks'], st['settings']['hideDone']), (13, 'bg_plain', [], False), 'old save: new fields get their defaults')
+    res.eq((st['schema'], st['char']['bg'], st['tasks'], st['settings']['hideDone']), (15, 'bg_plain', [], False), 'old save: new fields get their defaults')
     res.eq(st['firstDay'], min(starts) - 3, 'old save: first day comes from the oldest habit')
     b.set({'screen': 'char', 'ctab': 'store', 'cat': 'clothes'})
     res.ok('Coral Dress' in b.js("return c.renderVals().store.map(x => x.name);"), 'the removed outfit is back in the Store')

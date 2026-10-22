@@ -198,5 +198,20 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 
 ---
 
+## v0.19.0: Five new places, ten new fish (2026-10-22)
+- **5 adventure places after Dragon's Spire,** each with its own pixel icon, test mix, rewards and win and loss stories:
+  - Sunken Ruins (Lv 12, 5 h, more Health): 54–68 coins, 110 XP, epic finds.
+  - Ashen Wastes (Lv 15, 6 h, more Power): 64–80 coins, 130 XP, epic finds.
+  - Frostfang Pass (Lv 18, 7 h, even): 76–94 coins, 150 XP, epic and legendary finds.
+  - Starfall Crater (Lv 22, 8 h, more Power): 88–108 coins, 175 XP, legendary finds.
+  - Sky Citadel (Lv 26, 8 h, even): 100–124 coins, 200 XP, legendary finds.
+  Difficulty follows the existing curve (the recommended score is about 1.4 × a hero's base score at that level), and the level-up pop-up names the place each level opens.
+- **10 new fish, 35 in all:** Pebble Goby and Reed Minnow (common); Copper Snapper, Mist Eel and Lantern Perch (rare); Thunder Pike, Coral Wyrm and Glass Ray (epic); Moonscale Leviathan and Sunken King (legendary). Each has its own pixel art, size range and blurb, in English and Arabic, and a place in its Fish Book row.
+- Fish counts come from the data everywhere (Fish Book, Hall of Fame, rewards: "Needs all 12 common fish"), no more fixed 25.
+- **Rewards you already earned stay.** Each Fish Book row now has more fish, so a finished row opens again. When an older save loads, any row that was complete with the old fish gets its reward (Bucket Hat, Angler Vest, Wader Boots, Golden Rod) added to the Wardrobe; nothing is taken away.
+- **Tests:** the 5 places (levels, trip lengths, harder and better paid each time, level lock, the level-up message), 35 fish in 12/10/8/5, every new fish actually catchable, odds still adding up to 1, reward texts, and the save migration (a finished old row keeps its reward, an unfinished one doesn't). Older checks now count fish from the data. The tour shows the new places in English and Arabic.
+
+---
+
 ## What's next
 See the **Roadmap** in [README.md](README.md#roadmap).

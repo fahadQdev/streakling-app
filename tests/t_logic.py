@@ -453,6 +453,44 @@ def main(browser, res):
     plain()
     r0 = a.js("const s = c.state; return c.closeLeague(s, c.weekXp(s), c.T, c.T, c.levelInfo(c.xpOf(s)).L).league;")
     res.eq((r1['tier'], r1['trophies']), (r0['tier'], r0['trophies']), 'the week closes with the same result with or without diamond items')
+
+    # ---------- New places and fish ----------
+    Z = a.js("return c.zones().map(z => ({ id: z.id, lvl: z.lvl, mins: z.mins, rec: z.rec, coins: z.coins, xp: z.xp, drop: z.drop, name: z.name }));")
+    res.eq([z['id'] for z in Z[6:]], ['ruins', 'wastes', 'pass', 'crater', 'citadel'], '5 new adventure places after Dragon\'s Spire')
+    res.eq([(z['lvl'], z['mins']) for z in Z[6:]], [(12, 300), (15, 360), (18, 420), (22, 480), (26, 480)], 'levels and trip lengths (5 h to 8 h)')
+    res.ok(all(Z[i]['lvl'] > Z[i - 1]['lvl'] and Z[i]['rec'] > Z[i - 1]['rec'] and Z[i]['coins'][0] > Z[i - 1]['coins'][0] and Z[i]['xp'] > Z[i - 1]['xp'] for i in range(6, len(Z))), 'each new place is harder and pays more than the one before')
+    plain()
+    a.js(open_gate + " c.setState({ adv: null, fishing: null, demoXp: 0 }); c.sendAdventure('citadel');"); a.wait(120)
+    res.eq(a.state()['adv'], None, 'a place above your level can not be started')
+    a.js(open_gate + " c.setState({ adv: null, fishing: null, demoXp: 400000 }); c.sendAdventure('citadel');"); a.wait(120)
+    res.ok(a.state()['adv'] and a.state()['adv']['zid'] == 'citadel', 'Sky Citadel can be started at Lv 26+')
+    a.set({'adv': None, 'demoXp': 0})
+    res.ok(all(('%s unlocked.' % name) in a.js("return c.levelCele(arg).body;", lv) for lv, name in [(12, 'Sunken Ruins'), (15, 'Ashen Wastes'), (18, 'Frostfang Pass'), (22, 'Starfall Crater'), (26, 'Sky Citadel')]), 'the level-up pop-up names the place it unlocks')
+    F = a.js("const D = c.px(); return D.fishOrder.map(id => [id, D.fish[id].rarity]);")
+    rows = {r: [f for f, rr in F if rr == r] for r in ('common', 'rare', 'epic', 'legendary')}
+    res.eq((len(F), [len(rows[r]) for r in rows]), (35, [12, 10, 8, 5]), '35 fish: 12 common, 10 rare, 8 epic, 5 legendary')
+    new = ['goby2', 'reedminnow', 'snapper', 'misteel', 'lantern', 'thunderpike', 'coralwyrm', 'glassray', 'leviathan', 'sunkenking']
+    got = set()
+    for r, ids in rows.items():
+        k = ['common', 'rare', 'epic', 'legendary'].index(r)
+        for i in range(len(ids)):
+            # first roll picks the rarity row (k), the second the fish inside it (i)
+            got |= set(a.js("""const o = c.fishOdds(60, 'worm', false); const pick = o.slice(0, arg.k).reduce((x, v) => x + v, 0) + o[arg.k] / 2;
+              const seq = [pick, (arg.i + 0.5) / arg.n, 0.5]; const orig = Math.random; Math.random = () => (seq.length > 1 ? seq.shift() : seq[0]);
+              const r = c.catchFish(1, 60, 'worm', {}, false).map(x => x.id); Math.random = orig; return r;""", {'k': k, 'i': i, 'n': len(ids)}))
+    res.ok(set(new) <= got, 'every new fish can be caught (%s)' % sorted(set(new) - got))
+    res.ok(all(abs(sum(a.js("return c.fishOdds(arg, 'golden', true);", s)) - 1) < 1e-9 for s in (30, 90, 200)), 'catch odds still add up to 1')
+    a.set({'screen': 'char', 'ctab': 'store', 'cat': 'hat', 'book': {}, 'owned': [x for x in a.state()['owned'] if x != 'h_bucket']})
+    res.ok(a.js("const x = c.renderVals().store.find(x => x.name === 'Bucket Hat'); return !!x && x.actLabel === 'Needs all 12 common fish';"), 'Fish Book rewards name the new row sizes')
+    # Saves from before the new fish: a row finished with the old fish keeps its reward.
+    env = a.env()
+    old_common = ['minnow', 'bluegill', 'perch', 'carp', 'sardine', 'mackerel', 'catfish', 'trout', 'goby', 'tilapia']
+    env['state'].update({'schema': 14, 'book': {f: {'caught': 1, 'kept': 1, 'best': 5} for f in old_common + ['salmon']}, 'owned': [x for x in env['state']['owned'] if x not in ('h_bucket', 'c_angler')]})
+    a.put_env(env); a.open(wait=600)
+    st = a.state()
+    res.ok('h_bucket' in st['owned'] and 'c_angler' not in st['owned'], 'old save: a common row finished with the old 10 fish keeps its Bucket Hat; an unfinished row gets nothing')
+    res.eq(st['schema'], 15, 'old save moves to the new save version')
+    res.ok(a.js("return !c.rowDone(c.state.book, 'common');"), 'the common row itself now needs the 2 new fish too')
     a.check_errors('logic')
 
 

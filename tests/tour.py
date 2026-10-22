@@ -341,6 +341,11 @@ def states():
     def _(a):
         a.tap('Character'); a.set({'ctab': 'store', 'cat': 'bg', 'tryOn': 'bg_aurora'})
 
+    @st('explore-new-places')
+    def _(a):
+        a.tap('Character'); a.set({'ctab': 'explore', 'etab': 'adventure', 'demoXp': 400000})
+        a.pg.evaluate("() => { const el = document.querySelector('#app > div > div'); el.scrollTop = el.scrollHeight; }"); a.wait(100)
+
     @st('char-hero-busy')
     def _(a):
         a.js("c.setState({ trips: { day: c.T, adv: false, fish: false } });")

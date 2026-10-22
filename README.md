@@ -2,7 +2,7 @@
 
 A gamified habit tracker for a worldwide audience. You build real habits, and a pixel-art hero levels up with you. Finishing habits earns coins and XP, unlocks the hero's daily trips, and fills a collection you want to complete.
 
-> **Status:** working prototype, **v0.18.0**. Usable day to day on one device; not a released app yet.
+> **Status:** working prototype, **v0.19.0**. Usable day to day on one device; not a released app yet.
 
 ## ▶ Try it
 
@@ -33,7 +33,7 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ---
 
-## Features (as of v0.18.0)
+## Features (as of v0.19.0)
 
 ### Habit tracking
 - **Four habit types:** Yes/No, Amount (e.g. pages), Time (with a wall-clock stopwatch), and Quit (breaking a bad habit).
@@ -68,9 +68,9 @@ The habit tracking comes first. The game exists to support it, not to replace it
 
 ### Daily trips
 - **Unlocked at 50%:** once half of today's due habits are done (rounded up), trips open for the day. If nothing is due today, trips are open by default.
-- **Adventure:** once a day. It can succeed or fail depending on the hero's gear and level.
+- **Adventure:** once a day, to one of 11 places from Lv 1 (15 min) to Lv 26 (8 h). It can succeed or fail depending on the hero's gear and level.
 - **Fishing:** once a day, running in parallel with the adventure. The hero is away for 3 hours with a painted fishing scene and a countdown, and comes back with 1–4 fish based on level.
-- **Fish Book:** 25 fish across Common, Rare, Epic and Legendary.
+- **Fish Book:** 35 fish across Common (12), Rare (10), Epic (8) and Legendary (5).
 
 ### Diamonds (the rare currency)
 - **Two currencies.** Coins come from habits and tasks, as before. **Diamonds** are rare: they come from the weekly league and from packs, and are shown next to coins at the top of the Character tab.
@@ -157,7 +157,7 @@ Never edit `docs/index.html`, `docs/sw.js` or `docs/design/*` directly; change `
 ## How it was built
 
 - UI prototyped as interactive components in Claude's design canvas.
-- Pixel art (hero, gear, 25 fish, fishing scene, 10 backgrounds with day and night versions) generated with Python/PIL scripts.
+- Pixel art (hero, gear, 35 fish, fishing scene, 10 backgrounds with day and night versions) generated with Python/PIL scripts.
 - Game economy balanced with simulations of casual, regular and dedicated player types over a full year (coins, XP, leveling, item prices).
 - QA with automated checks: Node.js logic harnesses with simulated dates and timers, a template checker for undefined/NaN/clipped text, and Playwright browser runs covering every screen in light and dark mode.
 - Browser test suite in [`tests/`](tests/README.md): every habit and task flow, weeks of use on a simulated clock (midnight, days away, daylight saving, time-zone changes), the hero, backgrounds and trips, settings and backups, a screen scanner run on ~145 screens at sizes from 320 px to desktop, and random sessions.

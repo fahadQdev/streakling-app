@@ -241,16 +241,17 @@ def main(browser, res):
     a.js("const book = Object.assign({}, c.state.book); book[arg] = { caught: 1, kept: 1, best: 5 }; c.setState(s => c.landCatch(s, [{ id: arg, size: 5, isNew: true, isRecord: false }], book, 'Test'));", missing)
     a.wait(150)
     titles = a.dismiss_all()
-    res.ok('All 10 common fish found!' in titles, 'row complete pop-up (%s)' % titles)
+    nrow = a.js("const D = c.px(); return ['common', 'rare', 'epic', 'legendary'].map(r => D.fishOrder.filter(id => D.fish[id].rarity === r).length);")
+    res.ok(('All %d common fish found!' % nrow[0]) in titles, 'row complete pop-up (%s)' % titles)
     res.ok('h_bucket' in a.state()['owned'], 'row reward added to the wardrobe')
     # sell extras
     a.js("const D = c.px(); const b = {}; D.fishOrder.forEach(id => { b[id] = { caught: 4, kept: 3, best: 10 }; }); c.setState({ book: b, soldNote: '' });"); a.wait(100)
     cb = a.js("return c.coinsOf(c.state);")
     a.set({'etab': 'book'})
-    res.ok(a.has('Sell 50 extra fish · +'), 'sell button counts extras')
+    res.ok(a.has('Sell %d extra fish · +' % (2 * sum(nrow))), 'sell button counts extras')
     a.pg.locator('button').filter(has_text=re.compile('^Sell ')).click(); a.wait(200)
     gain = a.js("return c.coinsOf(c.state);") - cb
-    res.eq(gain, 2 * (10 * 2 + 7 * 6 + 5 * 18 + 3 * 50), 'sell prices: 2/6/18/50 per extra')
+    res.eq(gain, 2 * (nrow[0] * 2 + nrow[1] * 6 + nrow[2] * 18 + nrow[3] * 50), 'sell prices: 2/6/18/50 per extra')
     res.ok(all(b['kept'] == 1 for b in a.state()['book'].values()), 'one of each fish stays')
     res.ok(a.has('No extra fish to sell'), 'nothing left to sell')
     # Fish detail sheet
