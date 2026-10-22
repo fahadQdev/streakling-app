@@ -221,6 +221,14 @@ Every screen, sheet and pop-up checked at phone sizes from 320 px to desktop, in
 - Fix: big fish sizes in metres were always written in English ("4.01 m"); Arabic now shows "4.01 م".
 - **Tests:** 12 choices, never more than 2, the oldest replaced, remove, kept after a reload, damaged saves, my card and other players' cards (2 different stats, the same each time), every counter including undo and delete, Arabic; the screen tour adds the picker and my card with chips, so long names and Arabic are scanned for overflow at every size.
 
+## v0.21.0: New Character tabs, eyes and hairstyles (2026-10-22)
+- **New Character tabs.** Hero, Wardrobe, Store and Explore are one bar with a highlight that slides to the tab you pick. In the Wardrobe and Store the 8 item categories moved from 3 rows of pills into a dark rail down the side, with an icon each (Accessories and Backgrounds are called Extras and Scenes there to fit). The rail stays in reach while you scroll, the hero sits right under the tabs, and new items fade in when you switch. On Hero and Explore the rail folds away. On phones narrower than 375 px the Hero/Wardrobe/Store/Explore bar sits above the rail, so its labels keep a readable size. Adventure, Fishing and Fish Book use the same sliding tabs. In Arabic the rail is on the right.
+- **Less text.** The explanations under the sections are gone: the Store and Wardrobe notes, the level and stat notes on the Hero page, the Showoff, Equipped, trip and bait hints, the notes at the bottom of Adventure, Fishing and the Fish Book, and the notes on the hero screens. Errors, empty lists and what an item changes when you try it on stay.
+- **Eyes:** pick round, happy or sleepy when you make your hero. Heroes from before keep the round eyes.
+- **Hairstyles:** 3 free ones each. Boys: Short & Tousled, Buzz Cut and the new Side Part. Girls: Long & Straight, Bob and Ponytail. Every hero owns their 3 (existing heroes get them on the next load); the other character's hairstyles are still in the Store for 120.
+- **Change look** now changes eyes and hairstyle as well as hair colour.
+- **Tests:** eyes and hairstyles in setup, Change look and old or damaged saves; the rail and tabs (what shows where, picking, highlights); the screen scanner reads the sliding highlight as the selected tab's background.
+
 ---
 
 ## What's next

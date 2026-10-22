@@ -248,7 +248,8 @@ def main(browser, res):
     old['state']['habits'][0]['start'] = min(starts) - 3
     b.put_env(old); b.open()
     st = b.state()
-    res.eq(sorted(st['owned']), sorted(['c_vest', 'hr_short', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain']), 'old boy save: girl starter outfit and hair removed, plain background added')
+    res.eq(sorted(st['owned']), sorted(['c_vest', 'hr_short', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain', 'hr_buzz', 'hr_side']), 'old boy save: girl starter outfit and hair removed, plain background and the free boy hairstyles added')
+    res.eq(st['char'].get('eyes'), 'round', 'old save: hero without eyes keeps the round ones')
     res.eq((st['schema'], st['char']['bg'], st['tasks'], st['settings']['hideDone']), (15, 'bg_plain', [], False), 'old save: new fields get their defaults')
     res.eq(st['firstDay'], min(starts) - 3, 'old save: first day comes from the oldest habit')
     b.set({'screen': 'char', 'ctab': 'store', 'cat': 'clothes'})
@@ -257,7 +258,7 @@ def main(browser, res):
     old2 = json.loads(json.dumps(old))
     old2['state']['char'].update({'sex': 'girl', 'clothes': 'c_vest', 'hair': 'hr_long'})
     b.put_env(old2); b.open()
-    res.eq(sorted(b.state()['owned']), sorted(['c_vest', 'c_dress', 'hr_long', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain']), 'old girl save wearing the boy vest: the vest stays, the boy hair goes')
+    res.eq(sorted(b.state()['owned']), sorted(['c_vest', 'c_dress', 'hr_long', 's_boots', 'r_bamboo', 'h_cap', 'bg_plain', 'hr_bob', 'hr_pony']), 'old girl save wearing the boy vest: the vest stays, the boy hair goes, the free girl hairstyles are added')
     res.eq(b.state()['char']['clothes'], 'c_vest', 'still wearing the vest')
     b.check_errors('migrate girl')
     # A v0.13 save is not migrated again: a boy who bought the girl outfit keeps it.
@@ -270,12 +271,14 @@ def main(browser, res):
     bad2['state']['tasks'] = [None, 'x', {'name': ''}, {'name': 'No day', 'day': 'soon'}, {'name': '  Fine  ', 'day': 30, 'done': True, 'doneDay': 30, 'paid': True},
                               {'id': 'dup', 'name': 'A', 'day': 31}, {'id': 'dup', 'name': 'B', 'day': 32, 'done': 'yes'}]
     bad2['state']['char']['bg'] = 'bg_nowhere'
+    bad2['state']['char']['eyes'] = 'laser'
     bad2['state']['firstDay'] = 'yesterday'
     b.put_env(bad2); b.open()
     st = b.state()
     res.eq([(x['name'], x['day'], x['done'], x['paid']) for x in st['tasks']], [('Fine', 30, True, True), ('A', 31, False, False), ('B', 32, False, False)], 'bad tasks dropped, good ones kept')
     res.eq(len(set(x['id'] for x in st['tasks'])), 3, 'task ids made unique')
     res.eq(st['char']['bg'], 'bg_plain', 'unknown background falls back to Plain')
+    res.eq(st['char']['eyes'], 'round', 'unknown eyes fall back to round')
     res.ok(isinstance(st['firstDay'], int), 'bad first day replaced')
     b.pg.get_by_role('tab', name=re.compile('^Tasks')).click(); b.wait(150)
     b.tap('Stats')

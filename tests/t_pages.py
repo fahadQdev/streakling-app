@@ -16,9 +16,9 @@ def main(browser, res):
         code = urllib.request.urlopen(URL + ic['src']).status
         res.eq(code, 200, 'icon ' + ic['src'])
     sw = urllib.request.urlopen(URL + 'sw.js').read().decode()
-    res.ok("streakling-v0.20.0" in sw, 'service worker cache named for this version')
+    res.ok("streakling-v0.21.0" in sw, 'service worker cache named for this version')
     html = urllib.request.urlopen(URL).read().decode()
-    res.ok('v0.20.0' in html, 'index built from v0.20.0')
+    res.ok('v0.21.0' in html, 'index built from v0.21.0')
     # Text comes from the language tables; a missing key would show up as the key itself.
     a = App(browser, res)
     a.clear(); a.open(); demo(a)

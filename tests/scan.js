@@ -148,6 +148,10 @@
   const lum = c => { const f = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
   const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
   const bgOf = el => {
+    // A selected tab sits on its tab bar's sliding highlight (.dc-ind / .dc-rail-ind), a sibling rather than a parent.
+    const tab = el.closest('[aria-selected="true"]');
+    const hl = tab && tab.parentElement && tab.parentElement.querySelector(':scope > .dc-ind, :scope > .dc-rail-ind');
+    if (hl) { const c = parse(cs(hl).backgroundColor); if (c && c[3] >= 1) return c; }
     const layers = [];
     for (let e = el; e; e = e.parentElement) {
       const s = cs(e);
